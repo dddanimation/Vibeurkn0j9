@@ -13,14 +13,13 @@
       device-orientation-permission-ui="enabled: false">
 
       <a-assets>
-        <img id="card" src="./qrc_kris.jpg" />
+        <img id="card" src="./qrc_kris.png" />
         <a-asset-item id="krisModel" src="./kris.glb"></a-asset-item>
       </a-assets>
 
-      <!-- ✅ Use MindAR's camera -->
+      <!-- ✅ Correct MindAR camera -->
       <a-entity mindar-camera></a-entity>
 
-      <!-- ✅ Target -->
       <a-entity mindar-image-target="targetIndex: 0">
         <a-plane src="#card" position="0 0 0" height="1" width="1" rotation="0 0 0"></a-plane>
         <a-gltf-model 
