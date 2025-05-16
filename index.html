@@ -1,9 +1,10 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     <style>
+      /* Hide VR button */
       .a-enter-vr {
         display: none !important;
       }
@@ -11,31 +12,52 @@
   </head>
   <body style="margin: 0; overflow: hidden;">
 
-    <!-- AR Scene -->
-    <a-scene
-      mindar-image="imageTargetSrc: ./maya.mind; filterMinCF: 0.05; filterBeta: 20; warmupTolerance: 2; missTolerance: 2"
-      color-space="sRGB"
-      renderer="colorManagement: true, physicallyCorrectLights"
-      vr-mode-ui="enabled: false"
-      device-orientation-permission-ui="enabled: false">
+    <!-- Logo + Instagram Icon -->
+    <div style="position: absolute; top: 20px; left: 20px; display: flex; align-items: center; gap: 10px; z-index: 999;">
+      <img 
+        src="./logo.png" 
+        alt="Logo" 
+        style="height: 40px; opacity: 0.8;" />
+      <a href="https://www.instagram.com/qrcky/" target="_blank" rel="noopener noreferrer">
+        <img 
+          src="./insta.png" 
+          alt="Instagram" 
+          style="height: 28px; opacity: 0.8; cursor: pointer;" />
+      </a>
+    </div>
 
+    <!-- Inquiry Button -->
+    <button 
+      onclick="window.open('https://www.qrcky.net/originals-paintings-black-and-white-art/loys', '_blank')" 
+      style="position: absolute; top: 20px; right: 20px; padding: 6px 14px; font-size: 14px; background-color: rgba(0, 0, 0, 0.8); color: white; border: none; border-radius: 6px; cursor: pointer; z-index: 999; height: 40px;">
+      Inquiry
+    </button>
+
+    <!-- AR Scene -->
+    <a-scene 
+      mindar-image="imageTargetSrc: ./maya.mind;" 
+      color-space="sRGB" 
+      renderer="colorManagement: true, physicallyCorrectLights" 
+      vr-mode-ui="enabled: false" 
+      device-orientation-permission-ui="enabled: false"
+    >
       <a-assets>
         <img id="maya-image" src="./qrc_maya.jpg" />
-        <a-asset-item id="maya-model" src="./maya.glb"></a-asset-item>
+        <a-asset-item id="mayaModel" src="./Maya.glb"></a-asset-item>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
         <a-plane src="#maya-image" position="0 0 0" height="1" width="1" rotation="0 0 0"></a-plane>
-        <a-gltf-model
-          src="#maya-model"
-          position="0 0 0.1"
-          scale="0.3 0.3 0.3"
-          rotation="0 0 0">
+        <a-gltf-model 
+          rotation="0 0 0" 
+          position="0 0 0.1" 
+          scale="0.3 0.3 0.3" 
+          src="#mayaModel"
+          animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
         </a-gltf-model>
       </a-entity>
-
     </a-scene>
 
   </body>
