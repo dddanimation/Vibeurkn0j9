@@ -7,81 +7,36 @@
       .a-enter-vr {
         display: none !important;
       }
-
-      #preloader {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: #000;
-        color: white;
-        font-family: sans-serif;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 1000;
-        font-size: 20px;
-      }
     </style>
   </head>
   <body style="margin: 0; overflow: hidden;">
 
-    <!-- Preloader -->
-    <div id="preloader">Loading AR experience...</div>
-
-    <!-- Logo + Instagram Icon -->
-    <div style="position: absolute; top: 20px; left: 20px; display: flex; align-items: center; gap: 10px; z-index: 999;">
-      <img src="./logo.png" alt="Logo" style="height: 40px; opacity: 0.8;" />
-      <a href="https://www.instagram.com/qrcky/" target="_blank">
-        <img src="./insta.png" alt="Instagram" style="height: 28px; opacity: 0.8; cursor: pointer;" />
-      </a>
-    </div>
-
-    <!-- Inquiry Button -->
-    <button 
-      onclick="window.open('https://www.qrcky.net/originals-paintings-black-and-white-art/loys', '_blank')" 
-      style="position: absolute; top: 20px; right: 20px; padding: 6px 14px; font-size: 14px; background-color: rgba(0, 0, 0, 0.8); color: white; border: none; border-radius: 6px; cursor: pointer; z-index: 999; height: 40px;">
-      Inquiry
-    </button>
-
     <!-- AR Scene -->
-    <a-scene 
-      mindar-image="imageTargetSrc: ./qrc_kris.mind; filterMinCF: 0.05; filterBeta: 20; warmupTolerance: 2; missTolerance: 2" 
-      color-space="sRGB" 
-      renderer="colorManagement: true, physicallyCorrectLights" 
-      vr-mode-ui="enabled: false" 
+    <a-scene
+      mindar-image="imageTargetSrc: ./maya.mind; filterMinCF: 0.05; filterBeta: 20; warmupTolerance: 2; missTolerance: 2"
+      color-space="sRGB"
+      renderer="colorManagement: true, physicallyCorrectLights"
+      vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false">
 
       <a-assets>
-        <img id="card" src="./qrc_kris.jpg" />
-        <a-asset-item id="krisModel" src="./kris.glb"></a-asset-item>
+        <img id="maya-image" src="./qrc_maya.jpg" />
+        <a-asset-item id="maya-model" src="./maya.glb"></a-asset-item>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <!-- Optional: Visual Debug Plane (Red Transparent) -->
-        <a-plane color="red" opacity="0.3" width="1" height="1" position="0 0 0.01"></a-plane>
-
-        <!-- Model Wrapper for Easy Positioning -->
-        <a-entity position="0 0 0.1">
-          <a-gltf-model 
-            id="model"
-            src="#krisModel"
-            scale="0.3 0.3 0.3"
-            rotation="0 0 0">
-          </a-gltf-model>
-        </a-entity>
+        <a-plane src="#maya-image" position="0 0 0" height="1" width="1" rotation="0 0 0"></a-plane>
+        <a-gltf-model
+          src="#maya-model"
+          position="0 0 0.1"
+          scale="0.3 0.3 0.3"
+          rotation="0 0 0">
+        </a-gltf-model>
       </a-entity>
+
     </a-scene>
 
-    <script>
-      // Hide preloader after model loads
-      document.querySelector('#model').addEventListener('model-loaded', () => {
-        const preloader = document.getElementById('preloader');
-        if (preloader) preloader.style.display = 'none';
-      });
-    </script>
   </body>
 </html>
