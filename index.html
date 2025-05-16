@@ -7,92 +7,76 @@
       .a-enter-vr {
         display: none !important;
       }
-
-      /* Preloader styling */
-      #preloader {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: #000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 1000;
-      }
-
-      .spinner {
-        border: 6px solid #f3f3f3;
-        border-top: 6px solid #555;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        animation: spin 1s linear infinite;
-      }
-
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
     </style>
   </head>
   <body style="margin: 0; overflow: hidden;">
 
-    <!-- Preloader -->
-    <div id="preloader">
-      <div class="spinner"></div>
-    </div>
-
-    <!-- Instagram Icon Only -->
-    <div style="position: absolute; top: 20px; left: 20px; z-index: 999;">
+    <!-- Logo + Instagram Icon -->
+    <div style="position: absolute; top: 20px; left: 20px; display: flex; align-items: center; gap: 10px; z-index: 999;">
+      <img src="./logo.png" alt="Logo" style="height: 40px; opacity: 0.8;" />
       <a href="https://www.instagram.com/qrcky/" target="_blank">
-        <img 
-          src="./insta.png" 
-          alt="Instagram" 
-          style="height: 28px; opacity: 0.8; cursor: pointer;" />
+        <img src="./insta.png" alt="Instagram" style="height: 28px; opacity: 0.8; cursor: pointer;" />
       </a>
     </div>
 
     <!-- Inquiry Button -->
-    <button 
-      onclick="window.open('https://www.qrcky.net/originals-paintings-black-and-white-art/loys', '_blank')" 
+    <button onclick="window.open('https://www.qrcky.net/originals-paintings-black-and-white-art/loys', '_blank')" 
       style="position: absolute; top: 20px; right: 20px; padding: 6px 14px; font-size: 14px; background-color: rgba(0, 0, 0, 0.8); color: white; border: none; border-radius: 6px; cursor: pointer; z-index: 999; height: 40px;">
       Inquiry
     </button>
 
     <!-- AR Scene -->
     <a-scene 
-      mindar-image="imageTargetSrc: ./maya.mind; filterMinCF: 0.05; filterBeta: 20; warmupTolerance: 2; missTolerance: 2" 
+      mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 2" 
       color-space="sRGB" 
       renderer="colorManagement: true, physicallyCorrectLights" 
       vr-mode-ui="enabled: false" 
-      device-orientation-permission-ui="enabled: false"
-      loading-screen="enabled: false"
-      embedded
-      >
+      device-orientation-permission-ui="enabled: false">
 
       <a-assets>
-        <img id="card" src="./qrc_maya.jpg" />
-        <a-asset-item id="mayaModel" src="./maya.glb"></a-asset-item>
+        <!-- Add your GLB models here -->
+        <a-asset-item id="model0" src="./models/youknowitaint.glb"></a-asset-item>
+        <a-asset-item id="model1" src="./models/ebony.glb"></a-asset-item>
+        <a-asset-item id="model2" src="./models/porcelainv3.glb"></a-asset-item>
+        <a-asset-item id="model3" src="./models/She-dont-want-to-be-save.glb"></a-asset-item>
+        <a-asset-item id="model4" src="./models/maya.glb"></a-asset-item>
+        <a-asset-item id="model5" src="./models/maps.glb"></a-asset-item>
+        <a-asset-item id="model6" src="./models/maps_planet.glb"></a-asset-item>
+        <a-asset-item id="model7" src="./models/miss_regret.glb"></a-asset-item>
+        <a-asset-item id="model8" src="./models/porcelain.glb"></a-asset-item>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
+      <!-- One entity per target image -->
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-plane src="#card" position="0 0 0" height="1" width="1" rotation="0 0 0"></a-plane>
-        <a-gltf-model src="#mayaModel" position="0 0 0.1" scale="0.3 0.3 0.3" rotation="0 0 0"></a-gltf-model>
+        <a-gltf-model src="#model0" position="0 -0.25 0" scale="0.3 0.3 0.3"></a-gltf-model>
+      </a-entity>
+      <a-entity mindar-image-target="targetIndex: 1">
+        <a-gltf-model src="#model1" position="0 -0.25 0" scale="0.3 0.3 0.3"></a-gltf-model>
+      </a-entity>
+      <a-entity mindar-image-target="targetIndex: 2">
+        <a-gltf-model src="#model2" position="0 -0.25 0" scale="0.3 0.3 0.3"></a-gltf-model>
+      </a-entity>
+      <a-entity mindar-image-target="targetIndex: 3">
+        <a-gltf-model src="#model3" position="0 -0.25 0" scale="0.3 0.3 0.3"></a-gltf-model>
+      </a-entity>
+      <a-entity mindar-image-target="targetIndex: 4">
+        <a-gltf-model src="#model4" position="0 -0.25 0" scale="0.3 0.3 0.3"></a-gltf-model>
+      </a-entity>
+      <a-entity mindar-image-target="targetIndex: 5">
+        <a-gltf-model src="#model5" position="0 -0.25 0" scale="0.3 0.3 0.3"></a-gltf-model>
+      </a-entity>
+      <a-entity mindar-image-target="targetIndex: 6">
+        <a-gltf-model src="#model6" position="0 -0.25 0" scale="0.3 0.3 0.3"></a-gltf-model>
+      </a-entity>
+      <a-entity mindar-image-target="targetIndex: 7">
+        <a-gltf-model src="#model7" position="0 -0.25 0" scale="0.3 0.3 0.3"></a-gltf-model>
+      </a-entity>
+      <a-entity mindar-image-target="targetIndex: 8">
+        <a-gltf-model src="#model8" position="0 -0.25 0" scale="0.3 0.3 0.3"></a-gltf-model>
       </a-entity>
 
     </a-scene>
-
-    <script>
-      window.addEventListener("DOMContentLoaded", () => {
-        const scene = document.querySelector("a-scene");
-        scene.addEventListener("loaded", () => {
-          document.getElementById("preloader").style.display = "none";
-        });
-      });
-    </script>
   </body>
 </html>
