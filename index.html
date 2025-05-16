@@ -4,32 +4,30 @@
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     <style>
+      /* Hide VR button */
       .a-enter-vr {
         display: none !important;
       }
 
-      /* Preloader Styles */
+      /* Preloader */
       #preloader {
         position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: #000;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        background: black;
         color: white;
-        font-family: sans-serif;
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 1000;
-        font-size: 20px;
+        font-family: sans-serif;
+        z-index: 9999;
       }
     </style>
   </head>
   <body style="margin: 0; overflow: hidden;">
 
     <!-- Preloader -->
-    <div id="preloader">Loading AR experience...</div>
+    <div id="preloader">Loading AR Experience...</div>
 
     <!-- Logo + Instagram Icon -->
     <div style="position: absolute; top: 20px; left: 20px; display: flex; align-items: center; gap: 10px; z-index: 999;">
@@ -47,31 +45,97 @@
     </button>
 
     <!-- AR Scene -->
-    <a-scene 
-      mindar-image="imageTargetSrc: ./qrc_kris.mind; filterMinCF: 0.05; filterBeta: 20; warmupTolerance: 2; missTolerance: 2" 
-      color-space="sRGB" 
-      renderer="colorManagement: true, physicallyCorrectLights" 
-      vr-mode-ui="enabled: false" 
-      device-orientation-permission-ui="enabled: false">
+    <a-scene
+      mindar-image="imageTargetSrc: ./targets.mind; filterMinCF: 0.05; filterBeta: 20; warmupTolerance: 2; missTolerance: 2"
+      color-space="sRGB"
+      renderer="colorManagement: true, physicallyCorrectLights"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+      embedded
+      loading-screen="enabled: false"
+      onloaded="document.getElementById('preloader').style.display = 'none';"
+    >
 
       <a-assets>
-        <img id="card" src="./qrc_kris.jpg" />
-        <a-asset-item id="krisModel" src="./kris.glb"></a-asset-item>
+        <!-- Images -->
+        <img id="ebony-img" src="./ebony.jpg" />
+        <img id="miss_regret-img" src="./miss_regret.jpg" />
+        <img id="maya-img" src="./maya.jpg" />
+        <img id="maps_planet-img" src="./maps_planet.jpg" />
+        <img id="maps-img" src="./maps.jpg" />
+        <img id="kris-img" src="./kris.jpg" />
+        <img id="You-Know-It-Aint-img" src="./You-Know-It-Aint.jpg" />
+        <img id="porcelainv3-img" src="./porcelainv3.jpg" />
+        <img id="porcelain-img" src="./porcelain.jpg" />
+
+        <!-- Models -->
+        <a-asset-item id="ebony" src="./ebony.glb"></a-asset-item>
+        <a-asset-item id="miss_regret" src="./miss_regret.glb"></a-asset-item>
+        <a-asset-item id="maya" src="./maya.glb"></a-asset-item>
+        <a-asset-item id="maps_planet" src="./maps_planet.glb"></a-asset-item>
+        <a-asset-item id="maps" src="./maps.glb"></a-asset-item>
+        <a-asset-item id="kris" src="./kris.glb"></a-asset-item>
+        <a-asset-item id="You-Know-It-Aint" src="./You-Know-It-Aint.glb"></a-asset-item>
+        <a-asset-item id="porcelainv3" src="./porcelainv3.glb"></a-asset-item>
+        <a-asset-item id="porcelain" src="./porcelain.glb"></a-asset-item>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
+      <!-- 9 Targets -->
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-plane src="#card" position="0 0 0" height="1" width="1" rotation="0 0 0"></a-plane>
-        <a-gltf-model id="model" src="#krisModel" position="0 0 0" scale="0.3 0.3 0.3" rotation="0 0 0"></a-gltf-model>
+        <a-plane src="#ebony-img" height="1" width="1" position="0 0 0"></a-plane>
+        <a-gltf-model src="#ebony" position="0 0 0" scale="0.3 0.3 0.3"></a-gltf-model>
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 1">
+        <a-plane src="#miss_regret-img" height="1" width="1" position="0 0 0"></a-plane>
+        <a-gltf-model src="#miss_regret" position="0 0 0" scale="0.3 0.3 0.3"></a-gltf-model>
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 2">
+        <a-plane src="#maya-img" height="1" width="1" position="0 0 0"></a-plane>
+        <a-gltf-model src="#maya" position="0 0 0" scale="0.3 0.3 0.3"></a-gltf-model>
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 3">
+        <a-plane src="#maps_planet-img" height="1" width="1" position="0 0 0"></a-plane>
+        <a-gltf-model src="#maps_planet" position="0 0 0" scale="0.3 0.3 0.3"></a-gltf-model>
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 4">
+        <a-plane src="#maps-img" height="1" width="1" position="0 0 0"></a-plane>
+        <a-gltf-model src="#maps" position="0 0 0" scale="0.3 0.3 0.3"></a-gltf-model>
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 5">
+        <a-plane src="#kris-img" height="1" width="1" position="0 0 0"></a-plane>
+        <a-gltf-model src="#kris" position="0 0 0" scale="0.3 0.3 0.3"></a-gltf-model>
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 6">
+        <a-plane src="#You-Know-It-Aint-img" height="1" width="1" position="0 0 0"></a-plane>
+        <a-gltf-model src="#You-Know-It-Aint" position="0 0 0" scale="0.3 0.3 0.3"></a-gltf-model>
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 7">
+        <a-plane src="#porcelainv3-img" height="1" width="1" position="0 0 0"></a-plane>
+        <a-gltf-model src="#porcelainv3" position="0 0 0" scale="0.3 0.3 0.3"></a-gltf-model>
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 8">
+        <a-plane src="#porcelain-img" height="1" width="1" position="0 0 0"></a-plane>
+        <a-gltf-model src="#porcelain" position="0 0 0" scale="0.3 0.3 0.3"></a-gltf-model>
       </a-entity>
 
     </a-scene>
 
     <script>
-      document.querySelector('#model').addEventListener('model-loaded', () => {
-        const preloader = document.getElementById('preloader');
-        if (preloader) preloader.style.display = 'none';
+      window.addEventListener("load", () => {
+        const scene = document.querySelector("a-scene");
+        scene.addEventListener("loaded", () => {
+          document.getElementById("preloader").style.display = "none";
+        });
       });
     </script>
   </body>
