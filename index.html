@@ -30,7 +30,7 @@
 
     <!-- AR Scene -->
     <a-scene
-      mindar-image="imageTargetSrc: ./targets-set1.mind; maxTrack: 1"
+      mindar-image="imageTargetSrc: ./targets-set1.mind; maxTrack: 1; filterMinCF: 0.05; filterBeta: 0.8; missTolerance: 5"
       color-space="sRGB"
       renderer="colorManagement: true, physicallyCorrectLights"
       vr-mode-ui="enabled: false"
@@ -45,12 +45,26 @@
 
       <!-- Target 0: Maya -->
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-gltf-model src="#mayaModel" position="0 -0.25 0" scale="0.3 0.3 0.3" rotation="0 0 0"></a-gltf-model>
+        <a-gltf-model
+          src="#mayaModel"
+          position="0 -0.25 0"
+          scale="0.3 0.3 0.3"
+          rotation="0 0 0"
+          animation__pos="property: position; to: 0 -0.25 0; easing: easeOutQuad; dur: 300"
+          animation__rot="property: rotation; to: 0 0 0; easing: easeOutQuad; dur: 300"
+        ></a-gltf-model>
       </a-entity>
 
       <!-- Target 1: Miss Regret -->
       <a-entity mindar-image-target="targetIndex: 1">
-        <a-gltf-model src="#regretModel" position="0 -0.25 0" scale="0.3 0.3 0.3" rotation="0 0 0"></a-gltf-model>
+        <a-gltf-model
+          src="#regretModel"
+          position="0 -0.25 0"
+          scale="0.3 0.3 0.3"
+          rotation="0 0 0"
+          animation__pos="property: position; to: 0 -0.25 0; easing: easeOutQuad; dur: 300"
+          animation__rot="property: rotation; to: 0 0 0; easing: easeOutQuad; dur: 300"
+        ></a-gltf-model>
       </a-entity>
     </a-scene>
   </body>
