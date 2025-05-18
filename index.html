@@ -46,7 +46,7 @@
 
     <!-- AR Scene -->
     <a-scene
-      mindar-image="imageTargetSrc: ./targets-set1.mind; maxTrack: 1; filterMinCF: 0.1; filterBeta: 0.01"
+      mindar-image="imageTargetSrc: ./targets-set1.mind; maxTrack: 1; filterMinCF: 0.5; filterBeta: 0.02"
       color-space="sRGB"
       renderer="colorManagement: true, physicallyCorrectLights"
       vr-mode-ui="enabled: false"
@@ -63,7 +63,7 @@
       <a-entity mindar-image-target="targetIndex: 0">
         <a-gltf-model 
           src="#mayaModel" 
-          position="0 -0.3 -0.1" 
+          position="0 0.0 -0.1" 
           scale="0.1 0.1 0.1" 
           rotation="0 0 0">
         </a-gltf-model>
@@ -73,12 +73,12 @@
       <a-entity mindar-image-target="targetIndex: 1; smooth: true; smoothCount: 5; smoothTolerance: 0.01; smoothThreshold: 0.01">
         <a-gltf-model 
           src="#regretModel" 
-          position="0 -0.3 -0.1" 
+          position="0 0.0 -0.1" 
           scale="0.1 0.1 0.1" 
           rotation="0 0 0">
         </a-gltf-model>
       </a-entity>
-    </a-scene>
+
 
     <!-- Hide loading text when scene is ready -->
     <script>
