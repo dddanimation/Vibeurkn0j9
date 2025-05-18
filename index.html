@@ -9,72 +9,34 @@
       }
     </style>
   </head>
-  <body style="margin: 0; overflow: hidden;">
-
-    <!-- Custom Loading Text -->
-    <div id="custom-loading" style="
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 18px;
-      font-family: sans-serif;
-      color: white;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 10px 20px;
-      border-radius: 8px;
-      z-index: 999;">
-      Loading AR experience... Please be mindful of your surroundings
-    </div>
-
-    <!-- Instagram Button -->
-    <div style="position: absolute; top: 20px; left: 20px; z-index: 999;">
-      <a href="https://www.instagram.com/qrcky/" target="_blank">
-        <img 
-          src="./insta.png" 
-          alt="Instagram" 
-          style="height: 28px; opacity: 0.8; cursor: pointer;" />
-      </a>
-    </div>
-
-    <!-- inquires Button -->
-    <button 
-      onclick="window.open('https://www.qrcky.net/originals-paintings-black-and-white-art/loys', '_blank')" 
-      style="position: absolute; top: 20px; right: 20px; padding: 6px 14px; font-size: 14px; background-color: rgba(0, 0, 0, 0.8); color: white; border: none; border-radius: 6px; cursor: pointer; z-index: 999; height: 40px;">
-      inquires
-    </button>
+  <body style="margin: 0; overflow: hidden; background: black">
 
     <!-- AR Scene -->
     <a-scene
-      mindar-image="imageTargetSrc: ./targets-set1.mind; maxTrack: 1; filterMinCF: 0.8; filterBeta: 0.05"
+      mindar-image="imageTargetSrc: ./targets-set1.mind; maxTrack: 2; filterMinCF: 0.8; filterBeta: 0.05"
       color-space="sRGB"
       renderer="colorManagement: true, physicallyCorrectLights"
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false"
     >
       <a-assets>
-        <a-asset-item id="mayaModel" src="./maya.glb"></a-asset-item>
-        <a-asset-item id="regretModel" src="./miss_regret.glb"></a-asset-item>
+        <!-- Replace with your actual model path -->
+        <a-asset-item id="model" src="./maya.glb"></a-asset-item>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!-- Target 0: Maya with smoothing -->
-      <a-entity mindar-image-target="targetIndex: 0; smooth:true; smoothCount:5; smoothTolerance:0.8; smoothThreshold:0.05">
-        <a-gltf-model src="#mayaModel" position="0 -0.25 0" scale="0.1 0.1 0.1" rotation="0 0 0"></a-gltf-model>
+      <!-- Target 0: Default smoothing -->
+      <a-entity mindar-image-target="targetIndex: 0; smooth: true; smoothCount: 3; smoothTolerance: 0.05; smoothThreshold: 0.1">
+        <a-gltf-model src="#model" position="0 -0.25 0" scale="0.2 0.2 0.2"></a-gltf-model>
+        <a-text value="Default Smoothing" position="0 0.2 0" align="center" width="2" color="white"></a-text>
       </a-entity>
 
-      <!-- Target 1: Miss Regret with smoothing -->
-      <a-entity mindar-image-target="targetIndex: 1; smooth:true; smoothCount:15; smoothTolerance:0.01; smoothThreshold:0.05">
-        <a-gltf-model src="#regretModel" position="0 -0.25 0" scale="0.1 0.1 0.1" rotation="0 0 0"></a-gltf-model>
+      <!-- Target 1: Advanced smoothing -->
+      <a-entity mindar-image-target="targetIndex: 1; smooth: true; smoothCount: 15; smoothTolerance: 0.005; smoothThreshold: 0.02">
+        <a-gltf-model src="#model" position="0 -0.25 0" scale="0.2 0.2 0.2"></a-gltf-model>
+        <a-text value="High Smoothing" position="0 0.2 0" align="center" width="2" color="lime"></a-text>
       </a-entity>
     </a-scene>
-
-    <!-- Hide loading text when scene is ready -->
-    <script>
-      document.querySelector('a-scene').addEventListener('loaded', () => {
-        document.getElementById('custom-loading').style.display = 'none';
-      });
-    </script>
   </body>
 </html>
