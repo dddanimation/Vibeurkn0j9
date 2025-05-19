@@ -4,51 +4,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r17/Stats.min.js"></script>
     <style>
-        .a-enter-vr {
-            display: none !important;
-        }
-        #performance-stats {
-            position: fixed;
-            top: 70px;
-            left: 20px;
-            z-index: 1000;
+        .a-enter-vr { display: none !important; }
+        #custom-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+            font-family: sans-serif;
+            color: white;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px 20px;
+            border-radius: 8px;
+            z-index: 999;
         }
     </style>
 </head>
 <body style="margin: 0; overflow: hidden;">
-    <!-- Custom Loading Text -->
-    <div id="custom-loading" style="
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 18px;
-        font-family: sans-serif;
-        color: white;
-        background: rgba(0, 0, 0, 0.6);
-        padding: 10px 20px;
-        border-radius: 8px;
-        z-index: 999;">
-        Loading AR experience... Please be mindful of your surroundings
-    </div>
+    <div id="custom-loading">Loading AR experience... Please be mindful of your surroundings</div>
 
-    <!-- Instagram Button -->
     <div style="position: absolute; top: 20px; left: 20px; z-index: 999;">
         <a href="https://www.instagram.com/qrcky/" target="_blank">
             <img src="./insta.png" alt="Instagram" style="height: 28px; opacity: 0.8; cursor: pointer;" />
         </a>
     </div>
 
-    <!-- Inquiry Button -->
     <button 
         onclick="window.open('https://www.qrcky.net/originals-paintings-black-and-white-art/loys', '_blank')" 
         style="position: absolute; top: 20px; right: 20px; padding: 6px 14px; font-size: 14px; background-color: rgba(0, 0, 0, 0.8); color: white; border: none; border-radius: 6px; cursor: pointer; z-index: 999; height: 40px;">
         Inquiry
     </button>
 
-    <!-- AR Scene -->
     <a-scene
         mindar-image="imageTargetSrc: ./targets.mind; 
                       maxTrack: 1; 
@@ -58,14 +45,13 @@
                       missTolerance: 5"
         color-space="sRGB"
         renderer="precision: medium; 
-                 antialias: false; 
-                 powerPreference: high-performance;
+                 antialias: false;
                  colorManagement: true;
-                 physicallyCorrectLights: false"
+                 physicallyCorrectLights: false;
+                 powerPreference: high-performance"
         loading-screen="enabled: false"
         vr-mode-ui="enabled: false"
-        device-orientation-permission-ui="enabled: false"
-        stats>
+        device-orientation-permission-ui="enabled: false">
 
         <a-assets>
             <a-asset-item id="mayaModel" src="./maya.glb" preload="true"></a-asset-item>
@@ -74,7 +60,6 @@
 
         <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-        <!-- Target 0: Maya -->
         <a-entity mindar-image-target="targetIndex: 0">
             <a-gltf-model 
                 src="#mayaModel" 
@@ -82,13 +67,12 @@
                 scale="0.1 0.1 0.1" 
                 rotation="0 0 0"
                 animation-mixer="clampWhenFinished: true"
-                enhanced-stabilization="smoothingFactor: 0.2; threshold: 0.01"
+                enhanced-stabilization
                 loading="eager"
                 buffer="false">
             </a-gltf-model>
         </a-entity>
 
-        <!-- Target 1: Miss Regret -->
         <a-entity mindar-image-target="targetIndex: 1">
             <a-gltf-model 
                 src="#regretModel" 
@@ -96,7 +80,7 @@
                 scale="0.1 0.1 0.1" 
                 rotation="0 0 0"
                 animation-mixer="clampWhenFinished: true"
-                enhanced-stabilization="smoothingFactor: 0.2; threshold: 0.01"
+                enhanced-stabilization
                 loading="eager"
                 buffer="false">
             </a-gltf-model>
@@ -104,82 +88,77 @@
     </a-scene>
 
     <script>
-        // Enhanced Stabilization Component
+        // Enhanced stabilization component
         AFRAME.registerComponent('enhanced-stabilization', {
-            schema: {
-                smoothingFactor: { default: 0.2 },
-                threshold: { default: 0.01 }
-            },
-            
             init: function() {
                 this.lastPosition = null;
-                this.isStable = false;
+                this.smoothingFactor = 0.2;
+                this.positionThreshold = 0.005;
+                this.stableCount = 0;
             },
-            
+
             tick: function() {
                 const position = this.el.getAttribute('position');
-                const smoothingFactor = this.data.smoothingFactor;
                 
                 if (!this.lastPosition) {
-                    this.lastPosition = position;
+                    this.lastPosition = {...position};
                     return;
                 }
-                
-                // Calculate movement delta
+
                 const delta = {
                     x: Math.abs(position.x - this.lastPosition.x),
                     y: Math.abs(position.y - this.lastPosition.y),
                     z: Math.abs(position.z - this.lastPosition.z)
                 };
-                
-                // Apply smoothing only if movement is above threshold
-                if (delta.x > this.data.threshold || 
-                    delta.y > this.data.threshold || 
-                    delta.z > this.data.threshold) {
+
+                // Check if movement is significant
+                if (delta.x > this.positionThreshold || 
+                    delta.y > this.positionThreshold || 
+                    delta.z > this.positionThreshold) {
+                    
+                    this.stableCount = 0;
+                    
+                    // Apply smoothing with dynamic factor
+                    const dynamicSmoothingFactor = this.smoothingFactor * 
+                        (1 - Math.min(Math.max(delta.x, delta.y, delta.z), 1));
+
                     this.el.setAttribute('position', {
-                        x: this.lastPosition.x + (position.x - this.lastPosition.x) * smoothingFactor,
-                        y: this.lastPosition.y + (position.y - this.lastPosition.y) * smoothingFactor,
-                        z: this.lastPosition.z + (position.z - this.lastPosition.z) * smoothingFactor
+                        x: this.lastPosition.x + (position.x - this.lastPosition.x) * dynamicSmoothingFactor,
+                        y: this.lastPosition.y + (position.y - this.lastPosition.y) * dynamicSmoothingFactor,
+                        z: this.lastPosition.z + (position.z - this.lastPosition.z) * dynamicSmoothingFactor
                     });
+                } else {
+                    this.stableCount++;
                 }
-                
-                this.lastPosition = this.el.getAttribute('position');
+
+                this.lastPosition = {...this.el.getAttribute('position')};
             }
         });
 
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize Stats
-            const stats = new Stats();
-            stats.dom.style.position = 'absolute';
-            stats.dom.style.top = '70px';
-            stats.dom.style.left = '20px';
-            document.body.appendChild(stats.dom);
+        // Scene initialization
+        const sceneEl = document.querySelector('a-scene');
+        
+        sceneEl.addEventListener('loaded', () => {
+            document.getElementById('custom-loading').style.display = 'none';
+            
+            // Optimize renderer
+            const renderer = sceneEl.renderer;
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+        });
 
-            // Performance monitoring
-            function checkPerformance() {
-                stats.begin();
-                requestAnimationFrame(checkPerformance);
-                stats.end();
-            }
-            checkPerformance();
+        // Target tracking events
+        sceneEl.addEventListener('targetFound', (e) => {
+            console.log('✅ Target found:', e.detail.targetIndex);
+        });
+        
+        sceneEl.addEventListener('targetLost', (e) => {
+            console.log('❌ Target lost:', e.detail.targetIndex);
+        });
 
-            // Scene optimization
-            const sceneEl = document.querySelector('a-scene');
-            sceneEl.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-
-            // Hide loading screen when scene is ready
-            sceneEl.addEventListener('loaded', () => {
-                document.getElementById('custom-loading').style.display = 'none';
-            });
-
-            // Debug: Log tracking events
-            sceneEl.addEventListener('targetFound', (e) => {
-                console.log('✅ Target found:', e.detail.targetIndex);
-            });
-            sceneEl.addEventListener('targetLost', (e) => {
-                console.log('❌ Target lost:', e.detail.targetIndex);
-            });
-
-            // Connection check
-            if ('connection' in navigator) {
-                if (navigator.connection.effectiveType === 
+        // Error handling
+        window.addEventListener('error', function(e) {
+            console.error('AR Error:', e);
+        });
+    </script>
+</body>
+</html>
