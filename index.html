@@ -71,8 +71,7 @@
                    filterMinCF: 0.1; 
                    filterBeta: 0.005;
                    warmupTolerance: 10;
-                   missTolerance: 12;
-                   matchingThreshold: 60;"
+                   missTolerance: 12;"
       color-space="sRGB"
       renderer="colorManagement: true; physicallyCorrectLights: true; precision: high; antialias: true;"
       vr-mode-ui="enabled: false"
@@ -80,8 +79,8 @@
       loading-screen="enabled: false"
     >
       <a-assets>
-        <a-asset-item id="mayaModel" src="./maya.glb"></a-asset-item>
-        <a-asset-item id="regretModel" src="./miss_regret.glb"></a-asset-item>
+        <a-asset-item id="mayaModel" src="./maya.glb" preload="auto"></a-asset-item>
+        <a-asset-item id="regretModel" src="./miss_regret.glb" preload="auto"></a-asset-item>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
@@ -95,7 +94,6 @@
             position="0 0 -0.3" 
             scale="0.1 0.1 0.1" 
             rotation="0 0 0"
-            animation-mixer="clip: *; loop: repeat; crossFadeDuration: 0.2;"
             visible="false">
           </a-gltf-model>
         </a-entity>
@@ -110,7 +108,6 @@
             position="0 0 -0.3" 
             scale="0.1 0.1 0.1" 
             rotation="0 0 0"
-            animation-mixer="clip: *; loop: repeat; crossFadeDuration: 0.2;"
             visible="false">
           </a-gltf-model>
         </a-entity>
@@ -160,9 +157,16 @@
       const sceneEl = document.querySelector('a-scene');
       const statusIndicator = document.getElementById('tracking-status');
 
+      // Initialize models after scene is loaded
       sceneEl.addEventListener('loaded', () => {
         document.getElementById('custom-loading').style.display = 'none';
         statusIndicator.style.display = 'block';
+        
+        // Ensure models are properly referenced
+        models[0].element = document.getElementById('maya-model');
+        models[0].wrapper = document.getElementById('maya-model-wrapper');
+        models[1].element = document.getElementById('regret-model');
+        models[1].wrapper = document.getElementById('regret-model-wrapper');
         
         // Set up animation loop for smooth transitions
         requestAnimationFrame(animateModels);
@@ -176,7 +180,7 @@
         const targetIndex = e.detail.targetIndex;
         if (models[targetIndex]) {
           models[targetIndex].visible = true;
-          models[targetIndex].element.setAttribute('visible', 'true');
+          models[targetIndex].element.setAttribute('visible', true);
           models[targetIndex].lastVisibleTime = Date.now();
           
           // Reset position history when target is found
@@ -378,6 +382,14 @@
         requestAnimationFrame(animateModels);
       }
 
+      sceneEl.addEventListener('model-loaded', (e) => {
+        console.log('✅ Model loaded:', e.detail.model);
+      });
+      
+      sceneEl.addEventListener('model-error', (e) => {
+        console.error('❌ Model error:', e.detail.message);
+      });
+      
       // Check if the device is a mobile device with potentially limited GPU capabilities
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       
@@ -387,8 +399,6 @@
         if (renderer) {
           // Reduce shadow quality for better performance on mobile
           renderer.shadowMap.type = THREE.BasicShadowMap;
-          // Optional: Reduce render resolution for better performance
-          // renderer.setPixelRatio(window.devicePixelRatio * 0.8);
         }
       }
       
