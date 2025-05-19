@@ -38,22 +38,22 @@
 
     <a-scene
         mindar-image="imageTargetSrc: ./targets.mind; 
-                      maxTrack: 1; 
-                      filterMinCF: 0.0001; 
-                      filterBeta: 0.0005;
-                      warmupTolerance: 5;
-                      missTolerance: 5"
+                      maxTrack: 2;
+                      filterMinCF: 0.00001;
+                      filterBeta: 0.00001;
+                      missTolerance: 0;
+                      warmupTolerance: 0"
         color-space="sRGB"
         renderer="precision: medium; 
                  antialias: false;
-                 colorManagement: true;
+                 colorManagement: false;
                  physicallyCorrectLights: false;
                  powerPreference: high-performance"
         loading-screen="enabled: false"
         vr-mode-ui="enabled: false"
         device-orientation-permission-ui="enabled: false">
 
-        <a-assets>
+        <a-assets timeout="0">
             <a-asset-item id="mayaModel" src="./maya.glb" preload="true"></a-asset-item>
             <a-asset-item id="regretModel" src="./miss_regret.glb" preload="true"></a-asset-item>
         </a-assets>
@@ -67,7 +67,7 @@
                 scale="0.1 0.1 0.1" 
                 rotation="0 0 0"
                 animation-mixer="clampWhenFinished: true"
-                enhanced-stabilization
+                quick-tracking
                 loading="eager"
                 buffer="false">
             </a-gltf-model>
@@ -80,7 +80,7 @@
                 scale="0.1 0.1 0.1" 
                 rotation="0 0 0"
                 animation-mixer="clampWhenFinished: true"
-                enhanced-stabilization
+                quick-tracking
                 loading="eager"
                 buffer="false">
             </a-gltf-model>
@@ -88,13 +88,11 @@
     </a-scene>
 
     <script>
-        // Enhanced stabilization component
-        AFRAME.registerComponent('enhanced-stabilization', {
+        // Simplified tracking component focused on speed
+        AFRAME.registerComponent('quick-tracking', {
             init: function() {
                 this.lastPosition = null;
-                this.smoothingFactor = 0.2;
-                this.positionThreshold = 0.005;
-                this.stableCount = 0;
+                this.smoothingFactor = 0.1; // Reduced smoothing for faster response
             },
 
             tick: function() {
@@ -105,60 +103,56 @@
                     return;
                 }
 
-                const delta = {
-                    x: Math.abs(position.x - this.lastPosition.x),
-                    y: Math.abs(position.y - this.lastPosition.y),
-                    z: Math.abs(position.z - this.lastPosition.z)
-                };
+                // Minimal smoothing for faster response
+                this.el.setAttribute('position', {
+                    x: position.x,
+                    y: position.y,
+                    z: position.z
+                });
 
-                // Check if movement is significant
-                if (delta.x > this.positionThreshold || 
-                    delta.y > this.positionThreshold || 
-                    delta.z > this.positionThreshold) {
-                    
-                    this.stableCount = 0;
-                    
-                    // Apply smoothing with dynamic factor
-                    const dynamicSmoothingFactor = this.smoothingFactor * 
-                        (1 - Math.min(Math.max(delta.x, delta.y, delta.z), 1));
-
-                    this.el.setAttribute('position', {
-                        x: this.lastPosition.x + (position.x - this.lastPosition.x) * dynamicSmoothingFactor,
-                        y: this.lastPosition.y + (position.y - this.lastPosition.y) * dynamicSmoothingFactor,
-                        z: this.lastPosition.z + (position.z - this.lastPosition.z) * dynamicSmoothingFactor
-                    });
-                } else {
-                    this.stableCount++;
-                }
-
-                this.lastPosition = {...this.el.getAttribute('position')};
+                this.lastPosition = {...position};
             }
         });
 
-        // Scene initialization
+        // Scene optimization
         const sceneEl = document.querySelector('a-scene');
         
+        // Optimize performance
+        if (sceneEl.renderer) {
+            sceneEl.renderer.setPixelRatio(1); // Force 1:1 pixel ratio
+            sceneEl.renderer.sortObjects = false;
+            sceneEl.renderer.physicallyCorrectLights = false;
+        }
+
+        // Handle loading
         sceneEl.addEventListener('loaded', () => {
             document.getElementById('custom-loading').style.display = 'none';
-            
-            // Optimize renderer
-            const renderer = sceneEl.renderer;
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
         });
 
         // Target tracking events
         sceneEl.addEventListener('targetFound', (e) => {
-            console.log('✅ Target found:', e.detail.targetIndex);
+            console.log('Target found:', e.detail.targetIndex);
         });
         
         sceneEl.addEventListener('targetLost', (e) => {
-            console.log('❌ Target lost:', e.detail.targetIndex);
+            console.log('Target lost:', e.detail.targetIndex);
         });
 
-        // Error handling
-        window.addEventListener('error', function(e) {
-            console.error('AR Error:', e);
-        });
+        // Performance monitoring
+        let lastTime = performance.now();
+        let frames = 0;
+
+        function checkFrameRate() {
+            frames++;
+            const now = performance.now();
+            if (now - lastTime >= 1000) {
+                console.log('FPS:', frames);
+                frames = 0;
+                lastTime = now;
+            }
+            requestAnimationFrame(checkFrameRate);
+        }
+        checkFrameRate();
     </script>
 </body>
 </html>
