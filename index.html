@@ -59,31 +59,41 @@
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!-- Target 0: Maya (no smoothing) -->
-      <a-entity mindar-image-target="targetIndex: 0">
+      <!-- Target 0: Maya -->
+      <a-entity mindar-image-target="targetIndex: 0; smooth: true; smoothCount: 8; smoothTolerance: 0.8; smoothThreshold: 0.8">
         <a-gltf-model 
           src="#mayaModel" 
-          position="0 0.0 -0.1" 
+          position="0 0 -0.3" 
           scale="0.1 0.1 0.1" 
           rotation="0 0 0">
         </a-gltf-model>
       </a-entity>
 
-      <!-- Target 1: Miss Regret (with lighter smoothing) -->
-      <a-entity mindar-image-target="targetIndex: 1; smooth: true; smoothCount: 8; smoothTolerance: 1.0; smoothThreshold: 1.0 ">
+      <!-- Target 1: Miss Regret -->
+      <a-entity mindar-image-target="targetIndex: 1; smooth: true; smoothCount: 8; smoothTolerance: 1.0; smoothThreshold: 1.0">
         <a-gltf-model 
           src="#regretModel" 
-          position="0 0.0 -0.1" 
+          position="0 0 -0.3" 
           scale="0.1 0.1 0.1" 
           rotation="0 0 0">
         </a-gltf-model>
       </a-entity>
+    </a-scene>
 
-
-    <!-- Hide loading text when scene is ready -->
+    <!-- Scripts -->
     <script>
+      // Hide loading screen when scene is ready
       document.querySelector('a-scene').addEventListener('loaded', () => {
         document.getElementById('custom-loading').style.display = 'none';
+      });
+
+      // Debug: Log tracking events
+      const sceneEl = document.querySelector('a-scene');
+      sceneEl.addEventListener('targetFound', (e) => {
+        console.log('✅ Target found:', e.detail.targetIndex);
+      });
+      sceneEl.addEventListener('targetLost', (e) => {
+        console.log('❌ Target lost:', e.detail.targetIndex);
       });
     </script>
   </body>
