@@ -11,7 +11,7 @@
   </head>
   <body style="margin: 0; overflow: hidden;">
 
-    <!-- Custom Loading Text -->
+    <!-- Loading / Tracking Status -->
     <div id="custom-loading" style="
       position: absolute;
       top: 50%;
@@ -88,37 +88,9 @@
 
     <!-- Scripts -->
     <script>
-      // Stabilization Component
+      // Enhanced stabilization with threshold filtering
       AFRAME.registerComponent('stabilized-position', {
         tick: function () {
           const position = this.el.getAttribute('position');
-          const smoothingFactor = 0.2;
-          
-          if (this.lastPosition) {
-            this.el.setAttribute('position', {
-              x: this.lastPosition.x + (position.x - this.lastPosition.x) * smoothingFactor,
-              y: this.lastPosition.y + (position.y - this.lastPosition.y) * smoothingFactor,
-              z: this.lastPosition.z + (position.z - this.lastPosition.z) * smoothingFactor
-            });
-          }
-          
-          this.lastPosition = position;
-        }
-      });
-
-      // Hide loading screen when scene is ready
-      document.querySelector('a-scene').addEventListener('loaded', () => {
-        document.getElementById('custom-loading').style.display = 'none';
-      });
-
-      // Debug: Log tracking events
-      const sceneEl = document.querySelector('a-scene');
-      sceneEl.addEventListener('targetFound', (e) => {
-        console.log('✅ Target found:', e.detail.targetIndex);
-      });
-      sceneEl.addEventListener('targetLost', (e) => {
-        console.log('❌ Target lost:', e.detail.targetIndex);
-      });
-    </script>
-  </body>
-</html>
+          const smoothingFactor = 0.3;
+          const threshold = 0
