@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,26 +8,39 @@
       .a-enter-vr {
         display: none !important;
       }
+      #custom-loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 18px;
+        font-family: sans-serif;
+        color: white;
+        background: rgba(0, 0, 0, 0.6);
+        padding: 10px 20px;
+        border-radius: 8px;
+        z-index: 999;
+      }
+      .ui-button {
+        padding: 6px 14px;
+        font-size: 14px;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        z-index: 999;
+        height: 40px;
+        position: absolute;
+      }
     </style>
   </head>
   <body style="margin: 0; overflow: hidden;">
-
     <!-- Custom Loading Text -->
-    <div id="custom-loading" style="
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 18px;
-      font-family: sans-serif;
-      color: white;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 10px 20px;
-      border-radius: 8px;
-      z-index: 999;">
+    <div id="custom-loading">
       Loading AR experience... Please be mindful of your surroundings
     </div>
-
+    
     <!-- Instagram Button -->
     <div style="position: absolute; top: 20px; left: 20px; z-index: 999;">
       <a href="https://www.instagram.com/qrcky/" target="_blank">
@@ -36,21 +50,33 @@
           style="height: 28px; opacity: 0.8; cursor: pointer;" />
       </a>
     </div>
-
+    
     <!-- Inquiry Button -->
     <button 
       onclick="window.open('https://www.qrcky.net/originals-paintings-black-and-white-art/loys', '_blank')" 
-      style="position: absolute; top: 20px; right: 20px; padding: 6px 14px; font-size: 14px; background-color: rgba(0, 0, 0, 0.8); color: white; border: none; border-radius: 6px; cursor: pointer; z-index: 999; height: 40px;">
+      class="ui-button"
+      style="top: 20px; right: 20px;">
       Inquiry
     </button>
-
+    
+    <!-- Tracking Status Indicator -->
+    <div id="tracking-status" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.5); color: white; padding: 8px 16px; border-radius: 20px; font-family: sans-serif; display: none; z-index: 999;">
+      Looking for artwork...
+    </div>
+    
     <!-- AR Scene -->
     <a-scene
-      mindar-image="imageTargetSrc: ./targets-set1.mind; maxTrack: 1; filterMinCF: 0.5; filterBeta: 0.02"
+      mindar-image="imageTargetSrc: ./targets-set1.mind; 
+                   maxTrack: 1; 
+                   filterMinCF: 0.3; 
+                   filterBeta: 0.01;
+                   warmupTolerance: 5;
+                   missTolerance: 5;"
       color-space="sRGB"
-      renderer="colorManagement: true, physicallyCorrectLights"
+      renderer="colorManagement: true; physicallyCorrectLights: true; precision: high; antialias: true;"
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false"
+      loading-screen="enabled: false"
     >
       <a-assets>
         <a-asset-item id="mayaModel" src="./maya.glb"></a-asset-item>
@@ -60,41 +86,221 @@
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <!-- Target 0: Maya -->
-      <a-entity mindar-image-target="targetIndex: 0; smooth: true; smoothCount: 8; smoothTolerance: 0.8; smoothThreshold: 0.8">
-        <a-gltf-model 
-          src="#mayaModel" 
-          position="0 0 -0.3" 
-          scale="0.1 0.1 0.1" 
-          rotation="0 0 0">
-        </a-gltf-model>
+      <a-entity id="maya-anchor" mindar-image-target="targetIndex: 0; smooth: true; smoothCount: 10; smoothTolerance: 0.5; smoothThreshold: 0.7">
+        <a-entity id="maya-model-wrapper" position="0 0 0" rotation="0 0 0">
+          <a-gltf-model 
+            id="maya-model"
+            src="#mayaModel" 
+            position="0 0 -0.3" 
+            scale="0.1 0.1 0.1" 
+            rotation="0 0 0"
+            animation-mixer="clip: *; loop: repeat; crossFadeDuration: 0.2;"
+            visible="false">
+          </a-gltf-model>
+        </a-entity>
       </a-entity>
 
       <!-- Target 1: Miss Regret -->
-      <a-entity mindar-image-target="targetIndex: 1; smooth: true; smoothCount: 8; smoothTolerance: 1.0; smoothThreshold: 1.0">
-        <a-gltf-model 
-          src="#regretModel" 
-          position="0 0 -0.3" 
-          scale="0.1 0.1 0.1" 
-          rotation="0 0 0">
-        </a-gltf-model>
+      <a-entity id="regret-anchor" mindar-image-target="targetIndex: 1; smooth: true; smoothCount: 10; smoothTolerance: 0.5; smoothThreshold: 0.7">
+        <a-entity id="regret-model-wrapper" position="0 0 0" rotation="0 0 0">
+          <a-gltf-model 
+            id="regret-model"
+            src="#regretModel" 
+            position="0 0 -0.3" 
+            scale="0.1 0.1 0.1" 
+            rotation="0 0 0"
+            animation-mixer="clip: *; loop: repeat; crossFadeDuration: 0.2;"
+            visible="false">
+          </a-gltf-model>
+        </a-entity>
       </a-entity>
     </a-scene>
 
     <!-- Scripts -->
     <script>
+      // Define model animation states
+      const models = {
+        0: {
+          element: document.getElementById('maya-model'),
+          wrapper: document.getElementById('maya-model-wrapper'),
+          lastVisibleTime: 0,
+          visible: false,
+          position: { x: 0, y: 0, z: -0.3 },
+          rotation: { x: 0, y: 0, z: 0 },
+          scale: { x: 0.1, y: 0.1, z: 0.1 }
+        },
+        1: {
+          element: document.getElementById('regret-model'),
+          wrapper: document.getElementById('regret-model-wrapper'),
+          lastVisibleTime: 0,
+          visible: false,
+          position: { x: 0, y: 0, z: -0.3 },
+          rotation: { x: 0, y: 0, z: 0 },
+          scale: { x: 0.1, y: 0.1, z: 0.1 }
+        }
+      };
+
+      // Damping parameters for smoother movement
+      const damping = {
+        position: 0.88,
+        rotation: 0.85,
+        scale: 0.92
+      };
+
       // Hide loading screen when scene is ready
-      document.querySelector('a-scene').addEventListener('loaded', () => {
+      const sceneEl = document.querySelector('a-scene');
+      const statusIndicator = document.getElementById('tracking-status');
+
+      sceneEl.addEventListener('loaded', () => {
         document.getElementById('custom-loading').style.display = 'none';
+        statusIndicator.style.display = 'block';
+        
+        // Set up animation loop for smooth transitions
+        requestAnimationFrame(animateModels);
       });
 
-      // Debug: Log tracking events
-      const sceneEl = document.querySelector('a-scene');
+      // Handle target tracking events
       sceneEl.addEventListener('targetFound', (e) => {
         console.log('✅ Target found:', e.detail.targetIndex);
+        statusIndicator.style.display = 'none';
+        
+        const targetIndex = e.detail.targetIndex;
+        if (models[targetIndex]) {
+          models[targetIndex].visible = true;
+          models[targetIndex].element.setAttribute('visible', 'true');
+          models[targetIndex].lastVisibleTime = Date.now();
+        }
       });
+
       sceneEl.addEventListener('targetLost', (e) => {
         console.log('❌ Target lost:', e.detail.targetIndex);
+        statusIndicator.style.display = 'block';
+        statusIndicator.textContent = 'Looking for artwork...';
+        
+        const targetIndex = e.detail.targetIndex;
+        if (models[targetIndex]) {
+          // Don't immediately hide the model - we'll handle this with our fade out logic
+          models[targetIndex].visible = false;
+          models[targetIndex].lastVisibleTime = Date.now();
+        }
       });
+
+      // Animation loop for smooth model transitions
+      function animateModels() {
+        const currentTime = Date.now();
+        
+        Object.keys(models).forEach(targetIndex => {
+          const model = models[targetIndex];
+          const modelEl = model.element;
+          const wrapperEl = model.wrapper;
+          
+          if (!modelEl) return;
+          
+          // If the model is newly visible, start fading in
+          if (model.visible && !model.fadeInProgress) {
+            model.fadeInProgress = true;
+            model.fadeOutProgress = false;
+            modelEl.setAttribute('visible', 'true');
+            
+            // Optional: Add a small intro animation when model first appears
+            const scale = Object.assign({}, model.scale);
+            scale.x *= 0.8;
+            scale.y *= 0.8;
+            scale.z *= 0.8;
+            
+            // Animate scale up
+            const scaleAnimation = {
+              property: 'scale',
+              from: `${scale.x} ${scale.y} ${scale.z}`,
+              to: `${model.scale.x} ${model.scale.y} ${model.scale.z}`,
+              dur: 300,
+              easing: 'easeOutQuad'
+            };
+            
+            modelEl.setAttribute('animation__scalein', AFRAME.utils.styleParser.stringify(scaleAnimation));
+          }
+          
+          // If model is no longer visible but was recently visible, handle fade out
+          if (!model.visible && !model.fadeOutProgress && 
+              (currentTime - model.lastVisibleTime < 1000)) {
+            model.fadeOutProgress = true;
+            model.fadeInProgress = false;
+            
+            // Keep showing the model for a short time even after tracking is lost
+            setTimeout(() => {
+              if (!model.visible) {
+                modelEl.setAttribute('visible', 'false');
+              }
+            }, 500);
+          }
+          
+          // Apply damping to the model wrapper for smoother position/rotation
+          if (wrapperEl) {
+            // Get current position/rotation 
+            const currentPos = wrapperEl.getAttribute('position');
+            const currentRot = wrapperEl.getAttribute('rotation');
+            
+            // Apply damping - this creates a lagging effect that smooths jitters
+            if (currentPos && model.lastPos) {
+              wrapperEl.setAttribute('position', {
+                x: currentPos.x * (1 - damping.position) + model.lastPos.x * damping.position,
+                y: currentPos.y * (1 - damping.position) + model.lastPos.y * damping.position,
+                z: currentPos.z * (1 - damping.position) + model.lastPos.z * damping.position
+              });
+            }
+            
+            if (currentRot && model.lastRot) {
+              wrapperEl.setAttribute('rotation', {
+                x: currentRot.x * (1 - damping.rotation) + model.lastRot.x * damping.rotation,
+                y: currentRot.y * (1 - damping.rotation) + model.lastRot.y * damping.rotation,
+                z: currentRot.z * (1 - damping.rotation) + model.lastRot.z * damping.rotation
+              });
+            }
+            
+            // Store current values for next frame
+            model.lastPos = Object.assign({}, wrapperEl.getAttribute('position'));
+            model.lastRot = Object.assign({}, wrapperEl.getAttribute('rotation'));
+          }
+        });
+        
+        requestAnimationFrame(animateModels);
+      }
+
+      // Check if the device is a mobile device with potentially limited GPU capabilities
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      // Adjust renderer settings based on device capability
+      if (isMobile) {
+        const renderer = sceneEl.renderer;
+        if (renderer) {
+          // Reduce shadow quality for better performance on mobile
+          renderer.shadowMap.type = THREE.BasicShadowMap;
+          // Optional: Reduce render resolution for better performance
+          // renderer.setPixelRatio(window.devicePixelRatio * 0.8);
+        }
+      }
+      
+      // Adjust for iOS-specific issues
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      if (isIOS) {
+        document.body.style.height = '100vh';
+        document.body.style.height = '-webkit-fill-available';
+      }
+      
+      // Detect WebGL capabilities
+      function checkWebGLSupport() {
+        try {
+          const canvas = document.createElement('canvas');
+          return !!window.WebGLRenderingContext && 
+            (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
+        } catch(e) {
+          return false;
+        }
+      }
+      
+      if (!checkWebGLSupport()) {
+        alert('Your device does not support WebGL, which is required for this AR experience.');
+      }
     </script>
   </body>
 </html>
