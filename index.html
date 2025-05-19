@@ -68,10 +68,10 @@
     <a-scene
       mindar-image="imageTargetSrc: ./targets-set1.mind; 
                    maxTrack: 1; 
-                   filterMinCF: 0.1; 
-                   filterBeta: 0.005;
-                   warmupTolerance: 10;
-                   missTolerance: 12;"
+                   filterMinCF: 0.3; 
+                   filterBeta: 0.01;
+                   warmupTolerance: 5;
+                   missTolerance: 5;"
       color-space="sRGB"
       renderer="colorManagement: true; physicallyCorrectLights: true; precision: high; antialias: true;"
       vr-mode-ui="enabled: false"
@@ -79,14 +79,14 @@
       loading-screen="enabled: false"
     >
       <a-assets>
-        <a-asset-item id="mayaModel" src="./maya.glb" preload="auto"></a-asset-item>
-        <a-asset-item id="regretModel" src="./miss_regret.glb" preload="auto"></a-asset-item>
+        <a-asset-item id="mayaModel" src="./maya.glb"></a-asset-item>
+        <a-asset-item id="regretModel" src="./miss_regret.glb"></a-asset-item>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <!-- Target 0: Maya -->
-      <a-entity id="maya-anchor" mindar-image-target="targetIndex: 0; smooth: true; smoothCount: 16; smoothTolerance: 0.3; smoothThreshold: 5">
+      <a-entity id="maya-anchor" mindar-image-target="targetIndex: 0; smooth: true; smoothCount: 10; smoothTolerance: 0.5; smoothThreshold: 0.7">
         <a-entity id="maya-model-wrapper" position="0 0 0" rotation="0 0 0">
           <a-gltf-model 
             id="maya-model"
@@ -94,13 +94,14 @@
             position="0 0 -0.3" 
             scale="0.1 0.1 0.1" 
             rotation="0 0 0"
+            animation-mixer="clip: *; loop: repeat; crossFadeDuration: 0.2;"
             visible="false">
           </a-gltf-model>
         </a-entity>
       </a-entity>
 
       <!-- Target 1: Miss Regret -->
-      <a-entity id="regret-anchor" mindar-image-target="targetIndex: 1; smooth: true; smoothCount: 16; smoothTolerance: 0.3; smoothThreshold: 5">
+      <a-entity id="regret-anchor" mindar-image-target="targetIndex: 1; smooth: true; smoothCount: 10; smoothTolerance: 0.5; smoothThreshold: 0.7">
         <a-entity id="regret-model-wrapper" position="0 0 0" rotation="0 0 0">
           <a-gltf-model 
             id="regret-model"
@@ -108,6 +109,7 @@
             position="0 0 -0.3" 
             scale="0.1 0.1 0.1" 
             rotation="0 0 0"
+            animation-mixer="clip: *; loop: repeat; crossFadeDuration: 0.2;"
             visible="false">
           </a-gltf-model>
         </a-entity>
@@ -125,11 +127,7 @@
           visible: false,
           position: { x: 0, y: 0, z: -0.3 },
           rotation: { x: 0, y: 0, z: 0 },
-          scale: { x: 0.1, y: 0.1, z: 0.1 },
-          stablePosition: { x: 0, y: 0, z: -0.3 },
-          stableRotation: { x: 0, y: 0, z: 0 },
-          positionHistory: [],
-          rotationHistory: []
+          scale: { x: 0.1, y: 0.1, z: 0.1 }
         },
         1: {
           element: document.getElementById('regret-model'),
@@ -138,35 +136,24 @@
           visible: false,
           position: { x: 0, y: 0, z: -0.3 },
           rotation: { x: 0, y: 0, z: 0 },
-          scale: { x: 0.1, y: 0.1, z: 0.1 },
-          stablePosition: { x: 0, y: 0, z: -0.3 },
-          stableRotation: { x: 0, y: 0, z: 0 },
-          positionHistory: [],
-          rotationHistory: []
+          scale: { x: 0.1, y: 0.1, z: 0.1 }
         }
       };
 
       // Damping parameters for smoother movement
       const damping = {
-        position: 0.95,
-        rotation: 0.92,
-        scale: 0.95
+        position: 0.88,
+        rotation: 0.85,
+        scale: 0.92
       };
 
       // Hide loading screen when scene is ready
       const sceneEl = document.querySelector('a-scene');
       const statusIndicator = document.getElementById('tracking-status');
 
-      // Initialize models after scene is loaded
       sceneEl.addEventListener('loaded', () => {
         document.getElementById('custom-loading').style.display = 'none';
         statusIndicator.style.display = 'block';
-        
-        // Ensure models are properly referenced
-        models[0].element = document.getElementById('maya-model');
-        models[0].wrapper = document.getElementById('maya-model-wrapper');
-        models[1].element = document.getElementById('regret-model');
-        models[1].wrapper = document.getElementById('regret-model-wrapper');
         
         // Set up animation loop for smooth transitions
         requestAnimationFrame(animateModels);
@@ -180,26 +167,8 @@
         const targetIndex = e.detail.targetIndex;
         if (models[targetIndex]) {
           models[targetIndex].visible = true;
-          models[targetIndex].element.setAttribute('visible', true);
+          models[targetIndex].element.setAttribute('visible', 'true');
           models[targetIndex].lastVisibleTime = Date.now();
-          
-          // Reset position history when target is found
-          models[targetIndex].positionHistory = [];
-          models[targetIndex].rotationHistory = [];
-          
-          // Additional stabilization - lock position for a moment
-          const anchorEl = document.getElementById(targetIndex === 0 ? 'maya-anchor' : 'regret-anchor');
-          if (anchorEl) {
-            // Apply a subtle visual indicator that tracking is locked
-            statusIndicator.style.display = 'block';
-            statusIndicator.textContent = 'Tracking locked';
-            statusIndicator.style.backgroundColor = 'rgba(0,128,0,0.6)';
-            
-            // Hide indicator after 1.5 seconds
-            setTimeout(() => {
-              statusIndicator.style.display = 'none';
-            }, 1500);
-          }
         }
       });
 
@@ -253,143 +222,50 @@
           
           // If model is no longer visible but was recently visible, handle fade out
           if (!model.visible && !model.fadeOutProgress && 
-              (currentTime - model.lastVisibleTime < 2000)) {  // Extended to 2 seconds
+              (currentTime - model.lastVisibleTime < 1000)) {
             model.fadeOutProgress = true;
             model.fadeInProgress = false;
             
-            // Keep showing the model for a longer time after tracking is lost
+            // Keep showing the model for a short time even after tracking is lost
             setTimeout(() => {
               if (!model.visible) {
                 modelEl.setAttribute('visible', 'false');
               }
-            }, 1500);  // Extended to 1.5 seconds
+            }, 500);
           }
           
-          // Apply advanced damping to the model wrapper for smoother position/rotation
+          // Apply damping to the model wrapper for smoother position/rotation
           if (wrapperEl) {
             // Get current position/rotation 
             const currentPos = wrapperEl.getAttribute('position');
             const currentRot = wrapperEl.getAttribute('rotation');
             
-            if (currentPos && currentRot) {
-              // Add to history for Kalman-style filtering (last 10 positions)
-              if (model.positionHistory.length >= 10) {
-                model.positionHistory.shift();
-                model.rotationHistory.shift();
-              }
-              
-              model.positionHistory.push(Object.assign({}, currentPos));
-              model.rotationHistory.push(Object.assign({}, currentRot));
-              
-              // Calculate average positions over recent history (better stability)
-              const avgPos = { x: 0, y: 0, z: 0 };
-              const avgRot = { x: 0, y: 0, z: 0 };
-              
-              // Apply weighted average where recent positions have more influence
-              const totalWeight = model.positionHistory.length * (model.positionHistory.length + 1) / 2;
-              
-              for (let i = 0; i < model.positionHistory.length; i++) {
-                const weight = (i + 1) / totalWeight;
-                avgPos.x += model.positionHistory[i].x * weight;
-                avgPos.y += model.positionHistory[i].y * weight;
-                avgPos.z += model.positionHistory[i].z * weight;
-                
-                avgRot.x += model.rotationHistory[i].x * weight;
-                avgRot.y += model.rotationHistory[i].y * weight;
-                avgRot.z += model.rotationHistory[i].z * weight;
-              }
-              
-              // Apply outlier detection - ignore positions that change too drastically
-              const jumpThreshold = 0.05;
-              const isPositionOutlier = model.lastPos && (
-                Math.abs(currentPos.x - model.lastPos.x) > jumpThreshold ||
-                Math.abs(currentPos.y - model.lastPos.y) > jumpThreshold ||
-                Math.abs(currentPos.z - model.lastPos.z) > jumpThreshold
-              );
-              
-              const rotJumpThreshold = 5;
-              const isRotationOutlier = model.lastRot && (
-                Math.abs(currentRot.x - model.lastRot.x) > rotJumpThreshold ||
-                Math.abs(currentRot.y - model.lastRot.y) > rotJumpThreshold ||
-                Math.abs(currentRot.z - model.lastRot.z) > rotJumpThreshold
-              );
-              
-              // Only apply filtered positions if we have enough history
-              if (model.positionHistory.length >= 3) {
-                // If there's a sudden jump, rely more on history
-                const finalDampingPos = isPositionOutlier ? 0.98 : damping.position;
-                const finalDampingRot = isRotationOutlier ? 0.98 : damping.rotation;
-                
-                // Apply exponential moving average between current and average historical positions
-                const dampedPos = {
-                  x: avgPos.x * (1 - finalDampingPos) + (model.stablePosition.x * finalDampingPos),
-                  y: avgPos.y * (1 - finalDampingPos) + (model.stablePosition.y * finalDampingPos),
-                  z: avgPos.z * (1 - finalDampingPos) + (model.stablePosition.z * finalDampingPos)
-                };
-                
-                const dampedRot = {
-                  x: avgRot.x * (1 - finalDampingRot) + (model.stableRotation.x * finalDampingRot),
-                  y: avgRot.y * (1 - finalDampingRot) + (model.stableRotation.y * finalDampingRot),
-                  z: avgRot.z * (1 - finalDampingRot) + (model.stableRotation.z * finalDampingRot)
-                };
-                
-                // Apply dead zone to prevent micro-movements
-                const posDeadZone = 0.002;
-                if (!model.stablePosition || 
-                    Math.abs(dampedPos.x - model.stablePosition.x) > posDeadZone ||
-                    Math.abs(dampedPos.y - model.stablePosition.y) > posDeadZone ||
-                    Math.abs(dampedPos.z - model.stablePosition.z) > posDeadZone) {
-                  wrapperEl.setAttribute('position', dampedPos);
-                  model.stablePosition = Object.assign({}, dampedPos);
-                }
-                
-                const rotDeadZone = 0.2;
-                if (!model.stableRotation || 
-                    Math.abs(dampedRot.x - model.stableRotation.x) > rotDeadZone ||
-                    Math.abs(dampedRot.y - model.stableRotation.y) > rotDeadZone ||
-                    Math.abs(dampedRot.z - model.stableRotation.z) > rotDeadZone) {
-                  wrapperEl.setAttribute('rotation', dampedRot);
-                  model.stableRotation = Object.assign({}, dampedRot);
-                }
-              } else if (model.lastPos) {
-                // When we don't have enough history, just do basic damping
-                const dampedPos = {
-                  x: currentPos.x * (1 - damping.position) + model.lastPos.x * damping.position,
-                  y: currentPos.y * (1 - damping.position) + model.lastPos.y * damping.position,
-                  z: currentPos.z * (1 - damping.position) + model.lastPos.z * damping.position
-                };
-                
-                const dampedRot = {
-                  x: currentRot.x * (1 - damping.rotation) + model.lastRot.x * damping.rotation,
-                  y: currentRot.y * (1 - damping.rotation) + model.lastRot.y * damping.rotation,
-                  z: currentRot.z * (1 - damping.rotation) + model.lastRot.z * damping.rotation
-                };
-                
-                wrapperEl.setAttribute('position', dampedPos);
-                wrapperEl.setAttribute('rotation', dampedRot);
-                
-                model.stablePosition = Object.assign({}, dampedPos);
-                model.stableRotation = Object.assign({}, dampedRot);
-              }
+            // Apply damping - this creates a lagging effect that smooths jitters
+            if (currentPos && model.lastPos) {
+              wrapperEl.setAttribute('position', {
+                x: currentPos.x * (1 - damping.position) + model.lastPos.x * damping.position,
+                y: currentPos.y * (1 - damping.position) + model.lastPos.y * damping.position,
+                z: currentPos.z * (1 - damping.position) + model.lastPos.z * damping.position
+              });
+            }
+            
+            if (currentRot && model.lastRot) {
+              wrapperEl.setAttribute('rotation', {
+                x: currentRot.x * (1 - damping.rotation) + model.lastRot.x * damping.rotation,
+                y: currentRot.y * (1 - damping.rotation) + model.lastRot.y * damping.rotation,
+                z: currentRot.z * (1 - damping.rotation) + model.lastRot.z * damping.rotation
+              });
             }
             
             // Store current values for next frame
-            model.lastPos = Object.assign({}, currentPos);
-            model.lastRot = Object.assign({}, currentRot);
+            model.lastPos = Object.assign({}, wrapperEl.getAttribute('position'));
+            model.lastRot = Object.assign({}, wrapperEl.getAttribute('rotation'));
           }
         });
         
         requestAnimationFrame(animateModels);
       }
 
-      sceneEl.addEventListener('model-loaded', (e) => {
-        console.log('✅ Model loaded:', e.detail.model);
-      });
-      
-      sceneEl.addEventListener('model-error', (e) => {
-        console.error('❌ Model error:', e.detail.message);
-      });
-      
       // Check if the device is a mobile device with potentially limited GPU capabilities
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       
@@ -399,6 +275,8 @@
         if (renderer) {
           // Reduce shadow quality for better performance on mobile
           renderer.shadowMap.type = THREE.BasicShadowMap;
+          // Optional: Reduce render resolution for better performance
+          // renderer.setPixelRatio(window.devicePixelRatio * 0.8);
         }
       }
       
