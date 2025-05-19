@@ -46,9 +46,9 @@
         mindar-image="imageTargetSrc: ./targets.mind; 
                       maxTrack: 1; 
                       filterMinCF: 0.0001; 
-                      filterBeta: 0.0001;
-                      warmupTolerance: 3;
-                      missTolerance: 3"
+                      filterBeta: 0.001;
+                      missTolerance: 5;
+                      warmupTolerance: 5"
         color-space="sRGB"
         renderer="precision: medium;
                  antialias: false;
@@ -84,7 +84,7 @@
                 scale="0.2 0.2 0.2"
                 rotation="0 0 0"
                 animation-mixer="clampWhenFinished: true"
-                quick-stabilize>
+                enhanced-tracking>
             </a-gltf-model>
         </a-entity>
 
@@ -96,44 +96,81 @@
                 scale="0.2 0.2 0.2"
                 rotation="0 0 0"
                 animation-mixer="clampWhenFinished: true"
-                quick-stabilize>
+                enhanced-tracking>
             </a-gltf-model>
         </a-entity>
     </a-scene>
 
     <!-- Scripts -->
     <script>
-        // Quick stabilization component
-        AFRAME.registerComponent('quick-stabilize', {
+        // Enhanced tracking component
+        AFRAME.registerComponent('enhanced-tracking', {
             init: function() {
+                this.targetFound = false;
+                this.positionBuffer = [];
+                this.maxBufferSize = 5;
+                this.smoothingFactor = 0.2; // Reduced for faster response
                 this.lastPosition = null;
-                this.isStable = false;
-                this.smoothingFactor = 0.1;
+                this.lastRotation = null;
+
+                this.el.addEventListener('targetFound', () => {
+                    this.targetFound = true;
+                    this.positionBuffer = [];
+                });
+
+                this.el.addEventListener('targetLost', () => {
+                    this.targetFound = false;
+                });
             },
 
             tick: function() {
-                const position = this.el.getAttribute('position');
-                
+                if (!this.targetFound) return;
+
+                const currentPosition = this.el.object3D.position;
+                const currentRotation = this.el.object3D.rotation;
+
                 if (!this.lastPosition) {
-                    this.lastPosition = {...position};
+                    this.lastPosition = currentPosition.clone();
+                    this.lastRotation = currentRotation.clone();
                     return;
                 }
 
-                const delta = {
-                    x: Math.abs(position.x - this.lastPosition.x),
-                    y: Math.abs(position.y - this.lastPosition.y),
-                    z: Math.abs(position.z - this.lastPosition.z)
-                };
-
-                if (delta.x > 0.01 || delta.y > 0.01 || delta.z > 0.01) {
-                    this.el.setAttribute('position', {
-                        x: this.lastPosition.x + (position.x - this.lastPosition.x) * this.smoothingFactor,
-                        y: this.lastPosition.y + (position.y - this.lastPosition.y) * this.smoothingFactor,
-                        z: this.lastPosition.z + (position.z - this.lastPosition.z) * this.smoothingFactor
-                    });
+                // Position smoothing
+                this.positionBuffer.push(currentPosition.clone());
+                if (this.positionBuffer.length > this.maxBufferSize) {
+                    this.positionBuffer.shift();
                 }
 
-                this.lastPosition = {...this.el.getAttribute('position')};
+                if (this.positionBuffer.length > 0) {
+                    const averagePosition = new THREE.Vector3();
+                    this.positionBuffer.forEach(pos => {
+                        averagePosition.add(pos);
+                    });
+                    averagePosition.divideScalar(this.positionBuffer.length);
+
+                    // Apply smoothing
+                    this.el.object3D.position.lerp(averagePosition, this.smoothingFactor);
+                    
+                    // Rotation smoothing
+                    const deltaRotation = {
+                        x: currentRotation.x - this.lastRotation.x,
+                        y: currentRotation.y - this.lastRotation.y,
+                        z: currentRotation.z - this.lastRotation.z
+                    };
+
+                    if (Math.abs(deltaRotation.x) < 0.1 && 
+                        Math.abs(deltaRotation.y) < 0.1 && 
+                        Math.abs(deltaRotation.z) < 0.1) {
+                        this.el.object3D.rotation.set(
+                            this.lastRotation.x + deltaRotation.x * this.smoothingFactor,
+                            this.lastRotation.y + deltaRotation.y * this.smoothingFactor,
+                            this.lastRotation.z + deltaRotation.z * this.smoothingFactor
+                        );
+                    }
+                }
+
+                this.lastPosition.copy(this.el.object3D.position);
+                this.lastRotation.copy(this.el.object3D.rotation);
             }
         });
 
@@ -145,7 +182,7 @@
             sceneEl.renderer.sortObjects = false;
         }
 
-        // Handle loading screen
+        //        // Handle loading screen
         const loadingScreen = document.getElementById('loading-screen');
 
         // Listen for scene loaded event
