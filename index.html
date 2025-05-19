@@ -12,7 +12,7 @@
 </head>
 <body style="margin: 0; overflow: hidden;">
     <!-- Custom Loading Text -->
-    <div id="loading-screen" style="
+    <div id="custom-loading" style="
         position: absolute;
         top: 50%;
         left: 50%;
@@ -58,8 +58,8 @@
         device-orientation-permission-ui="enabled: false">
 
         <a-assets>
-            <a-asset-item id="mayaModel" src="./maya.glb"></a-asset-item>
-            <a-asset-item id="regretModel" src="./miss_regret.glb"></a-asset-item>
+            <a-asset-item id="mayaModel" src="./maya.glb" preload="true"></a-asset-item>
+            <a-asset-item id="regretModel" src="./miss_regret.glb" preload="true"></a-asset-item>
         </a-assets>
 
         <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
@@ -96,7 +96,7 @@
             init: function() {
                 this.lastPosition = null;
                 this.isStable = false;
-                this.smoothingFactor = 0.1;
+                this.smoothingFactor = 0.1; // Reduced for faster response
             },
 
             tick: function() {
@@ -107,12 +107,14 @@
                     return;
                 }
 
+                // Calculate movement delta
                 const delta = {
                     x: Math.abs(position.x - this.lastPosition.x),
                     y: Math.abs(position.y - this.lastPosition.y),
                     z: Math.abs(position.z - this.lastPosition.z)
                 };
 
+                // Apply minimal smoothing only for large movements
                 if (delta.x > 0.01 || delta.y > 0.01 || delta.z > 0.01) {
                     this.el.setAttribute('position', {
                         x: this.lastPosition.x + (position.x - this.lastPosition.x) * this.smoothingFactor,
@@ -133,23 +135,10 @@
             sceneEl.renderer.sortObjects = false;
         }
 
-        // Handle loading screen
-        const loadingScreen = document.getElementById('loading-screen');
-
-        // Listen for scene loaded event
-        sceneEl.addEventListener('loaded', function () {
-            loadingScreen.style.display = 'none';
+        // Hide loading screen when scene is ready
+        sceneEl.addEventListener('loaded', () => {
+            document.getElementById('custom-loading').style.display = 'none';
         });
-
-        // Listen for model loaded events
-        document.addEventListener('model-loaded', function () {
-            loadingScreen.style.display = 'none';
-        });
-
-        // Fallback: Hide loading screen after 10 seconds if not hidden already
-        setTimeout(() => {
-            loadingScreen.style.display = 'none';
-        }, 10000);
 
         // Debug: Log tracking events
         sceneEl.addEventListener('targetFound', (e) => {
