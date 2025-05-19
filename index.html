@@ -5,154 +5,120 @@
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     <style>
-        .a-enter-vr { display: none !important; }
-        #custom-loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 18px;
-            font-family: sans-serif;
-            color: white;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 10px 20px;
-            border-radius: 8px;
-            z-index: 999;
+        .a-enter-vr {
+            display: none !important;
         }
     </style>
 </head>
 <body style="margin: 0; overflow: hidden;">
-    <div id="custom-loading">Loading AR experience... Please be mindful of your surroundings</div>
+    <!-- Custom Loading Text -->
+    <div id="custom-loading" style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 18px;
+        font-family: sans-serif;
+        color: white;
+        background: rgba(0, 0, 0, 0.6);
+        padding: 10px 20px;
+        border-radius: 8px;
+        z-index: 999;">
+        Loading AR experience... Please be mindful of your surroundings
+    </div>
 
+    <!-- Instagram Button -->
     <div style="position: absolute; top: 20px; left: 20px; z-index: 999;">
         <a href="https://www.instagram.com/qrcky/" target="_blank">
             <img src="./insta.png" alt="Instagram" style="height: 28px; opacity: 0.8; cursor: pointer;" />
         </a>
     </div>
 
+    <!-- Inquiry Button -->
     <button 
         onclick="window.open('https://www.qrcky.net/originals-paintings-black-and-white-art/loys', '_blank')" 
         style="position: absolute; top: 20px; right: 20px; padding: 6px 14px; font-size: 14px; background-color: rgba(0, 0, 0, 0.8); color: white; border: none; border-radius: 6px; cursor: pointer; z-index: 999; height: 40px;">
         Inquiry
     </button>
 
+    <!-- AR Scene -->
     <a-scene
         mindar-image="imageTargetSrc: ./targets.mind; 
-                      maxTrack: 2;
-                      filterMinCF: 0.00001;
-                      filterBeta: 0.00001;
-                      missTolerance: 0;
-                      warmupTolerance: 0"
+                      maxTrack: 1; 
+                      filterMinCF: 0.0005; 
+                      filterBeta: 0.0005"
         color-space="sRGB"
-        renderer="precision: medium; 
-                 antialias: false;
-                 colorManagement: false;
-                 physicallyCorrectLights: false;
-                 powerPreference: high-performance"
-        loading-screen="enabled: false"
+        renderer="colorManagement: true, physicallyCorrectLights"
         vr-mode-ui="enabled: false"
         device-orientation-permission-ui="enabled: false">
 
-        <a-assets timeout="0">
-            <a-asset-item id="mayaModel" src="./maya.glb" preload="true"></a-asset-item>
-            <a-asset-item id="regretModel" src="./miss_regret.glb" preload="true"></a-asset-item>
+        <a-assets>
+            <a-asset-item id="mayaModel" src="./maya.glb"></a-asset-item>
+            <a-asset-item id="regretModel" src="./miss_regret.glb"></a-asset-item>
         </a-assets>
 
         <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-        <a-entity mindar-image-target="targetIndex: 0">
-            <a-gltf-model 
-                src="#mayaModel" 
-                position="0 0 -0.3" 
-                scale="0.1 0.1 0.1" 
+        <!-- Target 0: Maya -->
+        <a-entity mindar-image-target="targetIndex: 0; smooth: true; smoothCount: 10; smoothTolerance: 0.5; smoothThreshold: 0.5">
+            <a-gltf-model
+                src="#mayaModel"
+                position="0 0 -0.3"
+                scale="0.1 0.1 0.1"
                 rotation="0 0 0"
-                animation-mixer="clampWhenFinished: true"
-                quick-tracking
-                loading="eager"
-                buffer="false">
+                animation-mixer
+                interpolation="linear"
+                stabilized-position>
             </a-gltf-model>
         </a-entity>
 
-        <a-entity mindar-image-target="targetIndex: 1">
-            <a-gltf-model 
-                src="#regretModel" 
-                position="0 0 -0.3" 
-                scale="0.1 0.1 0.1" 
+        <!-- Target 1: Miss Regret -->
+        <a-entity mindar-image-target="targetIndex: 1; smooth: true; smoothCount: 10; smoothTolerance: 0.5; smoothThreshold: 0.5">
+            <a-gltf-model
+                src="#regretModel"
+                position="0 0 -0.3"
+                scale="0.1 0.1 0.1"
                 rotation="0 0 0"
-                animation-mixer="clampWhenFinished: true"
-                quick-tracking
-                loading="eager"
-                buffer="false">
+                animation-mixer
+                interpolation="linear"
+                stabilized-position>
             </a-gltf-model>
         </a-entity>
     </a-scene>
 
+    <!-- Scripts -->
     <script>
-        // Simplified tracking component focused on speed
-        AFRAME.registerComponent('quick-tracking', {
-            init: function() {
-                this.lastPosition = null;
-                this.smoothingFactor = 0.1; // Reduced smoothing for faster response
-            },
-
-            tick: function() {
+        // Stabilization Component
+        AFRAME.registerComponent('stabilized-position', {
+            tick: function () {
                 const position = this.el.getAttribute('position');
-                
-                if (!this.lastPosition) {
-                    this.lastPosition = {...position};
-                    return;
+                const smoothingFactor = 0.2;
+
+                if (this.lastPosition) {
+                    this.el.setAttribute('position', {
+                        x: this.lastPosition.x + (position.x - this.lastPosition.x) * smoothingFactor,
+                        y: this.lastPosition.y + (position.y - this.lastPosition.y) * smoothingFactor,
+                        z: this.lastPosition.z + (position.z - this.lastPosition.z) * smoothingFactor
+                    });
                 }
 
-                // Minimal smoothing for faster response
-                this.el.setAttribute('position', {
-                    x: position.x,
-                    y: position.y,
-                    z: position.z
-                });
-
-                this.lastPosition = {...position};
+                this.lastPosition = position;
             }
         });
 
-        // Scene optimization
-        const sceneEl = document.querySelector('a-scene');
-        
-        // Optimize performance
-        if (sceneEl.renderer) {
-            sceneEl.renderer.setPixelRatio(1); // Force 1:1 pixel ratio
-            sceneEl.renderer.sortObjects = false;
-            sceneEl.renderer.physicallyCorrectLights = false;
-        }
-
-        // Handle loading
-        sceneEl.addEventListener('loaded', () => {
+        // Hide loading screen when scene is ready
+        document.querySelector('a-scene').addEventListener('loaded', () => {
             document.getElementById('custom-loading').style.display = 'none';
         });
 
-        // Target tracking events
+        // Debug: Log tracking events
+        const sceneEl = document.querySelector('a-scene');
         sceneEl.addEventListener('targetFound', (e) => {
-            console.log('Target found:', e.detail.targetIndex);
+            console.log('✅ Target found:', e.detail.targetIndex);
         });
-        
         sceneEl.addEventListener('targetLost', (e) => {
-            console.log('Target lost:', e.detail.targetIndex);
+            console.log('❌ Target lost:', e.detail.targetIndex);
         });
-
-        // Performance monitoring
-        let lastTime = performance.now();
-        let frames = 0;
-
-        function checkFrameRate() {
-            frames++;
-            const now = performance.now();
-            if (now - lastTime >= 1000) {
-                console.log('FPS:', frames);
-                frames = 0;
-                lastTime = now;
-            }
-            requestAnimationFrame(checkFrameRate);
-        }
-        checkFrameRate();
     </script>
 </body>
 </html>
