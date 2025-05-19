@@ -8,22 +8,11 @@
         .a-enter-vr {
             display: none !important;
         }
-        #performance-stats {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            background: rgba(0, 0, 0, 0.6);
-            color: white;
-            padding: 5px;
-            font-family: monospace;
-            font-size: 12px;
-            z-index: 999;
-        }
     </style>
 </head>
 <body style="margin: 0; overflow: hidden;">
     <!-- Custom Loading Text -->
-    <div id="custom-loading" style="
+    <div id="loading-screen" style="
         position: absolute;
         top: 50%;
         left: 50%;
@@ -37,9 +26,6 @@
         z-index: 999;">
         Loading AR experience... Please be mindful of your surroundings
     </div>
-
-    <!-- Performance Stats -->
-    <div id="performance-stats"></div>
 
     <!-- Instagram Button -->
     <div style="position: absolute; top: 20px; left: 20px; z-index: 999;">
@@ -57,7 +43,6 @@
 
     <!-- AR Scene -->
     <a-scene
-        loading-monitor
         mindar-image="imageTargetSrc: ./targets.mind; 
                       maxTrack: 1; 
                       filterMinCF: 0.0001; 
@@ -68,14 +53,13 @@
         renderer="precision: medium;
                  antialias: false;
                  colorManagement: false;
-                 physicallyCorrectLights: false;
-                 powerPreference: high-performance"
+                 physicallyCorrectLights: false"
         vr-mode-ui="enabled: false"
         device-orientation-permission-ui="enabled: false">
 
         <a-assets>
-            <a-asset-item id="mayaModel" src="./maya.glb" preload="true"></a-asset-item>
-            <a-asset-item id="regretModel" src="./miss_regret.glb" preload="true"></a-asset-item>
+            <a-asset-item id="mayaModel" src="./maya.glb"></a-asset-item>
+            <a-asset-item id="regretModel" src="./miss_regret.glb"></a-asset-item>
         </a-assets>
 
         <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
@@ -88,9 +72,7 @@
                 scale="0.2 0.2 0.2"
                 rotation="0 0 0"
                 animation-mixer="clampWhenFinished: true"
-                quick-stabilize
-                touch-controls
-                model-error-handler>
+                quick-stabilize>
             </a-gltf-model>
         </a-entity>
 
@@ -102,50 +84,13 @@
                 scale="0.2 0.2 0.2"
                 rotation="0 0 0"
                 animation-mixer="clampWhenFinished: true"
-                quick-stabilize
-                touch-controls
-                model-error-handler>
+                quick-stabilize>
             </a-gltf-model>
         </a-entity>
     </a-scene>
 
     <!-- Scripts -->
     <script>
-        // Device compatibility check
-        function checkDeviceCompatibility() {
-            const requirements = {
-                webGL: () => {
-                    const canvas = document.createElement('canvas');
-                    return !!(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
-                },
-                webRTC: () => 'mediaDevices' in navigator,
-                gyroscope: () => 'DeviceOrientationEvent' in window,
-            };
-
-            const results = {
-                webGL: requirements.webGL(),
-                webRTC: requirements.webRTC(),
-                gyroscope: requirements.gyroscope()
-            };
-
-            if (!Object.values(results).every(Boolean)) {
-                const message = document.createElement('div');
-                message.innerHTML = `
-                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-                                padding: 20px; background: #fff; border-radius: 10px; z-index: 1000;">
-                        <h3>Device Compatibility Check</h3>
-                        <ul style="list-style: none; padding: 0;">
-                            <li>WebGL: ${results.webGL ? '✅' : '❌'}</li>
-                            <li>Camera Access: ${results.webRTC ? '✅' : '❌'}</li>
-                            <li>Gyroscope: ${results.gyroscope ? '✅' : '❌'}</li>
-                        </ul>
-                        <p>Some features might not work as expected on this device.</p>
-                    </div>
-                `;
-                document.body.appendChild(message);
-            }
-        }
-
         // Quick stabilization component
         AFRAME.registerComponent('quick-stabilize', {
             init: function() {
@@ -180,4 +125,39 @@
             }
         });
 
-        // Touch controls component
+        // Scene optimization
+        const sceneEl = document.querySelector('a-scene');
+        
+        if (sceneEl.renderer) {
+            sceneEl.renderer.setPixelRatio(1);
+            sceneEl.renderer.sortObjects = false;
+        }
+
+        // Handle loading screen
+        const loadingScreen = document.getElementById('loading-screen');
+
+        // Listen for scene loaded event
+        sceneEl.addEventListener('loaded', function () {
+            loadingScreen.style.display = 'none';
+        });
+
+        // Listen for model loaded events
+        document.addEventListener('model-loaded', function () {
+            loadingScreen.style.display = 'none';
+        });
+
+        // Fallback: Hide loading screen after 10 seconds if not hidden already
+        setTimeout(() => {
+            loadingScreen.style.display = 'none';
+        }, 10000);
+
+        // Debug: Log tracking events
+        sceneEl.addEventListener('targetFound', (e) => {
+            console.log('✅ Target found:', e.detail.targetIndex);
+        });
+        sceneEl.addEventListener('targetLost', (e) => {
+            console.log('❌ Target lost:', e.detail.targetIndex);
+        });
+    </script>
+</body>
+</html>
