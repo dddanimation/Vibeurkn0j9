@@ -189,4 +189,77 @@
                     this.positionBuffer = [];
                 });
 
-                this.el.addEventListener('targetLost', ()
+                this.el.addEventListener('targetLost', () => {
+                    this.targetFound = false;
+                               });
+            },
+
+            tick: function() {
+                if (!this.targetFound) return;
+
+                const currentPosition = this.el.object3D.position;
+                const currentRotation = this.el.object3D.rotation;
+
+                if (!this.lastPosition) {
+                    this.lastPosition = currentPosition.clone();
+                    this.lastRotation = currentRotation.clone();
+                    return;
+                }
+
+                // Position smoothing
+                this.positionBuffer.push(currentPosition.clone());
+                if (this.positionBuffer.length > this.maxBufferSize) {
+                    this.positionBuffer.shift();
+                }
+
+                if (this.positionBuffer.length > 0) {
+                    const averagePosition = new THREE.Vector3();
+                    this.positionBuffer.forEach(pos => {
+                        averagePosition.add(pos);
+                    });
+                    averagePosition.divideScalar(this.positionBuffer.length);
+
+                    // Apply smoothing
+                    this.el.object3D.position.lerp(averagePosition, this.smoothingFactor);
+                    
+                    // Rotation smoothing
+                    const deltaRotation = {
+                        x: currentRotation.x - this.lastRotation.x,
+                        y: currentRotation.y - this.lastRotation.y,
+                        z: currentRotation.z - this.lastRotation.z
+                    };
+
+                    if (Math.abs(deltaRotation.x) < 0.1 && 
+                        Math.abs(deltaRotation.y) < 0.1 && 
+                        Math.abs(deltaRotation.z) < 0.1) {
+                        this.el.object3D.rotation.set(
+                            this.lastRotation.x + deltaRotation.x * this.smoothingFactor,
+                            this.lastRotation.y + deltaRotation.y * this.smoothingFactor,
+                            this.lastRotation.z + deltaRotation.z * this.smoothingFactor
+                        );
+                    }
+                }
+
+                this.lastPosition.copy(this.el.object3D.position);
+                this.lastRotation.copy(this.el.object3D.rotation);
+            }
+        });
+
+        // Scene optimization
+        const sceneEl = document.querySelector('a-scene');
+        
+        if (sceneEl.renderer) {
+            sceneEl.renderer.setPixelRatio(1);
+            sceneEl.renderer.sortObjects = false;
+        }
+
+        // Debug: Log tracking events
+        sceneEl.addEventListener('targetFound', (e) => {
+            console.log('✅ Target found:', e.detail.targetIndex);
+        });
+        sceneEl.addEventListener('targetLost', (e) => {
+            console.log('❌ Target lost:', e.detail.targetIndex);
+        });
+    </script>
+</body>
+</html>
