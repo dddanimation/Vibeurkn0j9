@@ -1,89 +1,201 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-    <style>
-        .a-enter-vr {
-            display: none !important;
-        }
-    </style>
-</head>
-<body style="margin: 0; overflow: hidden;">
-    <!-- Custom Loading Text -->
-    <div id="loading-screen" style="
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 18px;
-        font-family: sans-serif;
-        color: white;
-        background: rgba(0, 0, 0, 0.6);
-        padding: 10px 20px;
-        border-radius: 8px;
-        z-index: 999;">
-        Loading AR experience... Please be mindful of your surroundings
-    </div>
+<a-scene
+    mindar-image="imageTargetSrc: ./targets.mind; 
+                  maxTrack: 1; 
+                  filterMinCF: 0.001; 
+                  filterBeta: .01"
+    color-space="sRGB"
+    renderer="precision: medium;
+             antialias: false;
+             colorManagement: true;
+             physicallyCorrectLights: true"
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false">
 
-    <!-- Instagram Button -->
-    <div style="position: absolute; top: 20px; left: 20px; z-index: 999;">
-        <a href="https://www.instagram.com/qrcky/" target="_blank">
-            <img src="./insta.png" alt="Instagram" style="height: 28px; opacity: 0.8; cursor: pointer;" />
-        </a>
-    </div>
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <!-- Inquiry Button -->
-    <button 
-        onclick="window.open('https://www.qrcky.net/originals-paintings-black-and-white-art', '_blank')" 
-        style="position: absolute; top: 20px; right: 20px; padding: 6px 14px; font-size: 14px; background-color: rgba(0, 0, 0, 0.8); color: white; border: none; border-radius: 6px; cursor: pointer; z-index: 999; height: 40px;">
-        Inquiry
-    </button>
+    <!-- Lighting -->
+    <a-entity light="type: ambient; intensity: 0.7"></a-entity>
+    <a-entity light="type: directional; intensity: 0.8" position="1 1 1"></a-entity>
 
-    <!-- AR Scene -->
-    <a-scene
-        mindar-image="imageTargetSrc: ./targets.mind; 
-                      maxTrack: 1; 
-                      filterMinCF: 0.001; 
-                      filterBeta: .01"
-        color-space="sRGB"
-        renderer="precision: medium;
-                 antialias: false;
-                 colorManagement: true;
-                 physicallyCorrectLights: true"
-        vr-mode-ui="enabled: false"
-        device-orientation-permission-ui="enabled: false">
+    <!-- Target 0: Maya -->
+    <a-entity mindar-image-target="targetIndex: 0">
+        <a-gltf-model
+            src="./maya.glb"
+            position="0 0 0"
+            scale="0.3 0.3 0.3"
+            rotation="0 0 0"
+            animation-mixer="clampWhenFinished: true"
+            simple-tracking>
+        </a-gltf-model>
+    </a-entity>
 
-        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+    <!-- Target 1: Miss Regret -->
+    <a-entity mindar-image-target="targetIndex: 1">
+        <a-gltf-model
+            src="./miss_regret.glb"
+            position="0 0 -0.3"
+            scale="0.3 0.3 0.3"
+            rotation="0 0 0"
+            animation-mixer="clampWhenFinished: true"
+            simple-tracking>
+        </a-gltf-model>
+    </a-entity>
 
-        <!-- Basic Lighting -->
-        <a-entity light="type: ambient; intensity: 0.7"></a-entity>
-        <a-entity light="type: directional; intensity: 0.8" position="1 1 1"></a-entity>
+    <!-- Target 2: Seedless Fruit -->
+    <a-entity mindar-image-target="targetIndex: 2">
+        <a-gltf-model
+            src="./seedless-fruit.glb"
+            position="0 0 0"
+            scale="0.3 0.3 0.3"
+            rotation="0 0 0"
+            animation-mixer="clampWhenFinished: true"
+            simple-tracking>
+        </a-gltf-model>
+    </a-entity>
 
-        <!-- Target 0: Maya -->
-        <a-entity mindar-image-target="targetIndex: 0">
-            <a-gltf-model
-                src="./maya.glb"
-                position="0 0 0"
-                scale="0.3 0.3 0.3"
-                rotation="0 0 0"
-                animation-mixer="clampWhenFinished: true"
-                simple-tracking>
-            </a-gltf-model>
-        </a-entity>
+    <!-- Target 3: Mapis -->
+    <a-entity mindar-image-target="targetIndex: 3">
+        <a-gltf-model
+            src="./mapis.glb"
+            position="0 0 -0.3"
+            scale="0.3 0.3 0.3"
+            rotation="0 0 0"
+            animation-mixer="clampWhenFinished: true"
+            simple-tracking>
+        </a-gltf-model>
+    </a-entity>
 
-        <!-- Target 1: Miss Regret -->
-        <a-entity mindar-image-target="targetIndex: 1">
-            <a-gltf-model
-                src="./miss_regret.glb"
-                position="0 0 -0.3"
-                scale="0.3 0.3 0.3"
-                rotation="0 0 0"
-                animation-mixer="clampWhenFinished: true"
-                simple-tracking>
-            </a-gltf-model>
-        </a-entity>
+    <!-- Target 4: Negus Anew -->
+    <a-entity mindar-image-target="targetIndex: 4">
+        <a-gltf-model
+            src="./negus-anew.glb"
+            position="0 0 0"
+            scale="0.3 0.3 0.3"
+            rotation="0 0 0"
+            animation-mixer="clampWhenFinished: true"
+            simple-tracking>
+        </a-gltf-model>
+    </a-entity>
+
+    <!-- Target 5: Ebony -->
+    <a-entity mindar-image-target="targetIndex: 5">
+        <a-gltf-model
+            src="./ebony.glb"
+            position="0 0 0"
+            scale="0.3 0.3 0.3"
+            rotation="0 0 0"
+            animation-mixer="clampWhenFinished: true"
+            simple-tracking>
+        </a-gltf-model>
+    </a-entity>
+
+    <!-- Target 6: Transcending Myself -->
+    <a-entity mindar-image-target="targetIndex: 6">
+        <a-gltf-model
+            src="./transcending-myself.glb"
+            position="0 0 0"
+            scale="0.3 0.3 0.3"
+            rotation="0 0 0"
+            animation-mixer="clampWhenFinished: true"
+            simple-tracking>
+        </a-gltf-model>
+    </a-entity>
+
+    <!-- Target 7: Living in America -->
+    <a-entity mindar-image-target="targetIndex: 7">
+        <a-gltf-model
+            src="./living-in-america.glb"
+            position="0 0 0"
+            scale="0.3 0.3 0.3"
+            rotation="0 0 0"
+            animation-mixer="clampWhenFinished: true"
+            simple-tracking>
+        </a-gltf-model>
+    </a-entity>
+
+    <!-- Target 8: Twins -->
+    <a-entity mindar-image-target="targetIndex: 8">
+        <a-gltf-model
+            src="./twins.glb"
+            position="0 0 0"
+            scale="0.3 0.3 0.3"
+            rotation="0 0 0"
+            animation-mixer="clampWhenFinished: true"
+            simple-tracking>
+        </a-gltf-model>
+    </a-entity>
+
+    <!-- Target 9: Porcelain V3 -->
+    <a-entity mindar-image-target="targetIndex: 9">
+        <a-gltf-model
+            src="./porcelainv3.glb"
+            position="0 0 0"
+            scale="0.3 0.3 0.3"
+            rotation="0 0 0"
+            animation-mixer="clampWhenFinished: true"
+            simple-tracking>
+        </a-gltf-model>
+    </a-entity>
+
+    <!-- Target 10: SDWTBS -->
+    <a-entity mindar-image-target="targetIndex: 10">
+        <a-gltf-model
+            src="./sdwtbs.glb"
+            position="0 0 0"
+            scale="0.3 0.3 0.3"
+            rotation="0 0 0"
+            animation-mixer="clampWhenFinished: true"
+            simple-tracking>
+        </a-gltf-model>
+    </a-entity>
+
+    <!-- Target 11: Ms Regrets -->
+    <a-entity mindar-image-target="targetIndex: 11">
+        <a-gltf-model
+            src="./msregrets.glb"
+            position="0 0 0"
+            scale="0.3 0.3 0.3"
+            rotation="0 0 0"
+            animation-mixer="clampWhenFinished: true"
+            simple-tracking>
+        </a-gltf-model>
+    </a-entity>
+
+    <!-- Target 12: Base -->
+    <a-entity mindar-image-target="targetIndex: 12">
+        <a-gltf-model
+            src="./base.glb"
+            position="0 0 0"
+            scale="0.3 0.3 0.3"
+            rotation="0 0 0"
+            animation-mixer="clampWhenFinished: true"
+            simple-tracking>
+        </a-gltf-model>
+    </a-entity>
+
+    <!-- Target 13: Loys -->
+    <a-entity mindar-image-target="targetIndex: 13">
+        <a-gltf-model
+            src="./loys.glb"
+            position="0 0 0"
+            scale="0.3 0.3 0.3"
+            rotation="0 0 0"
+            animation-mixer="clampWhenFinished: true"
+            simple-tracking>
+        </a-gltf-model>
+    </a-entity>
+
+    <!-- Target 14: Maps -->
+      <a-entity mindar-image-target="targetIndex: 14">
+        <a-gltf-model
+            src="./maps.glb"
+            position="0 0 0"
+            scale="0.3 0.3 0.3"
+            rotation="0 0 0"
+            animation-mixer="clampWhenFinished: true"
+            simple-tracking>
+        </a-gltf-model>
+
     </a-scene>
 
     <!-- Scripts -->
