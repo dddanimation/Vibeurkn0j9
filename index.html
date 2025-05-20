@@ -1,242 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>MindAR Image Tracking</title>
+  <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-aframe.prod.js"></script>
+</head>
+<body>
+
 <a-scene
-    mindar-image="imageTargetSrc: ./targets.mind; 
-                  maxTrack: 1; 
-                  filterMinCF: 0.001; 
-                  filterBeta: .01"
-    color-space="sRGB"
-    renderer="precision: medium;
-             antialias: false;
-             colorManagement: true;
-             physicallyCorrectLights: true"
-    vr-mode-ui="enabled: false"
-    device-orientation-permission-ui="enabled: false">
+  mindar-image="imageTargetSrc: ./targets.mind; filterMinCF: 0.001; filterBeta: .01"
+  color-space="sRGB"
+  renderer="precision: medium; antialias: false; colorManagement: true; physicallyCorrectLights: true"
+  vr-mode-ui="enabled: false"
+  device-orientation-permission-ui="enabled: false">
 
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+  <!-- Assets -->
+  <a-assets>
+    <a-asset-item id="mayaModel" src="./maya.glb"></a-asset-item>
+    <a-asset-item id="missRegretModel" src="./miss_regret.glb"></a-asset-item>
+    <a-asset-item id="seedlessFruitModel" src="./seedless-fruit.glb"></a-asset-item>
+    <a-asset-item id="mapisModel" src="./mapis.glb"></a-asset-item>
+    <a-asset-item id="negusAnewModel" src="./negus-anew.glb"></a-asset-item>
+    <a-asset-item id="ebonyModel" src="./ebony.glb"></a-asset-item>
+    <a-asset-item id="transcendingModel" src="./transcending-myself.glb"></a-asset-item>
+    <a-asset-item id="americaModel" src="./living-in-america.glb"></a-asset-item>
+    <a-asset-item id="twinsModel" src="./twins.glb"></a-asset-item>
+    <a-asset-item id="porcelainModel" src="./porcelainv3.glb"></a-asset-item>
+    <a-asset-item id="sdwtbsModel" src="./sdwtbs.glb"></a-asset-item>
+    <a-asset-item id="msregretsModel" src="./msregrets.glb"></a-asset-item>
+    <a-asset-item id="baseModel" src="./base.glb"></a-asset-item>
+    <a-asset-item id="loysModel" src="./loys.glb"></a-asset-item>
+    <a-asset-item id="mapsModel" src="./maps.glb"></a-asset-item>
+  </a-assets>
 
-    <!-- Lighting -->
-    <a-entity light="type: ambient; intensity: 0.7"></a-entity>
-    <a-entity light="type: directional; intensity: 0.8" position="1 1 1"></a-entity>
+  <!-- Camera -->
+  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <!-- Target 0: Maya -->
-    <a-entity mindar-image-target="targetIndex: 0">
-        <a-gltf-model
-            src="./maya.glb"
-            position="0 0 0"
-            scale="0.3 0.3 0.3"
-            rotation="0 0 0"
-            animation-mixer="clampWhenFinished: true"
-            simple-tracking>
-        </a-gltf-model>
-    </a-entity>
+  <!-- Lighting -->
+  <a-entity light="type: ambient; intensity: 0.7"></a-entity>
+  <a-entity light="type: directional; intensity: 0.8" position="1 1 1"></a-entity>
 
-    <!-- Target 1: Miss Regret -->
-    <a-entity mindar-image-target="targetIndex: 1">
-        <a-gltf-model
-            src="./miss_regret.glb"
-            position="0 0 -0.3"
-            scale="0.3 0.3 0.3"
-            rotation="0 0 0"
-            animation-mixer="clampWhenFinished: true"
-            simple-tracking>
-        </a-gltf-model>
-    </a-entity>
+  <!-- Targets -->
+  <a-entity mindar-image-target="targetIndex: 0">
+    <a-entity default-model="src: #mayaModel"></a-entity>
+  </a-entity>
 
-    <!-- Target 2: Seedless Fruit -->
-    <a-entity mindar-image-target="targetIndex: 2">
-        <a-gltf-model
-            src="./seedless-fruit.glb"
-            position="0 0 0"
-            scale="0.3 0.3 0.3"
-            rotation="0 0 0"
-            animation-mixer="clampWhenFinished: true"
-            simple-tracking>
-        </a-gltf-model>
-    </a-entity>
+  <a-entity mindar-image-target="targetIndex: 1">
+    <a-entity default-model="src: #missRegretModel" position="0 0 -0.3"></a-entity>
+  </a-entity>
 
-    <!-- Target 3: Mapis -->
-    <a-entity mindar-image-target="targetIndex: 3">
-        <a-gltf-model
-            src="./mapis.glb"
-            position="0 0 -0.3"
-            scale="0.3 0.3 0.3"
-            rotation="0 0 0"
-            animation-mixer="clampWhenFinished: true"
-            simple-tracking>
-        </a-gltf-model>
-    </a-entity>
+  <a-entity mindar-image-target="targetIndex: 2">
+    <a-entity default-model="src: #seedlessFruitModel"></a-entity>
+  </a-entity>
 
-    <!-- Target 4: Negus Anew -->
-    <a-entity mindar-image-target="targetIndex: 4">
-        <a-gltf-model
-            src="./negus-anew.glb"
-            position="0 0 0"
-            scale="0.3 0.3 0.3"
-            rotation="0 0 0"
-            animation-mixer="clampWhenFinished: true"
-            simple-tracking>
-        </a-gltf-model>
-    </a-entity>
+  <a-entity mindar-image-target="targetIndex: 3">
+    <a-entity default-model="src: #mapisModel" position="0 0 -0.3"></a-entity>
+  </a-entity>
 
-    <!-- Target 5: Ebony -->
-    <a-entity mindar-image-target="targetIndex: 5">
-        <a-gltf-model
-            src="./ebony.glb"
-            position="0 0 0"
-            scale="0.3 0.3 0.3"
-            rotation="0 0 0"
-            animation-mixer="clampWhenFinished: true"
-            simple-tracking>
-        </a-gltf-model>
-    </a-entity>
+  <a-entity mindar-image-target="targetIndex: 4">
+    <a-entity default-model="src: #negusAnewModel"></a-entity>
+  </a-entity>
 
-    <!-- Target 6: Transcending Myself -->
-    <a-entity mindar-image-target="targetIndex: 6">
-        <a-gltf-model
-            src="./transcending-myself.glb"
-            position="0 0 0"
-            scale="0.3 0.3 0.3"
-            rotation="0 0 0"
-            animation-mixer="clampWhenFinished: true"
-            simple-tracking>
-        </a-gltf-model>
-    </a-entity>
+  <a-entity mindar-image-target="targetIndex: 5">
+    <a-entity default-model="src: #ebonyModel"></a-entity>
+  </a-entity>
 
-    <!-- Target 7: Living in America -->
-    <a-entity mindar-image-target="targetIndex: 7">
-        <a-gltf-model
-            src="./living-in-america.glb"
-            position="0 0 0"
-            scale="0.3 0.3 0.3"
-            rotation="0 0 0"
-            animation-mixer="clampWhenFinished: true"
-            simple-tracking>
-        </a-gltf-model>
-    </a-entity>
+  <a-entity mindar-image-target="targetIndex: 6">
+    <a-entity default-model="src: #transcendingModel"></a-entity>
+  </a-entity>
 
-    <!-- Target 8: Twins -->
-    <a-entity mindar-image-target="targetIndex: 8">
-        <a-gltf-model
-            src="./twins.glb"
-            position="0 0 0"
-            scale="0.3 0.3 0.3"
-            rotation="0 0 0"
-            animation-mixer="clampWhenFinished: true"
-            simple-tracking>
-        </a-gltf-model>
-    </a-entity>
+  <a-entity mindar-image-target="targetIndex: 7">
+    <a-entity default-model="src: #americaModel"></a-entity>
+  </a-entity>
 
-    <!-- Target 9: Porcelain V3 -->
-    <a-entity mindar-image-target="targetIndex: 9">
-        <a-gltf-model
-            src="./porcelainv3.glb"
-            position="0 0 0"
-            scale="0.3 0.3 0.3"
-            rotation="0 0 0"
-            animation-mixer="clampWhenFinished: true"
-            simple-tracking>
-        </a-gltf-model>
-    </a-entity>
+  <a-entity mindar-image-target="targetIndex: 8">
+    <a-entity default-model="src: #twinsModel"></a-entity>
+  </a-entity>
 
-    <!-- Target 10: SDWTBS -->
-    <a-entity mindar-image-target="targetIndex: 10">
-        <a-gltf-model
-            src="./sdwtbs.glb"
-            position="0 0 0"
-            scale="0.3 0.3 0.3"
-            rotation="0 0 0"
-            animation-mixer="clampWhenFinished: true"
-            simple-tracking>
-        </a-gltf-model>
-    </a-entity>
+  <a-entity mindar-image-target="targetIndex: 9">
+    <a-entity default-model="src: #porcelainModel"></a-entity>
+  </a-entity>
 
-    <!-- Target 11: Ms Regrets -->
-    <a-entity mindar-image-target="targetIndex: 11">
-        <a-gltf-model
-            src="./msregrets.glb"
-            position="0 0 0"
-            scale="0.3 0.3 0.3"
-            rotation="0 0 0"
-            animation-mixer="clampWhenFinished: true"
-            simple-tracking>
-        </a-gltf-model>
-    </a-entity>
+  <a-entity mindar-image-target="targetIndex: 10">
+    <a-entity default-model="src: #sdwtbsModel"></a-entity>
+  </a-entity>
 
-    <!-- Target 12: Base -->
-    <a-entity mindar-image-target="targetIndex: 12">
-        <a-gltf-model
-            src="./base.glb"
-            position="0 0 0"
-            scale="0.3 0.3 0.3"
-            rotation="0 0 0"
-            animation-mixer="clampWhenFinished: true"
-            simple-tracking>
-        </a-gltf-model>
-    </a-entity>
+  <a-entity mindar-image-target="targetIndex: 11">
+    <a-entity default-model="src: #msregretsModel"></a-entity>
+  </a-entity>
 
-    <!-- Target 13: Loys -->
-    <a-entity mindar-image-target="targetIndex: 13">
-        <a-gltf-model
-            src="./loys.glb"
-            position="0 0 0"
-            scale="0.3 0.3 0.3"
-            rotation="0 0 0"
-            animation-mixer="clampWhenFinished: true"
-            simple-tracking>
-        </a-gltf-model>
-    </a-entity>
+  <a-entity mindar-image-target="targetIndex: 12">
+    <a-entity default-model="src: #baseModel"></a-entity>
+  </a-entity>
 
-    <!-- Target 14: Maps -->
-      <a-entity mindar-image-target="targetIndex: 14">
-        <a-gltf-model
-            src="./maps.glb"
-            position="0 0 0"
-            scale="0.3 0.3 0.3"
-            rotation="0 0 0"
-            animation-mixer="clampWhenFinished: true"
-            simple-tracking>
-        </a-gltf-model>
+  <a-entity mindar-image-target="targetIndex: 13">
+    <a-entity default-model="src: #loysModel"></a-entity>
+  </a-entity>
 
-    </a-scene>
+  <a-entity mindar-image-target="targetIndex: 14">
+    <a-entity default-model="src: #mapsModel"></a-entity>
+  </a-entity>
 
-    <!-- Scripts -->
-    <script>
-        // Simplified tracking component
-        AFRAME.registerComponent('simple-tracking', {
-            init: function() {
-                this.lastPosition = null;
-                this.smoothingFactor = 0.2;
-            },
+</a-scene>
 
-            tick: function() {
-                const position = this.el.object3D.position;
-                
-                if (!this.lastPosition) {
-                    this.lastPosition = position.clone();
-                    return;
-                }
+<!-- Scripts -->
+<script>
+  // Component for smoothed tracking
+  AFRAME.registerComponent('simple-tracking', {
+    init: function () {
+      this.lastPosition = null;
+      this.smoothingFactor = 0.2;
+    },
+    tick: function () {
+      const position = this.el.object3D.position;
+      if (!this.lastPosition) {
+        this.lastPosition = position.clone();
+        return;
+      }
+      this.el.object3D.position.lerp(this.lastPosition, this.smoothingFactor);
+      this.lastPosition.copy(position);
+    }
+  });
 
-                // Basic position smoothing
-                this.el.object3D.position.lerp(this.lastPosition, this.smoothingFactor);
-                this.lastPosition.copy(position);
-            }
-        });
+  // Component to simplify model setup
+  AFRAME.registerComponent('default-model', {
+    schema: { src: { type: 'selector' } },
+    init: function () {
+      this.el.setAttribute('gltf-model', this.data.src.getAttribute('src'));
+      this.el.setAttribute('position', this.el.getAttribute('position') || '0 0 0');
+      this.el.setAttribute('scale', '0.3 0.3 0.3');
+      this.el.setAttribute('rotation', '0 0 0');
+      this.el.setAttribute('animation-mixer', 'clampWhenFinished: true');
+      this.el.setAttribute('simple-tracking', '');
+    }
+  });
 
-        // Scene setup
-        const sceneEl = document.querySelector('a-scene');
-        
-        // Handle loading screen
-        sceneEl.addEventListener('loaded', () => {
-            document.getElementById('loading-screen').style.display = 'none';
-        });
+  // Scene load handling
+  const sceneEl = document.querySelector('a-scene');
+  sceneEl.addEventListener('loaded', () => {
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) loadingScreen.style.display = 'none';
+  });
 
-        // Basic tracking events
-        sceneEl.addEventListener('targetFound', (e) => {
-            console.log('✅ Target found:', e.detail.targetIndex);
-        });
-        
-        sceneEl.addEventListener('targetLost', (e) => {
-            console.log('❌ Target lost:', e.detail.targetIndex);
-        });
-    </script>
+  sceneEl.addEventListener('targetFound', (e) => {
+    console.log('✅ Target found:', e.detail.targetIndex);
+  });
+
+  sceneEl.addEventListener('targetLost', (e) => {
+    console.log('❌ Target lost:', e.detail.targetIndex);
+  });
+</script>
+
 </body>
 </html>
