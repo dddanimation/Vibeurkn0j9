@@ -1,156 +1,212 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>MindAR Image Tracking</title>
-  <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-aframe.prod.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <style>
+        .a-enter-vr {
+            display: none !important;
+        }
+    </style>
 </head>
-<body>
+<body style="margin: 0; overflow: hidden;">
+    <!-- Custom Loading Text -->
+    <div id="loading-screen" style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 18px;
+        font-family: sans-serif;
+        color: white;
+        background: rgba(0, 0, 0, 0.6);
+        padding: 10px 20px;
+        border-radius: 8px;
+        z-index: 999;">
+        Loading AR experience... Please be mindful of your surroundings
+    </div>
 
-<a-scene
-  mindar-image="imageTargetSrc: ./targets.mind; filterMinCF: 0.001; filterBeta: .01"
-  color-space="sRGB"
-  renderer="precision: medium; antialias: false; colorManagement: true; physicallyCorrectLights: true"
-  vr-mode-ui="enabled: false"
-  device-orientation-permission-ui="enabled: false">
+    <!-- Instagram Button -->
+    <div style="position: absolute; top: 20px; left: 20px; z-index: 999;">
+        <a href="https://www.instagram.com/qrcky/" target="_blank">
+            <img src="./insta.png" alt="Instagram" style="height: 28px; opacity: 0.8; cursor: pointer;" />
+        </a>
+    </div>
 
-  <!-- Assets -->
-  <a-assets>
-    <a-asset-item id="mayaModel" src="./maya.glb"></a-asset-item>
-    <a-asset-item id="missRegretModel" src="./miss_regret.glb"></a-asset-item>
-    <a-asset-item id="seedlessFruitModel" src="./seedless-fruit.glb"></a-asset-item>
-    <a-asset-item id="mapisModel" src="./mapis.glb"></a-asset-item>
-    <a-asset-item id="negusAnewModel" src="./negus-anew.glb"></a-asset-item>
-    <a-asset-item id="ebonyModel" src="./ebony.glb"></a-asset-item>
-    <a-asset-item id="transcendingModel" src="./transcending-myself.glb"></a-asset-item>
-    <a-asset-item id="americaModel" src="./living-in-america.glb"></a-asset-item>
-    <a-asset-item id="twinsModel" src="./twins.glb"></a-asset-item>
-    <a-asset-item id="porcelainModel" src="./porcelainv3.glb"></a-asset-item>
-    <a-asset-item id="sdwtbsModel" src="./sdwtbs.glb"></a-asset-item>
-    <a-asset-item id="msregretsModel" src="./msregrets.glb"></a-asset-item>
-    <a-asset-item id="baseModel" src="./base.glb"></a-asset-item>
-    <a-asset-item id="loysModel" src="./loys.glb"></a-asset-item>
-    <a-asset-item id="mapsModel" src="./maps.glb"></a-asset-item>
-  </a-assets>
+    <!-- Inquiry Button -->
+    <button 
+        onclick="window.open('https://www.qrcky.net/originals-paintings-black-and-white-art', '_blank')" 
+        style="position: absolute; top: 20px; right: 20px; padding: 6px 14px; font-size: 14px; background-color: rgba(0, 0, 0, 0.8); color: white; border: none; border-radius: 6px; cursor: pointer; z-index: 999; height: 40px;">
+        Inquiry
+    </button>
 
-  <!-- Camera -->
-  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+    <!-- AR Scene -->
+    <a-scene
+        mindar-image="imageTargetSrc: ./targets.mind; 
+                      maxTrack: 1; 
+                      filterMinCF: 0.001; 
+                      filterBeta: .01;
+                      missTolerance: 5;
+                      warmupTolerance: 5"
+        color-space="sRGB"
+        renderer="precision: medium;
+                 antialias: false;
+                 colorManagement: true;
+                 physicallyCorrectLights: true"
+        vr-mode-ui="enabled: false"
+        device-orientation-permission-ui="enabled: false">
 
-  <!-- Lighting -->
-  <a-entity light="type: ambient; intensity: 0.7"></a-entity>
-  <a-entity light="type: directional; intensity: 0.8" position="1 1 1"></a-entity>
+        <a-assets>
+            <a-asset-item id="mayaModel" src="./maya.glb"></a-asset-item>
+            <a-asset-item id="regretModel" src="./miss_regret.glb"></a-asset-item>
+        </a-assets>
 
-  <!-- Targets -->
-  <a-entity mindar-image-target="targetIndex: 0">
-    <a-entity default-model="src: #mayaModel"></a-entity>
-  </a-entity>
+        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-  <a-entity mindar-image-target="targetIndex: 1">
-    <a-entity default-model="src: #missRegretModel" position="0 0 -0.3"></a-entity>
-  </a-entity>
+        <!-- Lighting -->
+        <a-entity light="type: ambient; intensity: 0.7; color: #ffffff"></a-entity>
+        <a-entity light="type: directional; 
+                        intensity: 0.8; 
+                        color: #ffffff; 
+                        castShadow: true" 
+                  position="1 1 1"></a-entity>
+        <a-entity light="type: directional; 
+                        intensity: 0.5; 
+                        color: #ffffff" 
+                  position="-1 1 1"></a-entity>
 
-  <a-entity mindar-image-target="targetIndex: 2">
-    <a-entity default-model="src: #seedlessFruitModel"></a-entity>
-  </a-entity>
+        <!-- Target 0: Maya -->
+        <a-entity mindar-image-target="targetIndex: 0">
+            <a-gltf-model
+                src="#mayaModel"
+                position="0 0 0"
+                scale="0.3 0.3 0.3"
+                rotation="0 0 0"
+                animation-mixer="clampWhenFinished: true"
+                enhanced-tracking>
+            </a-gltf-model>
+        </a-entity>
 
-  <a-entity mindar-image-target="targetIndex: 3">
-    <a-entity default-model="src: #mapisModel" position="0 0 -0.3"></a-entity>
-  </a-entity>
+        <!-- Target 1: Miss Regret -->
+        <a-entity mindar-image-target="targetIndex: 1">
+            <a-gltf-model
+                src="#regretModel"
+                position="0 0 -0.3"
+                scale="0.3 0.3 0.3"
+                rotation="0 0 0"
+                animation-mixer="clampWhenFinished: true"
+                enhanced-tracking>
+            </a-gltf-model>
+        </a-entity>
+    </a-scene>
 
-  <a-entity mindar-image-target="targetIndex: 4">
-    <a-entity default-model="src: #negusAnewModel"></a-entity>
-  </a-entity>
+    <!-- Scripts -->
+    <script>
+        // Enhanced tracking component
+        AFRAME.registerComponent('enhanced-tracking', {
+            init: function() {
+                this.targetFound = false;
+                this.positionBuffer = [];
+                this.maxBufferSize = 5;
+                this.smoothingFactor = 0.2; // Reduced for faster response
+                this.lastPosition = null;
+                this.lastRotation = null;
 
-  <a-entity mindar-image-target="targetIndex: 5">
-    <a-entity default-model="src: #ebonyModel"></a-entity>
-  </a-entity>
+                this.el.addEventListener('targetFound', () => {
+                    this.targetFound = true;
+                    this.positionBuffer = [];
+                });
 
-  <a-entity mindar-image-target="targetIndex: 6">
-    <a-entity default-model="src: #transcendingModel"></a-entity>
-  </a-entity>
+                this.el.addEventListener('targetLost', () => {
+                    this.targetFound = false;
+                });
+            },
 
-  <a-entity mindar-image-target="targetIndex: 7">
-    <a-entity default-model="src: #americaModel"></a-entity>
-  </a-entity>
+            tick: function() {
+                if (!this.targetFound) return;
 
-  <a-entity mindar-image-target="targetIndex: 8">
-    <a-entity default-model="src: #twinsModel"></a-entity>
-  </a-entity>
+                const currentPosition = this.el.object3D.position;
+                const currentRotation = this.el.object3D.rotation;
 
-  <a-entity mindar-image-target="targetIndex: 9">
-    <a-entity default-model="src: #porcelainModel"></a-entity>
-  </a-entity>
+                if (!this.lastPosition) {
+                    this.lastPosition = currentPosition.clone();
+                    this.lastRotation = currentRotation.clone();
+                    return;
+                }
 
-  <a-entity mindar-image-target="targetIndex: 10">
-    <a-entity default-model="src: #sdwtbsModel"></a-entity>
-  </a-entity>
+                // Position smoothing
+                this.positionBuffer.push(currentPosition.clone());
+                if (this.positionBuffer.length > this.maxBufferSize) {
+                    this.positionBuffer.shift();
+                }
 
-  <a-entity mindar-image-target="targetIndex: 11">
-    <a-entity default-model="src: #msregretsModel"></a-entity>
-  </a-entity>
+                if (this.positionBuffer.length > 0) {
+                    const averagePosition = new THREE.Vector3();
+                    this.positionBuffer.forEach(pos => {
+                        averagePosition.add(pos);
+                    });
+                    averagePosition.divideScalar(this.positionBuffer.length);
 
-  <a-entity mindar-image-target="targetIndex: 12">
-    <a-entity default-model="src: #baseModel"></a-entity>
-  </a-entity>
+                    // Apply smoothing
+                    this.el.object3D.position.lerp(averagePosition, this.smoothingFactor);
+                    
+                    // Rotation smoothing
+                    const deltaRotation = {
+                        x: currentRotation.x - this.lastRotation.x,
+                        y: currentRotation.y - this.lastRotation.y,
+                        z: currentRotation.z - this.lastRotation.z
+                    };
 
-  <a-entity mindar-image-target="targetIndex: 13">
-    <a-entity default-model="src: #loysModel"></a-entity>
-  </a-entity>
+                    if (Math.abs(deltaRotation.x) < 0.1 && 
+                        Math.abs(deltaRotation.y) < 0.1 && 
+                        Math.abs(deltaRotation.z) < 0.1) {
+                        this.el.object3D.rotation.set(
+                            this.lastRotation.x + deltaRotation.x * this.smoothingFactor,
+                            this.lastRotation.y + deltaRotation.y * this.smoothingFactor,
+                            this.lastRotation.z + deltaRotation.z * this.smoothingFactor
+                        );
+                    }
+                }
 
-  <a-entity mindar-image-target="targetIndex: 14">
-    <a-entity default-model="src: #mapsModel"></a-entity>
-  </a-entity>
+                this.lastPosition.copy(this.el.object3D.position);
+                this.lastRotation.copy(this.el.object3D.rotation);
+            }
+        });
 
-</a-scene>
+        // Scene optimization
+        const sceneEl = document.querySelector('a-scene');
+        
+        if (sceneEl.renderer) {
+            sceneEl.renderer.setPixelRatio(1);
+            sceneEl.renderer.sortObjects = false;
+        }
 
-<!-- Scripts -->
-<script>
-  // Component for smoothed tracking
-  AFRAME.registerComponent('simple-tracking', {
-    init: function () {
-      this.lastPosition = null;
-      this.smoothingFactor = 0.2;
-    },
-    tick: function () {
-      const position = this.el.object3D.position;
-      if (!this.lastPosition) {
-        this.lastPosition = position.clone();
-        return;
-      }
-      this.el.object3D.position.lerp(this.lastPosition, this.smoothingFactor);
-      this.lastPosition.copy(position);
-    }
-  });
+        //        // Handle loading screen
+        const loadingScreen = document.getElementById('loading-screen');
 
-  // Component to simplify model setup
-  AFRAME.registerComponent('default-model', {
-    schema: { src: { type: 'selector' } },
-    init: function () {
-      this.el.setAttribute('gltf-model', this.data.src.getAttribute('src'));
-      this.el.setAttribute('position', this.el.getAttribute('position') || '0 0 0');
-      this.el.setAttribute('scale', '0.3 0.3 0.3');
-      this.el.setAttribute('rotation', '0 0 0');
-      this.el.setAttribute('animation-mixer', 'clampWhenFinished: true');
-      this.el.setAttribute('simple-tracking', '');
-    }
-  });
+        // Listen for scene loaded event
+        sceneEl.addEventListener('loaded', function () {
+            loadingScreen.style.display = 'none';
+        });
 
-  // Scene load handling
-  const sceneEl = document.querySelector('a-scene');
-  sceneEl.addEventListener('loaded', () => {
-    const loadingScreen = document.getElementById('loading-screen');
-    if (loadingScreen) loadingScreen.style.display = 'none';
-  });
+        // Listen for model loaded events
+        document.addEventListener('model-loaded', function () {
+            loadingScreen.style.display = 'none';
+        });
 
-  sceneEl.addEventListener('targetFound', (e) => {
-    console.log('✅ Target found:', e.detail.targetIndex);
-  });
+        // Fallback: Hide loading screen after 10 seconds if not hidden already
+        setTimeout(() => {
+            loadingScreen.style.display = 'none';
+        }, 10000);
 
-  sceneEl.addEventListener('targetLost', (e) => {
-    console.log('❌ Target lost:', e.detail.targetIndex);
-  });
-</script>
-
+        // Debug: Log tracking events
+        sceneEl.addEventListener('targetFound', (e) => {
+            console.log('✅ Target found:', e.detail.targetIndex);
+        });
+        sceneEl.addEventListener('targetLost', (e) => {
+            console.log('❌ Target lost:', e.detail.targetIndex);
+        });
+    </script>
 </body>
 </html>
