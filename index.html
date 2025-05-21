@@ -13,7 +13,7 @@
     #welcome-message.hidden,
     #help-modal.hidden { /* Apply hidden class to all overlays */
       opacity: 0;
-      transition: opacity 7s ease-out; /* Changed to 7 seconds */
+      transition: opacity 4s ease-out; /* CORRECTED to 4 seconds for fade */
     }
 
     /* Styling for the welcome message content */
@@ -173,7 +173,6 @@
       2. Allow camera access if prompted.<br>
       3. Aim your device at the QR code and background marker.<br>
       4. Tap the <strong>'i'</strong> button for details.
-  
     </p>
   </div>
 
@@ -201,7 +200,7 @@
 
   <button id="help-button">i</button>
 
-  <button onclick="window.open('https://www.qrcky.net/originals-paintings-black-and-white-art', '_blank')" 
+  <button onclick="window.open('https://www.qrcky.net/originals-paintings-black-and-white-art', '_blank')"
     style="position: absolute; top: 20px; right: 20px; padding: 6px 14px; font-size: 14px; background-color: rgba(0, 0, 0, 0.8); color: white; border: none; border-radius: 6px; cursor: pointer; z-index: 999; height: 40px;">
     Inquiry
   </button>
@@ -246,7 +245,12 @@
       <a-asset-item id="model12" src="./sdwtbs.glb"></a-asset-item>
       <a-asset-item id="model13" src="./transcending-myself.glb"></a-asset-item>
       <a-asset-item id="model14" src="./twins.glb"></a-asset-item>
+
+      <audio id="museum-audio" src="./Museum_sounds.mp3" preload="auto"></audio>
     </a-assets>
+
+    <a-entity sound="src: #museum-audio; loop: true; autoplay: true; volume: 0.5"></a-entity>
+
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
@@ -350,7 +354,7 @@
         if (!this.lastPosition || !this.lastQuaternion) {
             this.lastPosition = currentPosition.clone();
             this.lastQuaternion = currentQuaternion.clone();
-            return; 
+            return;
         }
         this.positionBuffer.push(currentPosition);
         if (this.positionBuffer.length > this.maxBufferSize) {
@@ -376,11 +380,14 @@
     const helpButton = document.getElementById('help-button');
     const helpModal = document.getElementById('help-modal');
     const closeHelpButton = document.getElementById('close-help-button');
+    // NEW: Get a reference to the audio element
+    const museumAudioElement = document.getElementById('museum-audio');
+
 
     // Function to hide a given element with fade-out
     const hideElement = (element) => {
       if (element.classList.contains('hidden') || element.style.display === 'none') {
-        return; 
+        return;
       }
       element.classList.add('hidden');
       element.addEventListener('transitionend', () => {
@@ -393,31 +400,44 @@
     const showElement = (element) => {
         element.style.display = 'flex'; // Use flex to center content
         // Force reflow to ensure display change applies before opacity transition
-        element.offsetWidth; 
+        element.offsetWidth;
         element.classList.remove('hidden');
         element.classList.add('visible'); // For modal specific visibility class
         console.log(`${element.id} shown.`);
     }
 
-    // Hide the welcome message after 10 seconds (now 7 seconds for the fade)
+    // Hide the welcome message after 2.5 seconds (then it takes 4 seconds to fade)
     setTimeout(() => {
       hideElement(welcomeMessage);
-    }, 3500); // This is still the total duration the welcome message is visible before hiding
+    }, 2500); // This is the duration the welcome message is visible before hiding
 
     // Hide the loading screen when A-Frame scene is loaded
     const loadingScreenHideTimeout = setTimeout(() => {
         hideElement(loadingScreen);
-    }, 2000); // Fallback for loading screen: hide after 5 seconds if 'loaded' event doesn't fire
+        // Attempt to play audio after loading screen is hidden
+        if (museumAudioElement && museumAudioElement.paused) {
+            museumAudioElement.play().catch(e => console.error("Autoplay failed on loading screen hide:", e));
+        }
+    }, 2000); // Fallback for loading screen: hide after 2 seconds
 
     sceneEl.addEventListener('loaded', () => {
       clearTimeout(loadingScreenHideTimeout); // Clear fallback if loaded
       hideElement(loadingScreen); // Hide the loading screen
       console.log('A-Frame scene loaded, clearing loading screen timeout.');
+
+      // Attempt to play audio after scene loads (more reliable for some browsers)
+      if (museumAudioElement && museumAudioElement.paused) {
+          museumAudioElement.play().catch(e => console.error("Autoplay failed on scene loaded:", e));
+      }
     }, { once: true });
 
     // Event listeners for the help modal
     helpButton.addEventListener('click', () => {
         showElement(helpModal);
+        // Optional: Pause audio while help modal is open
+        if (museumAudioElement && !museumAudioElement.paused) {
+            museumAudioElement.pause();
+        }
     });
 
     closeHelpButton.addEventListener('click', () => {
@@ -428,6 +448,11 @@
           helpModal.style.display = 'none';
           helpModal.classList.remove('hidden'); // Clean up hidden class for next show
         }, { once: true });
+
+        // Resume audio when help modal closes (this is a direct user interaction)
+        if (museumAudioElement && museumAudioElement.paused) {
+            museumAudioElement.play().catch(e => console.error("Autoplay failed on help modal close:", e));
+        }
     });
 
 
