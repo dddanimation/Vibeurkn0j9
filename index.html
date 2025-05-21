@@ -8,10 +8,14 @@
     .a-enter-vr {
       display: none !important;
     }
+    /* Add a basic fade-out for the loading screen for a smoother transition */
+    #loading-screen.hidden {
+      opacity: 0;
+      transition: opacity 1s ease-out;
+    }
   </style>
 </head>
 <body style="margin: 0; overflow: hidden;">
-  <!-- Loading Screen -->
   <div id="loading-screen" style="
     position: absolute;
     top: 50%;
@@ -23,29 +27,27 @@
     background: rgba(0, 0, 0, 0.6);
     padding: 10px 20px;
     border-radius: 8px;
-    z-index: 999;">
-    Loading AR experience... Please be mindful of your surroundings
+    z-index: 999;
+    text-align: center;">
+    Loading AR experience...<br>Please be mindful of your surroundings
   </div>
 
-  <!-- Instagram Button -->
   <div style="position: absolute; top: 20px; left: 20px; z-index: 999;">
     <a href="https://www.instagram.com/qrcky/" target="_blank">
       <img src="./insta.png" alt="Instagram" style="height: 28px; opacity: 0.8; cursor: pointer;" />
     </a>
   </div>
 
-  <!-- Inquiry Button -->
   <button onclick="window.open('https://www.qrcky.net/originals-paintings-black-and-white-art', '_blank')" 
     style="position: absolute; top: 20px; right: 20px; padding: 6px 14px; font-size: 14px; background-color: rgba(0, 0, 0, 0.8); color: white; border: none; border-radius: 6px; cursor: pointer; z-index: 999; height: 40px;">
     Inquiry
   </button>
 
-  <!-- AR Scene -->
   <a-scene mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 1; filterMinCF: 0.001; filterBeta: .01; missTolerance: 5; warmupTolerance: 5"
-           color-space="sRGB"
-           renderer="precision: medium; antialias: false; colorManagement: true; physicallyCorrectLights: true"
-           vr-mode-ui="enabled: false"
-           device-orientation-permission-ui="enabled: false">
+            color-space="sRGB"
+            renderer="precision: medium; antialias: false; colorManagement: true; physicallyCorrectLights: true"
+            vr-mode-ui="enabled: false"
+            device-orientation-permission-ui="enabled: false">
 
     <a-assets>
       <a-asset-item id="mayaModel" src="./maya.glb"></a-asset-item>
@@ -58,12 +60,10 @@
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <!-- Lighting -->
     <a-entity light="type: ambient; intensity: 0.7; color: #ffffff"></a-entity>
     <a-entity light="type: directional; intensity: 0.8; color: #ffffff; castShadow: true" position="1 1 1"></a-entity>
     <a-entity light="type: directional; intensity: 0.5; color: #ffffff" position="-1 1 1"></a-entity>
 
-    <!-- Targets and Models -->
     <a-entity mindar-image-target="targetIndex: 0">
       <a-gltf-model src="#mayaModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
@@ -96,14 +96,18 @@
       init: function () {
         this.targetFound = false;
         this.positionBuffer = [];
+        this.quaternionBuffer = []; // New buffer for quaternions
         this.maxBufferSize = 5;
-        this.smoothingFactor = 0.2;
+        this.smoothingFactor = 0.2; // Keep this between 0 and 1
         this.lastPosition = null;
-        this.lastRotation = null;
+        this.lastQuaternion = null; // Use quaternion for rotation smoothing
 
         this.el.addEventListener('targetFound', () => {
           this.targetFound = true;
           this.positionBuffer = [];
+          this.quaternionBuffer = [];
+          this.lastPosition = null; // Reset on target found
+          this.lastQuaternion = null; // Reset on target found
         });
 
         this.el.addEventListener('targetLost', () => {
@@ -114,14 +118,15 @@
         if (!this.targetFound) return;
 
         const currentPosition = this.el.object3D.position;
-        const currentRotation = this.el.object3D.rotation;
+        const currentQuaternion = this.el.object3D.quaternion; // Get current quaternion
 
         if (!this.lastPosition) {
           this.lastPosition = currentPosition.clone();
-          this.lastRotation = currentRotation.clone();
+          this.lastQuaternion = currentQuaternion.clone();
           return;
         }
 
+        // Position smoothing
         this.positionBuffer.push(currentPosition.clone());
         if (this.positionBuffer.length > this.maxBufferSize) {
           this.positionBuffer.shift();
@@ -132,38 +137,53 @@
           this.positionBuffer.forEach(pos => averagePosition.add(pos));
           averagePosition.divideScalar(this.positionBuffer.length);
           this.el.object3D.position.lerp(averagePosition, this.smoothingFactor);
-
-          const deltaRotation = {
-            x: currentRotation.x - this.lastRotation.x,
-            y: currentRotation.y - this.lastRotation.y,
-            z: currentRotation.z - this.lastRotation.z
-          };
-
-          if (Math.abs(deltaRotation.x) < 0.1 && Math.abs(deltaRotation.y) < 0.1 && Math.abs(deltaRotation.z) < 0.1) {
-            this.el.object3D.rotation.set(
-              this.lastRotation.x + deltaRotation.x * this.smoothingFactor,
-              this.lastRotation.y + deltaRotation.y * this.smoothingFactor,
-              this.lastRotation.z + deltaRotation.z * this.smoothingFactor
-            );
-          }
         }
 
+        // Rotation smoothing using slerp
+        // We accumulate quaternions in a buffer and then slerp towards the average.
+        // Or, more simply, just slerp directly towards the current quaternion with a smoothing factor.
+        // For simple smoothing, slerping towards the current value is often sufficient.
+        this.el.object3D.quaternion.slerp(this.lastQuaternion, 1 - this.smoothingFactor);
+        this.lastQuaternion.copy(currentQuaternion); // Update lastQuaternion with the raw current to prepare for the next frame's slerp
+
+        // The above slerp approach is simpler for continuous smoothing.
+        // If you wanted to average multiple past quaternions, it's more complex
+        // and usually involves converting to matrices, averaging, and converting back,
+        // or a specific averaging technique for quaternions (e.g., "average of quaternions").
+        // For general smoothing, direct slerp is a good balance.
+
         this.lastPosition.copy(this.el.object3D.position);
-        this.lastRotation.copy(this.el.object3D.rotation);
       }
     });
 
     const sceneEl = document.querySelector('a-scene');
+    const loadingScreen = document.getElementById('loading-screen');
+
+    // Function to hide loading screen
+    const hideLoadingScreen = () => {
+      loadingScreen.classList.add('hidden'); // Add class for fade-out
+      loadingScreen.addEventListener('transitionend', () => {
+        loadingScreen.style.display = 'none'; // Fully hide after transition
+      }, { once: true });
+    };
+
+    // Listen for scene loaded event
+    sceneEl.addEventListener('loaded', hideLoadingScreen);
+
+    // MindAR's camera access can sometimes trigger a "ready" state earlier than 'loaded'
+    // This is an additional listener, though 'loaded' is generally more reliable for A-Frame.
+    sceneEl.addEventListener('mindar-image-camera-start', hideLoadingScreen);
+
+    // Fallback timeout for loading screen
+    setTimeout(hideLoadingScreen, 10000); // Hide after 10 seconds as a fallback
+
+    // Renderer settings
     if (sceneEl.renderer) {
-      sceneEl.renderer.setPixelRatio(1);
+      sceneEl.renderer.setPixelRatio(window.devicePixelRatio || 1); // Use device pixel ratio for better quality
       sceneEl.renderer.sortObjects = false;
     }
 
-    const loadingScreen = document.getElementById('loading-screen');
-    sceneEl.addEventListener('loaded', () => loadingScreen.style.display = 'none');
-    document.addEventListener('model-loaded', () => loadingScreen.style.display = 'none');
-    setTimeout(() => loadingScreen.style.display = 'none', 10000);
-
+    // Debugging console logs
     sceneEl.addEventListener('targetFound', e => console.log('✅ Target found:', e.detail.targetIndex));
     sceneEl.addEventListener('targetLost', e => console.log('❌ Target lost:', e.detail.targetIndex));
   </script>
