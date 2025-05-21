@@ -9,13 +9,31 @@
       display: none !important;
     }
     /* Add a basic fade-out for the loading screen for a smoother transition */
-    #loading-screen.hidden {
+    #loading-screen.hidden,
+    #welcome-message.hidden { /* Apply hidden class to both */
       opacity: 0;
       transition: opacity 1s ease-out;
     }
   </style>
 </head>
 <body style="margin: 0; overflow: hidden;">
+
+  <div id="welcome-message" style="
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-size: 24px; /* Larger for a welcome message */
+    font-family: sans-serif;
+    color: white;
+    background: rgba(0, 0, 0, 0.9); /* More opaque for focus */
+    z-index: 1000; /* Higher z-index to be on top */
+    text-align: center;">
+    Welcome to the AR Exhibition
+  </div>
+
   <div id="loading-screen" style="
     position: absolute;
     top: 50%;
@@ -27,7 +45,7 @@
     background: rgba(0, 0, 0, 0.6);
     padding: 10px 20px;
     border-radius: 8px;
-    z-index: 999;
+    z-index: 999; /* Lower than welcome-message */
     text-align: center;">
     Loading AR experience...<br>Please be mindful of your surroundings
   </div>
@@ -136,7 +154,7 @@
   </a-scene>
 
   <script>
-    // Enhanced tracking component (no changes needed here from your original)
+    // Enhanced tracking component (no changes)
     AFRAME.registerComponent('enhanced-tracking', {
       init: function () {
         this.targetFound = false;
@@ -149,9 +167,8 @@
 
         this.el.addEventListener('targetFound', () => {
           this.targetFound = true;
-          this.positionBuffer = []; // Clear buffers on target found
+          this.positionBuffer = [];
           this.quaternionBuffer = [];
-          // Initialize last position/quaternion with current values to start smoothing smoothly
           this.lastPosition = this.el.object3D.position.clone();
           this.lastQuaternion = this.el.object3D.quaternion.clone();
           console.log('✅ Target found: Initializing smoothing');
@@ -164,42 +181,27 @@
       },
       tick: function () {
         if (!this.targetFound) return;
+        const currentPosition = this.el.object3D.position.clone();
+        const currentQuaternion = this.el.object3D.quaternion.clone();
 
-        // Get the current raw position and quaternion from MindAR's tracking
-        const currentPosition = this.el.object3D.position.clone(); // IMPORTANT: clone to work with a copy
-        const currentQuaternion = this.el.object3D.quaternion.clone(); // IMPORTANT: clone to work with a copy
-
-        // If this is the very first tick after targetFound, just set and return
         if (!this.lastPosition || !this.lastQuaternion) {
             this.lastPosition = currentPosition.clone();
             this.lastQuaternion = currentQuaternion.clone();
             return; 
         }
-
-        // Position smoothing using a moving average buffer
         this.positionBuffer.push(currentPosition);
         if (this.positionBuffer.length > this.maxBufferSize) {
-          this.positionBuffer.shift(); // Remove the oldest position
+          this.positionBuffer.shift();
         }
-
         let averagedPosition = new THREE.Vector3();
         if (this.positionBuffer.length > 0) {
           this.positionBuffer.forEach(pos => averagedPosition.add(pos));
           averagedPosition.divideScalar(this.positionBuffer.length);
         } else {
-          averagedPosition.copy(currentPosition); // Fallback if buffer is empty (shouldn't happen with maxBufferSize > 0)
+          averagedPosition.copy(currentPosition);
         }
-
-        // Apply linear interpolation (LERP) for position smoothing
-        // This makes the object smoothly move towards the averaged position
         this.el.object3D.position.lerp(averagedPosition, this.smoothingFactor);
-
-
-        // Rotation smoothing using spherical linear interpolation (SLERP)
-        // This smoothly interpolates the object's current rotation towards the raw current rotation
         this.el.object3D.quaternion.slerp(currentQuaternion, this.smoothingFactor);
-
-        // Update last known smoothed position and quaternion for the next tick's reference
         this.lastPosition.copy(this.el.object3D.position);
         this.lastQuaternion.copy(this.el.object3D.quaternion);
       }
@@ -207,37 +209,40 @@
 
     const sceneEl = document.querySelector('a-scene');
     const loadingScreen = document.getElementById('loading-screen');
+    const welcomeMessage = document.getElementById('welcome-message');
 
-    // Function to hide loading screen
-    const hideLoadingScreen = () => {
-      // Check if it's already hidden to prevent redundant actions
-      if (loadingScreen.classList.contains('hidden') || loadingScreen.style.display === 'none') {
+    // Function to hide a given element with fade-out
+    const hideElement = (element) => {
+      if (element.classList.contains('hidden') || element.style.display === 'none') {
         return; 
       }
-      loadingScreen.classList.add('hidden'); // Add class for fade-out
-      loadingScreen.addEventListener('transitionend', () => {
-        loadingScreen.style.display = 'none'; // Fully hide after transition
+      element.classList.add('hidden');
+      element.addEventListener('transitionend', () => {
+        element.style.display = 'none';
       }, { once: true });
-      console.log('Loading screen hidden.');
+      console.log(`${element.id} hidden.`);
     };
 
-    // Listen for scene loaded event - reliable for A-Frame assets
-    sceneEl.addEventListener('loaded', hideLoadingScreen);
+    // Hide the welcome message after 10 seconds
+    setTimeout(() => {
+      hideElement(welcomeMessage);
+    }, 10000); // 10 seconds
 
-    // Fallback timeout for loading screen - ensures it hides even if 'loaded' isn't fired
-    // Reduced to 3 seconds for a quicker fallback
-    const fallbackTimeout = setTimeout(hideLoadingScreen, 3000); 
+    // Hide the loading screen when A-Frame scene is loaded
+    const loadingScreenHideTimeout = setTimeout(() => {
+        hideElement(loadingScreen);
+    }, 5000); // Fallback for loading screen: hide after 5 seconds if 'loaded' event doesn't fire
 
-    // Clear the fallback timeout if the scene loads successfully before it triggers
     sceneEl.addEventListener('loaded', () => {
-      clearTimeout(fallbackTimeout);
-      console.log('A-Frame scene loaded, clearing fallback timeout.');
-    }, { once: true }); // Ensure this listener runs only once
+      clearTimeout(loadingScreenHideTimeout); // Clear fallback if loaded
+      hideElement(loadingScreen); // Hide the loading screen
+      console.log('A-Frame scene loaded, clearing loading screen timeout.');
+    }, { once: true });
 
     // Renderer settings
     if (sceneEl.renderer) {
-      sceneEl.renderer.setPixelRatio(window.devicePixelRatio || 1); // Use device pixel ratio for better quality
-      sceneEl.renderer.sortObjects = false; // Generally good for AR
+      sceneEl.renderer.setPixelRatio(window.devicePixelRatio || 1);
+      sceneEl.renderer.sortObjects = false;
     }
 
     // Debugging console logs for target events
