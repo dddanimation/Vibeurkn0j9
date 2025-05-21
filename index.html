@@ -380,7 +380,7 @@
     const helpButton = document.getElementById('help-button');
     const helpModal = document.getElementById('help-modal');
     const closeHelpButton = document.getElementById('close-help-button');
-    // NEW: Get a reference to the audio element
+    // Get a reference to the audio element - UPDATED ID
     const museumAudioElement = document.getElementById('museum-audio');
 
 
@@ -455,6 +455,24 @@
         }
     });
 
+    // Stop audio after 7 minutes
+    // Convert 7 minutes to milliseconds (7 * 60 * 1000)
+    const audioDurationMs = 7 * 60 * 1000;
+
+    // We'll set a timeout to stop the audio a bit after it's most likely to have started playing.
+    // A good place is after the 'loaded' event of the scene, as that signifies the AR experience is ready.
+    sceneEl.addEventListener('loaded', () => {
+        // ... (existing code to hide loading screen and try to play audio) ...
+
+        // Set the timeout to stop the audio after 7 minutes
+        setTimeout(() => {
+            if (museumAudioElement && !museumAudioElement.paused) {
+                museumAudioElement.pause();
+                museumAudioElement.currentTime = 0; // Optional: reset playback to the beginning
+                console.log("Museum audio stopped after 7 minutes.");
+            }
+        }, audioDurationMs); // 7 minutes in milliseconds
+    }, { once: true }); // Ensure this 'loaded' event listener only fires once
 
     // Renderer settings
     if (sceneEl.renderer) {
