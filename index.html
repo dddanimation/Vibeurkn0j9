@@ -410,7 +410,7 @@
     // Hide the loading screen when A-Frame scene is loaded
     const loadingScreenHideTimeout = setTimeout(() => {
         hideElement(loadingScreen);
-    }, 3000); // Fallback for loading screen: hide after 5 seconds if 'loaded' event doesn't fire
+    }, 2000); // Fallback for loading screen: hide after 5 seconds if 'loaded' event doesn't fire
 
     sceneEl.addEventListener('loaded', () => {
       clearTimeout(loadingScreenHideTimeout); // Clear fallback if loaded
