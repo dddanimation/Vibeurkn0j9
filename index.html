@@ -405,12 +405,12 @@
     // Hide the welcome message after 10 seconds (now 7 seconds for the fade)
     setTimeout(() => {
       hideElement(welcomeMessage);
-    }, 10000); // This is still the total duration the welcome message is visible before hiding
+    }, 3500); // This is still the total duration the welcome message is visible before hiding
 
     // Hide the loading screen when A-Frame scene is loaded
     const loadingScreenHideTimeout = setTimeout(() => {
         hideElement(loadingScreen);
-    }, 5000); // Fallback for loading screen: hide after 5 seconds if 'loaded' event doesn't fire
+    }, 3000); // Fallback for loading screen: hide after 5 seconds if 'loaded' event doesn't fire
 
     sceneEl.addEventListener('loaded', () => {
       clearTimeout(loadingScreenHideTimeout); // Clear fallback if loaded
