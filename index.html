@@ -5,128 +5,49 @@
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
   <style>
-    body { margin: 0; overflow: hidden; }
-    .a-enter-vr { display: none !important; }
-
-    /* Loading screen styles */
-    #loading-screen {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 18px;
-      font-family: sans-serif;
-      color: white;
-      background: rgba(0, 0, 0, 0.7); /* Slightly darker for better readability */
-      padding: 15px 25px; /* Slightly more padding */
-      border-radius: 8px;
-      z-index: 1000; /* Ensure it's above other elements */
-      text-align: center;
-      transition: opacity 1s ease-out; /* Smooth fade-out */
+    .a-enter-vr {
+      display: none !important;
     }
+    /* Add a basic fade-out for the loading screen for a smoother transition */
     #loading-screen.hidden {
       opacity: 0;
-      pointer-events: none; /* Prevent interaction after hidden */
-    }
-
-    /* New instructions overlay */
-    #instruction-overlay {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 80%; /* Adjust as needed */
-      max-width: 400px; /* Max width for larger screens */
-      background: rgba(0, 0, 0, 0.75);
-      color: white;
-      font-family: sans-serif;
-      font-size: 16px;
-      padding: 25px;
-      border-radius: 10px;
-      text-align: center;
-      z-index: 998; /* Below loading screen, above AR content */
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-      opacity: 1;
-      transition: opacity 0.5s ease-out;
-    }
-    #instruction-overlay.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-    #instruction-overlay h3 {
-      margin-top: 0;
-      font-size: 20px;
-      color: #FFF;
-    }
-    #instruction-overlay p {
-      margin-bottom: 15px;
-      line-height: 1.5;
-    }
-    #instruction-overlay .highlight {
-      color: #FFD700; /* Gold or a bright color for emphasis */
-      font-weight: bold;
-    }
-
-    /* Basic styling for the social and inquiry buttons for better visibility */
-    .top-left-button, .top-right-button {
-      position: absolute;
-      z-index: 999;
-      background-color: rgba(0, 0, 0, 0.7);
-      padding: 6px 14px;
-      border-radius: 6px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .top-left-button { top: 20px; left: 20px; }
-    .top-right-button { top: 20px; right: 20px; }
-    .top-left-button img { height: 28px; opacity: 0.9; cursor: pointer; }
-    .top-right-button button {
-      font-size: 14px;
-      background-color: transparent; /* Make button background transparent */
-      color: white;
-      border: none;
-      cursor: pointer;
-      padding: 0; /* Remove default button padding */
-      height: 100%;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      transition: opacity 1s ease-out;
     }
   </style>
 </head>
 <body style="margin: 0; overflow: hidden;">
-  <div id="loading-screen">
-    Loading AR experience...<br>Please wait a moment.
+  <div id="loading-screen" style="
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+    font-family: sans-serif;
+    color: white;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 10px 20px;
+    border-radius: 8px;
+    z-index: 999;
+    text-align: center;">
+    Loading AR experience...<br>Please be mindful of your surroundings
   </div>
 
-  <div id="instruction-overlay" class="hidden">
-    <h3>Welcome to the AR Exhibition!</h3>
-    <p>To view the Augmented Reality art:</p>
-    <p><span class="highlight">Point your device's camera at any of the physical paintings on display.</span></p>
-    <p>The digital artwork will appear on your screen.</p>
-    <p>Explore by moving your device around the painting!</p>
-  </div>
-
-  <div class="top-left-button">
+  <div style="position: absolute; top: 20px; left: 20px; z-index: 999;">
     <a href="https://www.instagram.com/qrcky/" target="_blank">
-      <img src="./insta.png" alt="Instagram" />
+      <img src="./insta.png" alt="Instagram" style="height: 28px; opacity: 0.8; cursor: pointer;" />
     </a>
   </div>
 
-  <div class="top-right-button">
-    <button onclick="window.open('https://www.qrcky.net/originals-paintings-black-and-white-art', '_blank')">
-      Inquiry
-    </button>
-  </div>
+  <button onclick="window.open('https://www.qrcky.net/originals-paintings-black-and-white-art', '_blank')" 
+    style="position: absolute; top: 20px; right: 20px; padding: 6px 14px; font-size: 14px; background-color: rgba(0, 0, 0, 0.8); color: white; border: none; border-radius: 6px; cursor: pointer; z-index: 999; height: 40px;">
+    Inquiry
+  </button>
 
   <a-scene mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 1; filterMinCF: 0.001; filterBeta: 0.05; missTolerance: 10; warmupTolerance: 10"
-             color-space="sRGB"
-             renderer="precision: medium; antialias: false; colorManagement: true; physicallyCorrectLights: true"
-             vr-mode-ui="enabled: false"
-             device-orientation-permission-ui="enabled: false">
+            color-space="sRGB"
+            renderer="precision: medium; antialias: false; colorManagement: true; physicallyCorrectLights: true"
+            vr-mode-ui="enabled: false"
+            device-orientation-permission-ui="enabled: false">
 
     <a-assets>
       <a-asset-item id="mayaModel" src="./maya.glb"></a-asset-item>
@@ -139,7 +60,7 @@
       <a-asset-item id="model7" src="./loys.glb"></a-asset-item>
       <a-asset-item id="model8" src="./base.glb"></a-asset-item>
       <a-asset-item id="model9" src="./maps.glb"></a-asset-item>
-      <a-asset-item id="Model10" src="./miss_regret.glb"></a-asset-item>
+      <a-asset-item id="model10" src="./miss_regret.glb"></a-asset-item>
       <a-asset-item id="model11" src="./porcelainv3.glb"></a-asset-item>
       <a-asset-item id="model12" src="./sdwtbs.glb"></a-asset-item>
       <a-asset-item id="model13" src="./transcending-myself.glb"></a-asset-item>
@@ -155,45 +76,59 @@
     <a-entity mindar-image-target="targetIndex: 0">
       <a-gltf-model src="#mayaModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 1">
       <a-gltf-model src="#regretModel" position="0 0 -0.3" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 2">
       <a-gltf-model src="#seedlessFruitModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 3">
       <a-gltf-model src="#mapisModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 4">
       <a-gltf-model src="#negusAnewModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 5">
       <a-gltf-model src="#ebonyModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 6">
       <a-gltf-model src="#model6" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 7">
       <a-gltf-model src="#model7" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 8">
       <a-gltf-model src="#model8" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 9">
       <a-gltf-model src="#model9" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 10">
       <a-gltf-model src="#model10" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 11">
       <a-gltf-model src="#model11" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 12">
       <a-gltf-model src="#model12" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 13">
       <a-gltf-model src="#model13" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 14">
       <a-gltf-model src="#model14" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
@@ -201,51 +136,50 @@
   </a-scene>
 
   <script>
-    // Enhanced tracking component (no changes needed here, copy your original)
+    // Enhanced tracking component (no changes needed here from your original)
     AFRAME.registerComponent('enhanced-tracking', {
       init: function () {
         this.targetFound = false;
         this.positionBuffer = [];
         this.quaternionBuffer = [];
-        this.maxBufferSize = 5;
-        this.smoothingFactor = 0.3;
+        this.maxBufferSize = 5; // Number of frames to average for position smoothing
+        this.smoothingFactor = 0.3; // Recommended range: 0.1 to 0.8
         this.lastPosition = null;
         this.lastQuaternion = null;
 
         this.el.addEventListener('targetFound', () => {
           this.targetFound = true;
-          this.positionBuffer = [];
+          this.positionBuffer = []; // Clear buffers on target found
           this.quaternionBuffer = [];
+          // Initialize last position/quaternion with current values to start smoothing smoothly
           this.lastPosition = this.el.object3D.position.clone();
           this.lastQuaternion = this.el.object3D.quaternion.clone();
           console.log('✅ Target found: Initializing smoothing');
-          // Hide instruction overlay when target is found
-          document.getElementById('instruction-overlay').classList.add('hidden');
         });
 
         this.el.addEventListener('targetLost', () => {
           this.targetFound = false;
           console.log('❌ Target lost: Stopping smoothing');
-          // Optionally, show a subtle hint when target is lost
-          // You might not want to re-show the full instruction overlay, but a small "Keep pointing" could be useful.
-          // For now, we'll keep it simple and assume they've got it after the first successful scan.
         });
       },
       tick: function () {
         if (!this.targetFound) return;
 
-        const currentPosition = this.el.object3D.position.clone();
-        const currentQuaternion = this.el.object3D.quaternion.clone();
+        // Get the current raw position and quaternion from MindAR's tracking
+        const currentPosition = this.el.object3D.position.clone(); // IMPORTANT: clone to work with a copy
+        const currentQuaternion = this.el.object3D.quaternion.clone(); // IMPORTANT: clone to work with a copy
 
+        // If this is the very first tick after targetFound, just set and return
         if (!this.lastPosition || !this.lastQuaternion) {
             this.lastPosition = currentPosition.clone();
             this.lastQuaternion = currentQuaternion.clone();
-            return;
+            return; 
         }
 
+        // Position smoothing using a moving average buffer
         this.positionBuffer.push(currentPosition);
         if (this.positionBuffer.length > this.maxBufferSize) {
-          this.positionBuffer.shift();
+          this.positionBuffer.shift(); // Remove the oldest position
         }
 
         let averagedPosition = new THREE.Vector3();
@@ -253,12 +187,19 @@
           this.positionBuffer.forEach(pos => averagedPosition.add(pos));
           averagedPosition.divideScalar(this.positionBuffer.length);
         } else {
-          averagedPosition.copy(currentPosition);
+          averagedPosition.copy(currentPosition); // Fallback if buffer is empty (shouldn't happen with maxBufferSize > 0)
         }
 
+        // Apply linear interpolation (LERP) for position smoothing
+        // This makes the object smoothly move towards the averaged position
         this.el.object3D.position.lerp(averagedPosition, this.smoothingFactor);
+
+
+        // Rotation smoothing using spherical linear interpolation (SLERP)
+        // This smoothly interpolates the object's current rotation towards the raw current rotation
         this.el.object3D.quaternion.slerp(currentQuaternion, this.smoothingFactor);
 
+        // Update last known smoothed position and quaternion for the next tick's reference
         this.lastPosition.copy(this.el.object3D.position);
         this.lastQuaternion.copy(this.el.object3D.quaternion);
       }
@@ -266,42 +207,42 @@
 
     const sceneEl = document.querySelector('a-scene');
     const loadingScreen = document.getElementById('loading-screen');
-    const instructionOverlay = document.getElementById('instruction-overlay');
 
-    // Function to hide loading screen and show instructions
-    const hideLoadingScreenAndShowInstructions = () => {
-      loadingScreen.classList.add('hidden');
+    // Function to hide loading screen
+    const hideLoadingScreen = () => {
+      // Check if it's already hidden to prevent redundant actions
+      if (loadingScreen.classList.contains('hidden') || loadingScreen.style.display === 'none') {
+        return; 
+      }
+      loadingScreen.classList.add('hidden'); // Add class for fade-out
       loadingScreen.addEventListener('transitionend', () => {
-        loadingScreen.style.display = 'none';
-        instructionOverlay.classList.remove('hidden'); // Show instructions after loading is fully hidden
+        loadingScreen.style.display = 'none'; // Fully hide after transition
       }, { once: true });
-      console.log('Loading screen hidden, instructions shown.');
+      console.log('Loading screen hidden.');
     };
 
     // Listen for scene loaded event - reliable for A-Frame assets
-    sceneEl.addEventListener('loaded', hideLoadingScreenAndShowInstructions);
+    sceneEl.addEventListener('loaded', hideLoadingScreen);
 
     // Fallback timeout for loading screen - ensures it hides even if 'loaded' isn't fired
-    setTimeout(hideLoadingScreenAndShowInstructions, 10000); // Hide after 10 seconds as a fallback
+    // Reduced to 3 seconds for a quicker fallback
+    const fallbackTimeout = setTimeout(hideLoadingScreen, 3000); 
+
+    // Clear the fallback timeout if the scene loads successfully before it triggers
+    sceneEl.addEventListener('loaded', () => {
+      clearTimeout(fallbackTimeout);
+      console.log('A-Frame scene loaded, clearing fallback timeout.');
+    }, { once: true }); // Ensure this listener runs only once
 
     // Renderer settings
     if (sceneEl.renderer) {
-      sceneEl.renderer.setPixelRatio(window.devicePixelRatio || 1);
-      sceneEl.renderer.sortObjects = false;
+      sceneEl.renderer.setPixelRatio(window.devicePixelRatio || 1); // Use device pixel ratio for better quality
+      sceneEl.renderer.sortObjects = false; // Generally good for AR
     }
 
     // Debugging console logs for target events
     sceneEl.addEventListener('targetFound', e => console.log('✅ Target found:', e.detail.targetIndex));
     sceneEl.addEventListener('targetLost', e => console.log('❌ Target lost:', e.detail.targetIndex));
-
-    // Optional: Hide instructions after a delay if target isn't found, or if user interacts
-    // For now, it only hides when a target is found, which is a good default.
-    // If you find users stare at the instructions for too long, you could add a timer here.
-    // setTimeout(() => {
-    //   if (!sceneEl.components['enhanced-tracking'].targetFound) {
-    //     instructionOverlay.classList.add('hidden');
-    //   }
-    // }, 15000); // Hide instructions after 15 seconds if no target found
   </script>
 </body>
 </html>
