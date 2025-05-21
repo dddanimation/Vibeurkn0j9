@@ -43,7 +43,7 @@
     Inquiry
   </button>
 
-  <a-scene mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 1; filterMinCF: 0.001; filterBeta: .01; missTolerance: 5; warmupTolerance: 5"
+  <a-scene mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 1; filterMinCF: 0.001; filterBeta: 0.05; missTolerance: 10; warmupTolerance: 10"
             color-space="sRGB"
             renderer="precision: medium; antialias: false; colorManagement: true; physicallyCorrectLights: true"
             vr-mode-ui="enabled: false"
@@ -96,63 +96,68 @@
       init: function () {
         this.targetFound = false;
         this.positionBuffer = [];
-        this.quaternionBuffer = []; // New buffer for quaternions
-        this.maxBufferSize = 5;
-        this.smoothingFactor = 0.2; // Keep this between 0 and 1
+        this.quaternionBuffer = [];
+        this.maxBufferSize = 5; // Number of frames to average for position smoothing
+        // Adjust this value! Higher = smoother but more lag. Lower = more reactive but more jitter.
+        this.smoothingFactor = 0.3; // Recommended range: 0.1 to 0.8
         this.lastPosition = null;
-        this.lastQuaternion = null; // Use quaternion for rotation smoothing
+        this.lastQuaternion = null;
 
         this.el.addEventListener('targetFound', () => {
           this.targetFound = true;
-          this.positionBuffer = [];
+          this.positionBuffer = []; // Clear buffers on target found
           this.quaternionBuffer = [];
-          this.lastPosition = null; // Reset on target found
-          this.lastQuaternion = null; // Reset on target found
+          // Initialize last position/quaternion with current values to start smoothing smoothly
+          this.lastPosition = this.el.object3D.position.clone();
+          this.lastQuaternion = this.el.object3D.quaternion.clone();
+          console.log('✅ Target found: Initializing smoothing');
         });
 
         this.el.addEventListener('targetLost', () => {
           this.targetFound = false;
+          console.log('❌ Target lost: Stopping smoothing');
         });
       },
       tick: function () {
         if (!this.targetFound) return;
 
-        const currentPosition = this.el.object3D.position;
-        const currentQuaternion = this.el.object3D.quaternion; // Get current quaternion
+        // Get the current raw position and quaternion from MindAR's tracking
+        const currentPosition = this.el.object3D.position.clone(); // IMPORTANT: clone to work with a copy
+        const currentQuaternion = this.el.object3D.quaternion.clone(); // IMPORTANT: clone to work with a copy
 
-        if (!this.lastPosition) {
-          this.lastPosition = currentPosition.clone();
-          this.lastQuaternion = currentQuaternion.clone();
-          return;
+        // If this is the very first tick after targetFound, just set and return
+        if (!this.lastPosition || !this.lastQuaternion) {
+            this.lastPosition = currentPosition.clone();
+            this.lastQuaternion = currentQuaternion.clone();
+            return; 
         }
 
-        // Position smoothing
-        this.positionBuffer.push(currentPosition.clone());
+        // Position smoothing using a moving average buffer
+        this.positionBuffer.push(currentPosition);
         if (this.positionBuffer.length > this.maxBufferSize) {
-          this.positionBuffer.shift();
+          this.positionBuffer.shift(); // Remove the oldest position
         }
 
+        let averagedPosition = new THREE.Vector3();
         if (this.positionBuffer.length > 0) {
-          const averagePosition = new THREE.Vector3();
-          this.positionBuffer.forEach(pos => averagePosition.add(pos));
-          averagePosition.divideScalar(this.positionBuffer.length);
-          this.el.object3D.position.lerp(averagePosition, this.smoothingFactor);
+          this.positionBuffer.forEach(pos => averagedPosition.add(pos));
+          averagedPosition.divideScalar(this.positionBuffer.length);
+        } else {
+          averagedPosition.copy(currentPosition); // Fallback if buffer is empty (shouldn't happen with maxBufferSize > 0)
         }
 
-        // Rotation smoothing using slerp
-        // We accumulate quaternions in a buffer and then slerp towards the average.
-        // Or, more simply, just slerp directly towards the current quaternion with a smoothing factor.
-        // For simple smoothing, slerping towards the current value is often sufficient.
-        this.el.object3D.quaternion.slerp(this.lastQuaternion, 1 - this.smoothingFactor);
-        this.lastQuaternion.copy(currentQuaternion); // Update lastQuaternion with the raw current to prepare for the next frame's slerp
+        // Apply linear interpolation (LERP) for position smoothing
+        // This makes the object smoothly move towards the averaged position
+        this.el.object3D.position.lerp(averagedPosition, this.smoothingFactor);
 
-        // The above slerp approach is simpler for continuous smoothing.
-        // If you wanted to average multiple past quaternions, it's more complex
-        // and usually involves converting to matrices, averaging, and converting back,
-        // or a specific averaging technique for quaternions (e.g., "average of quaternions").
-        // For general smoothing, direct slerp is a good balance.
 
+        // Rotation smoothing using spherical linear interpolation (SLERP)
+        // This smoothly interpolates the object's current rotation towards the raw current rotation
+        this.el.object3D.quaternion.slerp(currentQuaternion, this.smoothingFactor);
+
+        // Update last known smoothed position and quaternion for the next tick's reference
         this.lastPosition.copy(this.el.object3D.position);
+        this.lastQuaternion.copy(this.el.object3D.quaternion);
       }
     });
 
@@ -165,25 +170,22 @@
       loadingScreen.addEventListener('transitionend', () => {
         loadingScreen.style.display = 'none'; // Fully hide after transition
       }, { once: true });
+      console.log('Loading screen hidden.');
     };
 
-    // Listen for scene loaded event
+    // Listen for scene loaded event - reliable for A-Frame assets
     sceneEl.addEventListener('loaded', hideLoadingScreen);
 
-    // MindAR's camera access can sometimes trigger a "ready" state earlier than 'loaded'
-    // This is an additional listener, though 'loaded' is generally more reliable for A-Frame.
-    sceneEl.addEventListener('mindar-image-camera-start', hideLoadingScreen);
-
-    // Fallback timeout for loading screen
+    // Fallback timeout for loading screen - ensures it hides even if 'loaded' isn't fired
     setTimeout(hideLoadingScreen, 10000); // Hide after 10 seconds as a fallback
 
     // Renderer settings
     if (sceneEl.renderer) {
       sceneEl.renderer.setPixelRatio(window.devicePixelRatio || 1); // Use device pixel ratio for better quality
-      sceneEl.renderer.sortObjects = false;
+      sceneEl.renderer.sortObjects = false; // Generally good for AR
     }
 
-    // Debugging console logs
+    // Debugging console logs for target events
     sceneEl.addEventListener('targetFound', e => console.log('✅ Target found:', e.detail.targetIndex));
     sceneEl.addEventListener('targetLost', e => console.log('❌ Target lost:', e.detail.targetIndex));
   </script>
