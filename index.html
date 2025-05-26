@@ -223,7 +223,7 @@
   </div>
 
 
-  <a-scene mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 1; filterMinCF: 0.005; filterBeta: 0.05; missTolerance: 15; warmupTolerance: 10"
+  <a-scene mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 1; filterMinCF: 0.001; filterBeta: 0.01; missTolerance: 5; warmupTolerance: 5"
             color-space="sRGB"
             renderer="precision: medium; antialias: false; colorManagement: true; physicallyCorrectLights: true"
             vr-mode-ui="enabled: false"
@@ -328,7 +328,7 @@
         this.positionBuffer = [];
         this.quaternionBuffer = [];
         this.maxBufferSize = 10; // Number of frames to average for position smoothing
-        this.smoothingFactor = 0.8; // Recommended range: 0.1 to 0.8
+        this.smoothingFactor = 0.5; // Recommended range: 0.1 to 0.8
         this.lastPosition = null;
         this.lastQuaternion = null;
 
