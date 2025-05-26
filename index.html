@@ -5,44 +5,6 @@
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
   <style>
-    /* Add this to your existing <style> block */
-    #debug-panel {
-      position: fixed; /* Changed from absolute to fixed for better viewport stability */
-      bottom: 10px;    /* Positioned at the bottom */
-      left: 10px;
-      background: rgba(30, 30, 30, 0.85); /* Slightly darker, more opaque */
-      color: white;
-      padding: 15px;
-      border-radius: 8px;
-      z-index: 10000; /* Ensure it's on top of everything */
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 12px;
-      width: 280px; /* Adjusted width */
-      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-    }
-
-    #debug-panel h4 {
-      margin-top: 0;
-      margin-bottom: 15px;
-      font-size: 14px;
-      border-bottom: 1px solid #555;
-      padding-bottom: 5px;
-    }
-
-    #debug-panel div {
-      margin-bottom: 12px;
-    }
-
-    #debug-panel label {
-      display: block;
-      margin-bottom: 5px;
-    }
-
-    #debug-panel input[type="range"] {
-      width: 100%;
-      cursor: pointer;
-    }
-
     .a-enter-vr {
       display: none !important;
     }
@@ -91,11 +53,12 @@
         margin-top: 20px; /* More space above the note */
     }
 
+
     /* Styling for the help modal */
     #help-modal {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
-      display: flex; /* Changed to flex to enable visibility toggle */
+      display: flex;
       justify-content: center;
       align-items: center;
       flex-direction: column;
@@ -107,14 +70,11 @@
       /* Start hidden */
       opacity: 0;
       pointer-events: none; /* Allows clicks to pass through when hidden */
-      visibility: hidden; /* Start hidden semantically */
-      transition: opacity 0.3s ease-in-out, visibility 0s linear 0.3s; /* Delay visibility transition */
     }
 
     #help-modal.visible {
         opacity: 1;
         pointer-events: auto; /* Enable clicks when visible */
-        visibility: visible;
         transition: opacity 0.3s ease-in-out;
     }
 
@@ -262,11 +222,12 @@
     </div>
   </div>
 
-  <a-scene mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 1; filterMinCF: 0.001; filterBeta: 0.01; missTolerance: 5; warmupTolerance: 5"
-           color-space="sRGB"
-           renderer="precision: medium; antialias: false; colorManagement: true; physicallyCorrectLights: true"
-           vr-mode-ui="enabled: false"
-           device-orientation-permission-ui="enabled: false">
+
+  <a-scene mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 1; filterMinCF: 0.001; filterBeta: 0.05; missTolerance: 10; warmupTolerance: 10"
+            color-space="sRGB"
+            renderer="precision: medium; antialias: false; colorManagement: true; physicallyCorrectLights: true"
+            vr-mode-ui="enabled: false"
+            device-orientation-permission-ui="enabled: false">
 
     <a-assets>
       <a-asset-item id="mayaModel" src="./maya.glb"></a-asset-item>
@@ -279,7 +240,8 @@
       <a-asset-item id="model7" src="./loys.glb"></a-asset-item>
       <a-asset-item id="model8" src="./base.glb"></a-asset-item>
       <a-asset-item id="model9" src="./maps.glb"></a-asset-item>
-      <a-asset-item id="model10" src="./miss_regret.glb"></a-asset-item> <a-asset-item id="model11" src="./porcelainv3.glb"></a-asset-item>
+      <a-asset-item id="model10" src="./miss_regret.glb"></a-asset-item>
+      <a-asset-item id="model11" src="./porcelainv3.glb"></a-asset-item>
       <a-asset-item id="model12" src="./sdwtbs.glb"></a-asset-item>
       <a-asset-item id="model13" src="./transcending-myself.glb"></a-asset-item>
       <a-asset-item id="model14" src="./twins.glb"></a-asset-item>
@@ -289,6 +251,7 @@
 
     <a-entity sound="src: #museum-audio; loop: true; autoplay: true; volume: 0.5"></a-entity>
 
+
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
     <a-entity light="type: ambient; intensity: 2.0; color: #ffffff"></a-entity>
@@ -296,365 +259,230 @@
     <a-entity light="type: directional; intensity: 0.5; color: #ffffff" position="-1 1 1"></a-entity>
 
     <a-entity mindar-image-target="targetIndex: 0">
-      <a-gltf-model src="#mayaModel" position="0 0 0" scale="0.254 0.254 0.254" animation-mixer enhanced-tracking></a-gltf-model>
+      <a-gltf-model src="#mayaModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 1">
-      <a-gltf-model src="#regretModel" position="0 0 -0.3" scale="0.254 0.254 0.254" animation-mixer enhanced-tracking></a-gltf-model>
+      <a-gltf-model src="#regretModel" position="0 0 -0.3" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 2">
-      <a-gltf-model src="#seedlessFruitModel" position="0 0 0" scale="0.254 0.254 0.254" animation-mixer enhanced-tracking></a-gltf-model>
+      <a-gltf-model src="#seedlessFruitModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 3">
-      <a-gltf-model src="#mapisModel" position="0 0 0" scale="0.254 0.254 0.254" animation-mixer enhanced-tracking></a-gltf-model>
+      <a-gltf-model src="#mapisModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 4">
-      <a-gltf-model src="#negusAnewModel" position="0 0 0" scale="0.254 0.254 0.254" animation-mixer enhanced-tracking></a-gltf-model>
+      <a-gltf-model src="#negusAnewModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 5">
-      <a-gltf-model src="#ebonyModel" position="0 0 0" scale="0.254 0.254 0.254" animation-mixer enhanced-tracking></a-gltf-model>
+      <a-gltf-model src="#ebonyModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 6">
-      <a-gltf-model src="#model6" position="0 0 0" scale="0.254 0.254 0.254" animation-mixer enhanced-tracking></a-gltf-model>
+      <a-gltf-model src="#model6" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 7">
-      <a-gltf-model src="#model7" position="0 0 0" scale="0.254 0.254 0.254" animation-mixer enhanced-tracking></a-gltf-model>
+      <a-gltf-model src="#model7" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 8">
-      <a-gltf-model src="#model8" position="0 0 0" scale="0.254 0.254 0.254" animation-mixer enhanced-tracking></a-gltf-model>
+      <a-gltf-model src="#model8" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 9">
-      <a-gltf-model src="#model9" position="0 0 0" scale="0.254 0.254 0.254" animation-mixer enhanced-tracking></a-gltf-model>
+      <a-gltf-model src="#model9" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 10">
-      <a-gltf-model src="#model10" position="0 0 0" scale="0.254 0.254 0.254" animation-mixer enhanced-tracking></a-gltf-model>
+      <a-gltf-model src="#model10" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 11">
-      <a-gltf-model src="#model11" position="0 0 0" scale="0.254 0.254 0.254" animation-mixer enhanced-tracking></a-gltf-model>
+      <a-gltf-model src="#model11" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 12">
-      <a-gltf-model src="#model12" position="0 0 0" scale="0.254 0.254 0.254" animation-mixer enhanced-tracking></a-gltf-model>
+      <a-gltf-model src="#model12" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 13">
-      <a-gltf-model src="#model13" position="0 0 0" scale="0.254 0.254 0.254" animation-mixer enhanced-tracking></a-gltf-model>
+      <a-gltf-model src="#model13" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 14">
-      <a-gltf-model src="#model14" position="0 0 0" scale="0.254 0.254 0.254" animation-mixer enhanced-tracking></a-gltf-model>
+      <a-gltf-model src="#model14" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
   </a-scene>
 
-  <div id="debug-panel">
-    <h4>Live Tracking Parameters</h4>
-    <div>
-      <label for="minCfSlider">MindAR MinCF (<span id="minCfValue">0.000</span>):</label>
-      <input type="range" id="minCfSlider" min="0.0001" max="0.1" step="0.0001">
-    </div>
-    <div>
-      <label for="betaSlider">MindAR Beta (<span id="betaValue">0.000</span>):</label>
-      <input type="range" id="betaSlider" min="0.001" max="0.5" step="0.001">
-    </div>
-    <div>
-      <label for="smoothingFactorSlider">Custom Smoothing (<span id="smoothingFactorValue">0.00</span>):</label>
-      <input type="range" id="smoothingFactorSlider" min="0.05" max="1.0" step="0.01">
-    </div>
-  </div>
-
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const sceneEl = document.querySelector('a-scene');
-      const loadingScreen = document.getElementById('loading-screen');
-      const welcomeMessage = document.getElementById('welcome-message');
-      const helpModal = document.getElementById('help-modal');
-      const helpButton = document.getElementById('help-button');
-      const closeHelpButton = document.getElementById('close-help-button');
-      const museumAudioElement = document.getElementById('museum-audio');
+    // Enhanced tracking component (no changes)
+    AFRAME.registerComponent('enhanced-tracking', {
+      init: function () {
+        this.targetFound = false;
+        this.positionBuffer = [];
+        this.quaternionBuffer = [];
+        this.maxBufferSize = 5; // Number of frames to average for position smoothing
+        this.smoothingFactor = 0.3; // Recommended range: 0.1 to 0.8
+        this.lastPosition = null;
+        this.lastQuaternion = null;
 
-      console.log('Welcome message element:', welcomeMessage); // Check if found
-
-      // --- Utility Functions ---
-      const hideElement = (element, elementName = 'element') => {
-        if (!element) {
-          console.error(`[hideElement] ${elementName} not found for hiding.`);
-          return;
-        }
-        if (element.classList.contains('hidden') || element.style.display === 'none') {
-          console.log(`[hideElement] ${elementName} is already hidden or display is none.`);
-          return;
-        }
-        console.log(`[hideElement] Adding .hidden class to ${elementName} (id: ${element.id})`);
-        element.classList.add('hidden');
-
-        element.addEventListener('transitionend', function onTransitionEnd() {
-          console.log(`[hideElement] ${elementName} (id: ${element.id}) transition ended. Setting display to none.`);
-          element.style.display = 'none';
-        }, { once: true });
-
-        // Fallback timer in case transitionend doesn't fire
-        setTimeout(() => {
-          if (element.style.display !== 'none' && element.classList.contains('hidden')) {
-              console.warn(`[hideElement] ${elementName} (id: ${element.id}) transitionend fallback. Forcing display:none.`);
-              element.style.display = 'none';
-          }
-        }, 4500); // A bit longer than your 4s transition
-      };
-
-      const showElement = (element, elementName = 'element') => {
-        if (!element) {
-            console.error(`[showElement] ${elementName} not found for showing.`);
-            return;
-        }
-        console.log(`[showElement] Making ${elementName} (id: ${element.id}) visible.`);
-        element.classList.remove('hidden'); // Remove if using this pattern
-        element.classList.add('visible');   // For help modal specifically
-        // For elements not using 'visible' class for display:
-        // element.style.display = 'flex'; // or 'block', 'inline-block' etc. depending on element
-        // element.style.opacity = '1'; // If opacity was used to hide
-      };
-
-
-      // --- Enhanced Tracking A-Frame Component ---
-      AFRAME.registerComponent('enhanced-tracking', {
-        init: function () {
-          this.targetFound = false;
+        this.el.addEventListener('targetFound', () => {
+          this.targetFound = true;
           this.positionBuffer = [];
           this.quaternionBuffer = [];
-          this.maxBufferSize = 10; // Number of frames to average for position smoothing
-          this.smoothingFactor = 0.2; // Recommended range: 0.1 to 0.8
-          this.lastPosition = null;
-          this.lastQuaternion = null;
+          this.lastPosition = this.el.object3D.position.clone();
+          this.lastQuaternion = this.el.object3D.quaternion.clone();
+          console.log('✅ Target found: Initializing smoothing');
+        });
 
-          this.el.addEventListener('targetFound', () => {
-            this.targetFound = true;
-            this.positionBuffer = [];
-            this.quaternionBuffer = [];
-            // Do not re-initialize lastPosition/Quaternion here if you want smooth transition from last known
-            // If you want a "snap" to new smoothed position, then clone:
-            // this.lastPosition = this.el.object3D.position.clone();
-            // this.lastQuaternion = this.el.object3D.quaternion.clone();
-            console.log('✅ Target found: Initializing smoothing for', this.el.getAttribute('mindar-image-target'));
-          });
+        this.el.addEventListener('targetLost', () => {
+          this.targetFound = false;
+          console.log('❌ Target lost: Stopping smoothing');
+        });
+      },
+      tick: function () {
+        if (!this.targetFound) return;
+        const currentPosition = this.el.object3D.position.clone();
+        const currentQuaternion = this.el.object3D.quaternion.clone();
 
-          this.el.addEventListener('targetLost', () => {
-            this.targetFound = false;
-            console.log('❌ Target lost: Stopping smoothing for', this.el.getAttribute('mindar-image-target'));
-            // Optionally clear buffers or reset last known positions if desired when lost
-          });
-        },
-        tick: function () {
-          if (!this.targetFound || !this.el.object3D.visible) return; // Also check if the entity itself is visible
-
-          const currentPosition = this.el.object3D.position.clone();
-          const currentQuaternion = this.el.object3D.quaternion.clone();
-
-          if (!this.lastPosition) this.lastPosition = currentPosition.clone();
-          if (!this.lastQuaternion) this.lastQuaternion = currentQuaternion.clone();
-
-          // Lerp position
-          this.lastPosition.lerp(currentPosition, this.smoothingFactor);
-          this.el.object3D.position.copy(this.lastPosition);
-
-          // Slerp quaternion
-          this.lastQuaternion.slerp(currentQuaternion, this.smoothingFactor);
-          this.el.object3D.quaternion.copy(this.lastQuaternion);
+        if (!this.lastPosition || !this.lastQuaternion) {
+            this.lastPosition = currentPosition.clone();
+            this.lastQuaternion = currentQuaternion.clone();
+            return;
         }
-      });
-
-
-      // --- Welcome Message ---
-      if (welcomeMessage) {
-        setTimeout(() => {
-          console.log("Timeout reached: Attempting to hide welcome message.");
-          hideElement(welcomeMessage, 'welcomeMessage');
-        }, 2500);
-      } else {
-        console.error("Welcome message element (#welcome-message) not found in DOM when setting up hide timeout.");
+        this.positionBuffer.push(currentPosition);
+        if (this.positionBuffer.length > this.maxBufferSize) {
+          this.positionBuffer.shift();
+        }
+        let averagedPosition = new THREE.Vector3();
+        if (this.positionBuffer.length > 0) {
+          this.positionBuffer.forEach(pos => averagedPosition.add(pos));
+          averagedPosition.divideScalar(this.positionBuffer.length);
+        } else {
+          averagedPosition.copy(currentPosition);
+        }
+        this.el.object3D.position.lerp(averagedPosition, this.smoothingFactor);
+        this.el.object3D.quaternion.slerp(currentQuaternion, this.smoothingFactor);
+        this.lastPosition.copy(this.el.object3D.position);
+        this.lastQuaternion.copy(this.el.object3D.quaternion);
       }
+    });
 
-      // --- Loading Screen ---
-      const loadingScreenHideTimeout = setTimeout(() => {
-          hideElement(loadingScreen, 'loadingScreen');
-          if (museumAudioElement && museumAudioElement.paused) {
-              museumAudioElement.play().catch(e => console.error("Autoplay failed on loading screen hide timeout:", e));
-          }
-      }, 4000); // Adjusted fallback to be a bit longer, e.g., 4 seconds
-
-      // --- Debug Sliders Initialization Function ---
-      function initializeDebugSliders(currentSceneEl) {
-  console.log("[Debug Sliders] Attempting to initialize debug sliders function...");
-  if (!currentSceneEl || !currentSceneEl.systems || !currentSceneEl.systems['mindar-image']) {
-      console.error("[Debug Sliders] A-Frame scene or MindAR system not ready. Cannot initialize sliders.");
-      const debugPanel = document.getElementById('debug-panel');
-      // if (debugPanel) debugPanel.style.display = 'none'; // <--- COMMENT OUT OR REMOVE THIS LINE
-      return;
-  }
- // ...
-const mindarSystem = currentSceneEl.systems['mindar-image'];
-
-if (!mindarSystem.controller) {
-  console.error("[Debug Sliders] MindAR controller not found. Real-time tuning sliders will not work.");
-  const debugPanel = document.getElementById('debug-panel');
-  // if(debugPanel) debugPanel.style.display = 'none'; // <--- COMMENT OUT OR REMOVE THIS LINE
-  return;
-}
-// ...
-        console.log("[Debug Sliders] MindAR system found:", mindarSystem.controller);
-
-        const minCfSlider = document.getElementById('minCfSlider');
-        const minCfValueDisplay = document.getElementById('minCfValue');
-        const betaSlider = document.getElementById('betaSlider');
-        const betaValueDisplay = document.getElementById('betaValue');
-        const smoothingFactorSlider = document.getElementById('smoothingFactorSlider');
-        const smoothingFactorValueDisplay = document.getElementById('smoothingFactorValue');
-
-// ...
-if (!minCfSlider || !minCfValueDisplay || !betaSlider || !betaValueDisplay || !smoothingFactorSlider || !smoothingFactorValueDisplay) {
-  console.error("[Debug Sliders] One or more slider UI elements are missing from the HTML. Sliders disabled.");
-  const debugPanel = document.getElementById('debug-panel');
-  // if(debugPanel) debugPanel.style.display = 'none'; // <--- COMMENT OUT OR REMOVE THIS LINE
-  return;
-}
-// ...
-        console.log("[Debug Sliders] All Slider UI elements found.");
-
-        try {
-          let initialMinCF = mindarSystem.controller.filterMinCF !== undefined ? mindarSystem.controller.filterMinCF : parseFloat(minCfSlider.value) ; // Use slider default if undefined
-          console.log("[Debug Sliders] Initial MindAR filterMinCF from controller:", mindarSystem.controller.filterMinCF, "Using:", initialMinCF);
-          minCfSlider.value = initialMinCF;
-          minCfValueDisplay.textContent = parseFloat(initialMinCF).toFixed(4);
-          // Set initial value to the controller if it was undefined
-          if(mindarSystem.controller.filterMinCF === undefined) mindarSystem.controller.setFilterMinCF(initialMinCF);
+    const sceneEl = document.querySelector('a-scene');
+    const loadingScreen = document.getElementById('loading-screen');
+    const welcomeMessage = document.getElementById('welcome-message');
+    const helpButton = document.getElementById('help-button');
+    const helpModal = document.getElementById('help-modal');
+    const closeHelpButton = document.getElementById('close-help-button');
+    // Get a reference to the audio element - UPDATED ID
+    const museumAudioElement = document.getElementById('museum-audio');
 
 
-          let initialBeta = mindarSystem.controller.filterBeta !== undefined ? mindarSystem.controller.filterBeta : parseFloat(betaSlider.value);
-          console.log("[Debug Sliders] Initial MindAR filterBeta from controller:", mindarSystem.controller.filterBeta, "Using:", initialBeta);
-          betaSlider.value = initialBeta;
-          betaValueDisplay.textContent = parseFloat(initialBeta).toFixed(3);
-          if(mindarSystem.controller.filterBeta === undefined) mindarSystem.controller.setFilterBeta(initialBeta);
-
-
-          const trackedEntities = document.querySelectorAll('[enhanced-tracking]');
-          let initialSmoothingFactor = 0.2; // Default from component
-          if (trackedEntities.length > 0 && trackedEntities[0].components && trackedEntities[0].components['enhanced-tracking']) {
-            initialSmoothingFactor = trackedEntities[0].components['enhanced-tracking'].data.smoothingFactor || trackedEntities[0].components['enhanced-tracking'].smoothingFactor || initialSmoothingFactor;
-          } else if (trackedEntities.length > 0) {
-            console.warn("[Debug Sliders] Found entities with [enhanced-tracking] but component data not ready for initialSmoothingFactor. Using default from slider.");
-            initialSmoothingFactor = parseFloat(smoothingFactorSlider.value);
-          } else {
-             initialSmoothingFactor = parseFloat(smoothingFactorSlider.value); // Fallback to slider's default
-          }
-          console.log("[Debug Sliders] Using initialSmoothingFactor:", initialSmoothingFactor);
-          smoothingFactorSlider.value = initialSmoothingFactor;
-          smoothingFactorValueDisplay.textContent = parseFloat(initialSmoothingFactor).toFixed(2);
-          // Apply initial smoothing factor to all entities
-            trackedEntities.forEach(entity => {
-                if (entity.components && entity.components['enhanced-tracking']) {
-                    entity.setAttribute('enhanced-tracking', 'smoothingFactor', initialSmoothingFactor);
-                } else { // If component not fully ready, set directly on attribute for later init
-                    entity.setAttribute('enhanced-tracking', {smoothingFactor: initialSmoothingFactor});
-                }
-            });
-
-
-        } catch (e) {
-            console.error("[Debug Sliders] Error setting initial slider values:", e);
-        }
-
-        minCfSlider.addEventListener('input', (event) => {
-          const value = parseFloat(event.target.value);
-          if (!isNaN(value)) {
-            mindarSystem.controller.setFilterMinCF(value);
-            minCfValueDisplay.textContent = value.toFixed(4);
-          } else { console.error("[Debug Sliders] minCfSlider - bad value:", event.target.value); }
-        });
-
-        betaSlider.addEventListener('input', (event) => {
-          const value = parseFloat(event.target.value);
-          if (!isNaN(value)) {
-            mindarSystem.controller.setFilterBeta(value);
-            betaValueDisplay.textContent = value.toFixed(3);
-          } else { console.error("[Debug Sliders] betaSlider - bad value:", event.target.value); }
-        });
-
-        smoothingFactorSlider.addEventListener('input', (event) => {
-          const value = parseFloat(event.target.value);
-          if (!isNaN(value)) {
-            const entities = document.querySelectorAll('[enhanced-tracking]');
-            entities.forEach(entity => {
-              // Use setAttribute for A-Frame components to ensure updates are processed correctly
-              entity.setAttribute('enhanced-tracking', 'smoothingFactor', value);
-            });
-            smoothingFactorValueDisplay.textContent = value.toFixed(2);
-          } else { console.error("[Debug Sliders] smoothingFactorSlider - bad value:", event.target.value); }
-        });
-
-        console.log('[Debug Sliders] Real-time tracking parameter sliders initialized and event listeners attached.');
+    // Function to hide a given element with fade-out
+    const hideElement = (element) => {
+      if (element.classList.contains('hidden') || element.style.display === 'none') {
+        return;
       }
-
-
-      // --- A-Frame Scene Loaded Event ---
-      sceneEl.addEventListener('loaded', () => {
-        console.log('A-Frame scene loaded.');
-        clearTimeout(loadingScreenHideTimeout); // Clear fallback if loaded sooner
-        hideElement(loadingScreen, 'loadingScreen');
-
-        // Attempt to play audio after scene loads
-        if (museumAudioElement && museumAudioElement.paused) {
-          museumAudioElement.play().catch(e => console.error("Autoplay failed on scene loaded:", e));
-        }
-
-        // Initialize debug sliders now that the scene and MindAR system should be ready
-        initializeDebugSliders(sceneEl);
-
-        // Stop audio after 7 minutes
-        const audioDurationMs = 7 * 60 * 1000;
-        setTimeout(() => {
-          if (museumAudioElement && !museumAudioElement.paused) {
-            museumAudioElement.pause();
-            museumAudioElement.currentTime = 0; // Optional: reset playback
-            console.log("Museum audio stopped after 7 minutes.");
-          }
-        }, audioDurationMs);
-
-        // Renderer settings
-        if (sceneEl.renderer) {
-          sceneEl.renderer.setPixelRatio(window.devicePixelRatio || 1);
-          sceneEl.renderer.sortObjects = false; // Often default, but good to be explicit if issues arise
-        }
-
+      element.classList.add('hidden');
+      element.addEventListener('transitionend', () => {
+        element.style.display = 'none';
       }, { once: true });
+      console.log(`${element.id} hidden.`);
+    };
 
+    // Function to show a given element (for modals)
+    const showElement = (element) => {
+        element.style.display = 'flex'; // Use flex to center content
+        // Force reflow to ensure display change applies before opacity transition
+        element.offsetWidth;
+        element.classList.remove('hidden');
+        element.classList.add('visible'); // For modal specific visibility class
+        console.log(`${element.id} shown.`);
+    }
 
-      // --- Help Modal Event Listeners ---
-      if (helpButton && helpModal && closeHelpButton) {
-        helpButton.addEventListener('click', () => {
-            showElement(helpModal, 'helpModal');
+    // Hide the welcome message after 2.5 seconds (then it takes 4 seconds to fade)
+    setTimeout(() => {
+      hideElement(welcomeMessage);
+    }, 2500); // This is the duration the welcome message is visible before hiding
+
+    // Hide the loading screen when A-Frame scene is loaded
+    const loadingScreenHideTimeout = setTimeout(() => {
+        hideElement(loadingScreen);
+        // Attempt to play audio after loading screen is hidden
+        if (museumAudioElement && museumAudioElement.paused) {
+            museumAudioElement.play().catch(e => console.error("Autoplay failed on loading screen hide:", e));
+        }
+    }, 2000); // Fallback for loading screen: hide after 2 seconds
+
+    sceneEl.addEventListener('loaded', () => {
+      clearTimeout(loadingScreenHideTimeout); // Clear fallback if loaded
+      hideElement(loadingScreen); // Hide the loading screen
+      console.log('A-Frame scene loaded, clearing loading screen timeout.');
+
+      // Attempt to play audio after scene loads (more reliable for some browsers)
+      if (museumAudioElement && museumAudioElement.paused) {
+          museumAudioElement.play().catch(e => console.error("Autoplay failed on scene loaded:", e));
+      }
+    }, { once: true });
+
+    // Event listeners for the help modal
+    helpButton.addEventListener('click', () => {
+        showElement(helpModal);
+        // Optional: Pause audio while help modal is open
+        if (museumAudioElement && !museumAudioElement.paused) {
+            museumAudioElement.pause();
+        }
+    });
+
+    closeHelpButton.addEventListener('click', () => {
+        // Use hideElement with a slight delay to allow transition, then remove 'visible' class
+        helpModal.classList.remove('visible');
+        helpModal.classList.add('hidden');
+        helpModal.addEventListener('transitionend', () => {
+          helpModal.style.display = 'none';
+          helpModal.classList.remove('hidden'); // Clean up hidden class for next show
+        }, { once: true });
+
+        // Resume audio when help modal closes (this is a direct user interaction)
+        if (museumAudioElement && museumAudioElement.paused) {
+            museumAudioElement.play().catch(e => console.error("Autoplay failed on help modal close:", e));
+        }
+    });
+
+    // Stop audio after 7 minutes
+    // Convert 7 minutes to milliseconds (7 * 60 * 1000)
+    const audioDurationMs = 7 * 60 * 1000;
+
+    // We'll set a timeout to stop the audio a bit after it's most likely to have started playing.
+    // A good place is after the 'loaded' event of the scene, as that signifies the AR experience is ready.
+    sceneEl.addEventListener('loaded', () => {
+        // ... (existing code to hide loading screen and try to play audio) ...
+
+        // Set the timeout to stop the audio after 7 minutes
+        setTimeout(() => {
             if (museumAudioElement && !museumAudioElement.paused) {
                 museumAudioElement.pause();
+                museumAudioElement.currentTime = 0; // Optional: reset playback to the beginning
+                console.log("Museum audio stopped after 7 minutes.");
             }
-        });
+        }, audioDurationMs); // 7 minutes in milliseconds
+    }, { once: true }); // Ensure this 'loaded' event listener only fires once
 
-        closeHelpButton.addEventListener('click', () => {
-            helpModal.classList.remove('visible');
-            // Optional: add 'hidden' class if you have a specific transition for it
-            // helpModal.classList.add('hidden');
-            // The CSS transition on #help-modal handles the fade out and then sets visibility: hidden.
+    // Renderer settings
+    if (sceneEl.renderer) {
+      sceneEl.renderer.setPixelRatio(window.devicePixelRatio || 1);
+      sceneEl.renderer.sortObjects = false;
+    }
 
-            if (museumAudioElement && museumAudioElement.paused) {
-                // Delay play slightly to ensure modal is visually gone
-                setTimeout(() => {
-                    museumAudioElement.play().catch(e => console.error("Autoplay failed on help modal close:", e));
-                }, 300); // Match modal transition time
-            }
-        });
-      } else {
-        console.error("Help modal, help button, or close help button not found.");
-      }
-
-
-      // --- Target Event Logging ---
-      sceneEl.addEventListener('targetFound', e => console.log('✅ Global Target found:', e.detail.targetIndex, e.detail.name));
-      sceneEl.addEventListener('targetLost', e => console.log('❌ Global Target lost:', e.detail.targetIndex, e.detail.name));
-
-    }); // End of DOMContentLoaded
+    // Debugging console logs for target events
+    sceneEl.addEventListener('targetFound', e => console.log('✅ Target found:', e.detail.targetIndex));
+    sceneEl.addEventListener('targetLost', e => console.log('❌ Target lost:', e.detail.targetIndex));
   </script>
 </body>
 </html>
