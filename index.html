@@ -5,6 +5,53 @@
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
   <style>
+
+
+/* Add this to your existing <style> block */
+#debug-panel {
+  position: fixed; /* Changed from absolute to fixed for better viewport stability */
+  bottom: 10px;    /* Positioned at the bottom */
+  left: 10px;
+  background: rgba(30, 30, 30, 0.85); /* Slightly darker, more opaque */
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  z-index: 10000; /* Ensure it's on top of everything */
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  width: 280px; /* Adjusted width */
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+#debug-panel h4 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 14px;
+  border-bottom: 1px solid #555;
+  padding-bottom: 5px;
+}
+
+#debug-panel div {
+  margin-bottom: 12px;
+}
+
+#debug-panel label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+#debug-panel input[type="range"] {
+  width: 100%;
+  cursor: pointer;
+}
+
+
+
+
+
+
+
+    
     .a-enter-vr {
       display: none !important;
     }
@@ -328,7 +375,7 @@
         this.positionBuffer = [];
         this.quaternionBuffer = [];
         this.maxBufferSize = 10; // Number of frames to average for position smoothing
-        this.smoothingFactor = 0.5; // Recommended range: 0.1 to 0.8
+        this.smoothingFactor = 0.2; // Recommended range: 0.1 to 0.8
         this.lastPosition = null;
         this.lastQuaternion = null;
 
@@ -425,6 +472,119 @@
       hideElement(loadingScreen); // Hide the loading screen
       console.log('A-Frame scene loaded, clearing loading screen timeout.');
 
+
+
+
+
+
+<div id="debug-panel"> ... </div>
+
+  <script>
+    // Wait for the main document and A-Frame scene to be fully loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      const sceneEl = document.querySelector('a-scene');
+
+      if (sceneEl.hasLoaded) {
+        initializeDebugSliders();
+      } else {
+        sceneEl.addEventListener('loaded', initializeDebugSliders);
+      }
+    });
+
+    function initializeDebugSliders() {
+      const mindarSystem = AFRAME.scenes[0].systems['mindar-image']; // More robust way to get system
+
+      if (!mindarSystem || !mindarSystem.controller) {
+        console.error("MindAR system or controller not found. Real-time tuning sliders will not work.");
+        // Hide the panel if MindAR system isn't available
+        const debugPanel = document.getElementById('debug-panel');
+        if(debugPanel) debugPanel.style.display = 'none';
+        return;
+      }
+
+      // Slider elements
+      const minCfSlider = document.getElementById('minCfSlider');
+      const minCfValueDisplay = document.getElementById('minCfValue');
+      const betaSlider = document.getElementById('betaSlider');
+      const betaValueDisplay = document.getElementById('betaValue');
+      const smoothingFactorSlider = document.getElementById('smoothingFactorSlider');
+      const smoothingFactorValueDisplay = document.getElementById('smoothingFactorValue');
+
+      // Helper to ensure elements exist
+      if (!minCfSlider || !minCfValueDisplay || !betaSlider || !betaValueDisplay || !smoothingFactorSlider || !smoothingFactorValueDisplay) {
+        console.error("One or more slider UI elements are missing from the HTML. Sliders disabled.");
+        const debugPanel = document.getElementById('debug-panel');
+        if(debugPanel) debugPanel.style.display = 'none';
+        return;
+      }
+
+      // --- Initial Values ---
+      // MindAR filterMinCF
+      let initialMinCF = 0.005; // Fallback to your original value
+      if (mindarSystem.controller.filterMinCF !== undefined) {
+          initialMinCF = mindarSystem.controller.filterMinCF;
+      }
+      minCfSlider.value = initialMinCF;
+      minCfValueDisplay.textContent = parseFloat(initialMinCF).toFixed(4);
+
+      // MindAR filterBeta
+      let initialBeta = 0.05; // Fallback to your original value
+      if (mindarSystem.controller.filterBeta !== undefined) {
+          initialBeta = mindarSystem.controller.filterBeta;
+      }
+      betaSlider.value = initialBeta;
+      betaValueDisplay.textContent = parseFloat(initialBeta).toFixed(3);
+
+      // Custom smoothingFactor from enhanced-tracking
+      const trackedEntities = document.querySelectorAll('[enhanced-tracking]');
+      let initialSmoothingFactor = 0.8; // Fallback to your original value
+      if (trackedEntities.length > 0 && trackedEntities[0].components['enhanced-tracking']) {
+        initialSmoothingFactor = trackedEntities[0].components['enhanced-tracking'].smoothingFactor;
+      }
+      smoothingFactorSlider.value = initialSmoothingFactor;
+      smoothingFactorValueDisplay.textContent = parseFloat(initialSmoothingFactor).toFixed(2);
+
+      // --- Event Listeners ---
+      minCfSlider.addEventListener('input', (event) => {
+        const value = parseFloat(event.target.value);
+        mindarSystem.controller.setFilterMinCF(value);
+        minCfValueDisplay.textContent = value.toFixed(4);
+        // console.log(`Set MindAR filterMinCF to: ${value}`);
+      });
+
+      betaSlider.addEventListener('input', (event) => {
+        const value = parseFloat(event.target.value);
+        mindarSystem.controller.setFilterBeta(value);
+        betaValueDisplay.textContent = value.toFixed(3);
+        // console.log(`Set MindAR filterBeta to: ${value}`);
+      });
+
+      smoothingFactorSlider.addEventListener('input', (event) => {
+        const value = parseFloat(event.target.value);
+        trackedEntities.forEach(entity => {
+          if (entity.components['enhanced-tracking']) {
+            entity.components['enhanced-tracking'].smoothingFactor = value;
+          }
+        });
+        smoothingFactorValueDisplay.textContent = value.toFixed(2);
+        // console.log(`Set enhanced-tracking smoothingFactor to: ${value}`);
+      });
+
+      console.log('Real-time tracking parameter sliders initialized.');
+    }
+  </script>
+</body> </html>
+
+
+
+
+
+
+
+
+
+      
+
       // Attempt to play audio after scene loads (more reliable for some browsers)
       if (museumAudioElement && museumAudioElement.paused) {
           museumAudioElement.play().catch(e => console.error("Autoplay failed on scene loaded:", e));
@@ -484,5 +644,29 @@
     sceneEl.addEventListener('targetFound', e => console.log('✅ Target found:', e.detail.targetIndex));
     sceneEl.addEventListener('targetLost', e => console.log('❌ Target lost:', e.detail.targetIndex));
   </script>
+
+
+
+  
+<div id="debug-panel">
+  <h4>Live Tracking Parameters</h4>
+
+  <div>
+    <label for="minCfSlider">MindAR MinCF (<span id="minCfValue">0.000</span>):</label>
+    <input type="range" id="minCfSlider" min="0.0001" max="0.1" step="0.0001">
+  </div>
+
+  <div>
+    <label for="betaSlider">MindAR Beta (<span id="betaValue">0.000</span>):</label>
+    <input type="range" id="betaSlider" min="0.001" max="0.5" step="0.001">
+  </div>
+
+  <div>
+    <label for="smoothingFactorSlider">Custom Smoothing (<span id="smoothingFactorValue">0.00</span>):</label>
+    <input type="range" id="smoothingFactorSlider" min="0.05" max="1.0" step="0.01">
+  </div>
+</div>
+
+  
 </body>
 </html>
