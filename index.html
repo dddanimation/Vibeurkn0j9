@@ -479,21 +479,23 @@
 
       // --- Debug Sliders Initialization Function ---
       function initializeDebugSliders(currentSceneEl) {
-        console.log("[Debug Sliders] Attempting to initialize debug sliders function...");
-        if (!currentSceneEl || !currentSceneEl.systems || !currentSceneEl.systems['mindar-image']) {
-            console.error("[Debug Sliders] A-Frame scene or MindAR system not ready. Cannot initialize sliders.");
-            const debugPanel = document.getElementById('debug-panel');
-            if (debugPanel) debugPanel.style.display = 'none';
-            return;
-        }
-        const mindarSystem = currentSceneEl.systems['mindar-image'];
+  console.log("[Debug Sliders] Attempting to initialize debug sliders function...");
+  if (!currentSceneEl || !currentSceneEl.systems || !currentSceneEl.systems['mindar-image']) {
+      console.error("[Debug Sliders] A-Frame scene or MindAR system not ready. Cannot initialize sliders.");
+      const debugPanel = document.getElementById('debug-panel');
+      // if (debugPanel) debugPanel.style.display = 'none'; // <--- COMMENT OUT OR REMOVE THIS LINE
+      return;
+  }
+ // ...
+const mindarSystem = currentSceneEl.systems['mindar-image'];
 
-        if (!mindarSystem.controller) {
-          console.error("[Debug Sliders] MindAR controller not found. Real-time tuning sliders will not work.");
-          const debugPanel = document.getElementById('debug-panel');
-          if(debugPanel) debugPanel.style.display = 'none';
-          return;
-        }
+if (!mindarSystem.controller) {
+  console.error("[Debug Sliders] MindAR controller not found. Real-time tuning sliders will not work.");
+  const debugPanel = document.getElementById('debug-panel');
+  // if(debugPanel) debugPanel.style.display = 'none'; // <--- COMMENT OUT OR REMOVE THIS LINE
+  return;
+}
+// ...
         console.log("[Debug Sliders] MindAR system found:", mindarSystem.controller);
 
         const minCfSlider = document.getElementById('minCfSlider');
@@ -503,12 +505,14 @@
         const smoothingFactorSlider = document.getElementById('smoothingFactorSlider');
         const smoothingFactorValueDisplay = document.getElementById('smoothingFactorValue');
 
-        if (!minCfSlider || !minCfValueDisplay || !betaSlider || !betaValueDisplay || !smoothingFactorSlider || !smoothingFactorValueDisplay) {
-          console.error("[Debug Sliders] One or more slider UI elements are missing from the HTML. Sliders disabled.");
-          const debugPanel = document.getElementById('debug-panel');
-          if(debugPanel) debugPanel.style.display = 'none';
-          return;
-        }
+// ...
+if (!minCfSlider || !minCfValueDisplay || !betaSlider || !betaValueDisplay || !smoothingFactorSlider || !smoothingFactorValueDisplay) {
+  console.error("[Debug Sliders] One or more slider UI elements are missing from the HTML. Sliders disabled.");
+  const debugPanel = document.getElementById('debug-panel');
+  // if(debugPanel) debugPanel.style.display = 'none'; // <--- COMMENT OUT OR REMOVE THIS LINE
+  return;
+}
+// ...
         console.log("[Debug Sliders] All Slider UI elements found.");
 
         try {
