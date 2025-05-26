@@ -423,42 +423,50 @@
 
     const sceneEl = document.querySelector('a-scene');
     const loadingScreen = document.getElementById('loading-screen');
-    const welcomeMessage = document.getElementById('welcome-message');
-    const helpButton = document.getElementById('help-button');
-    const helpModal = document.getElementById('help-modal');
-    const closeHelpButton = document.getElementById('close-help-button');
-    // Get a reference to the audio element - UPDATED ID
-    const museumAudioElement = document.getElementById('museum-audio');
+    // --- In your ORIGINAL main script block ---
 
+const welcomeMessage = document.getElementById('welcome-message');
+// const loadingScreen = ... (your existing loading screen code)
+// const helpModal = ... (your existing help modal code)
+console.log('Welcome message element:', welcomeMessage); // Check if found
 
-    // Function to hide a given element with fade-out
-    const hideElement = (element) => {
-      if (element.classList.contains('hidden') || element.style.display === 'none') {
-        return;
-      }
-      element.classList.add('hidden');
-      element.addEventListener('transitionend', () => {
+const hideElement = (element, elementName = 'element') => {
+  if (!element) {
+    console.error(`[hideElement] ${elementName} not found for hiding.`);
+    return;
+  }
+  if (element.classList.contains('hidden') || element.style.display === 'none') {
+    console.log(`[hideElement] ${elementName} is already hidden or display is none.`);
+    return;
+  }
+  console.log(`[hideElement] Adding .hidden class to ${elementName} (id: ${element.id})`);
+  element.classList.add('hidden');
+
+  element.addEventListener('transitionend', function onTransitionEnd() {
+    console.log(`[hideElement] ${elementName} (id: ${element.id}) transition ended. Setting display to none.`);
+    element.style.display = 'none';
+  }, { once: true });
+
+  // Fallback timer in case transitionend doesn't fire
+  setTimeout(() => {
+    if (element.style.display !== 'none' && element.classList.contains('hidden')) {
+        console.warn(`[hideElement] ${elementName} (id: ${element.id}) transitionend fallback. Forcing display:none.`);
         element.style.display = 'none';
-      }, { once: true });
-      console.log(`${element.id} hidden.`);
-    };
-
-    // Function to show a given element (for modals)
-    const showElement = (element) => {
-        element.style.display = 'flex'; // Use flex to center content
-        // Force reflow to ensure display change applies before opacity transition
-        element.offsetWidth;
-        element.classList.remove('hidden');
-        element.classList.add('visible'); // For modal specific visibility class
-        console.log(`${element.id} shown.`);
     }
+  }, 4500); // A bit longer than your 4s transition
+};
 
-    // Hide the welcome message after 2.5 seconds (then it takes 4 seconds to fade)
-    setTimeout(() => {
-      hideElement(welcomeMessage);
-    }, 2500); // This is the duration the welcome message is visible before hiding
+// Hide the welcome message after 2.5 seconds
+if (welcomeMessage) {
+  setTimeout(() => {
+    console.log("Timeout reached: Attempting to hide welcome message.");
+    hideElement(welcomeMessage, 'welcomeMessage');
+  }, 2500);
+} else {
+  console.error("Welcome message element (#welcome-message) not found in DOM when setting up hide timeout.");
+}
 
-    // Hide the loading screen when A-Frame scene is loaded
+// --- End of modifications for welcome message script ---
     const loadingScreenHideTimeout = setTimeout(() => {
         hideElement(loadingScreen);
         // Attempt to play audio after loading screen is hidden
@@ -479,100 +487,117 @@
 
 <div id="debug-panel"> ... </div>
 
-  <script>
-    // Wait for the main document and A-Frame scene to be fully loaded
-    document.addEventListener('DOMContentLoaded', () => {
-      const sceneEl = document.querySelector('a-scene');
+ <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log("[Debug Sliders] DOMContentLoaded event fired.");
+    const sceneEl = document.querySelector('a-scene');
 
-      if (sceneEl.hasLoaded) {
-        initializeDebugSliders();
-      } else {
-        sceneEl.addEventListener('loaded', initializeDebugSliders);
-      }
-    });
-
-    function initializeDebugSliders() {
-      const mindarSystem = AFRAME.scenes[0].systems['mindar-image']; // More robust way to get system
-
-      if (!mindarSystem || !mindarSystem.controller) {
-        console.error("MindAR system or controller not found. Real-time tuning sliders will not work.");
-        // Hide the panel if MindAR system isn't available
-        const debugPanel = document.getElementById('debug-panel');
-        if(debugPanel) debugPanel.style.display = 'none';
+    if (!sceneEl) {
+        console.error("[Debug Sliders] A-Frame scene element not found!");
         return;
-      }
+    }
 
-      // Slider elements
-      const minCfSlider = document.getElementById('minCfSlider');
-      const minCfValueDisplay = document.getElementById('minCfValue');
-      const betaSlider = document.getElementById('betaSlider');
-      const betaValueDisplay = document.getElementById('betaValue');
-      const smoothingFactorSlider = document.getElementById('smoothingFactorSlider');
-      const smoothingFactorValueDisplay = document.getElementById('smoothingFactorValue');
+    if (sceneEl.hasLoaded) {
+      console.log("[Debug Sliders] Scene already loaded, initializing sliders.");
+      initializeDebugSliders(sceneEl);
+    } else {
+      console.log("[Debug Sliders] Scene not loaded yet, adding event listener for 'loaded'.");
+      sceneEl.addEventListener('loaded', () => {
+        console.log("[Debug Sliders] A-Frame scene 'loaded' event fired.");
+        initializeDebugSliders(sceneEl);
+      });
+    }
+  });
 
-      // Helper to ensure elements exist
-      if (!minCfSlider || !minCfValueDisplay || !betaSlider || !betaValueDisplay || !smoothingFactorSlider || !smoothingFactorValueDisplay) {
-        console.error("One or more slider UI elements are missing from the HTML. Sliders disabled.");
-        const debugPanel = document.getElementById('debug-panel');
-        if(debugPanel) debugPanel.style.display = 'none';
-        return;
-      }
+  function initializeDebugSliders(currentSceneEl) {
+    console.log("[Debug Sliders] Attempting to initialize debug sliders function...");
+    const mindarSystem = currentSceneEl.systems['mindar-image'];
 
-      // --- Initial Values ---
-      // MindAR filterMinCF
-      let initialMinCF = 0.005; // Fallback to your original value
-      if (mindarSystem.controller.filterMinCF !== undefined) {
-          initialMinCF = mindarSystem.controller.filterMinCF;
-      }
+    if (!mindarSystem || !mindarSystem.controller) {
+      console.error("[Debug Sliders] MindAR system or controller not found. Real-time tuning sliders will not work.");
+      const debugPanel = document.getElementById('debug-panel');
+      if(debugPanel) debugPanel.style.display = 'none';
+      return;
+    }
+    console.log("[Debug Sliders] MindAR system found:", mindarSystem.controller);
+
+    const minCfSlider = document.getElementById('minCfSlider');
+    const minCfValueDisplay = document.getElementById('minCfValue');
+    const betaSlider = document.getElementById('betaSlider');
+    const betaValueDisplay = document.getElementById('betaValue');
+    const smoothingFactorSlider = document.getElementById('smoothingFactorSlider');
+    const smoothingFactorValueDisplay = document.getElementById('smoothingFactorValue');
+
+    if (!minCfSlider || !minCfValueDisplay || !betaSlider || !betaValueDisplay || !smoothingFactorSlider || !smoothingFactorValueDisplay) {
+      console.error("[Debug Sliders] One or more slider UI elements are missing from the HTML. Sliders disabled.");
+      const debugPanel = document.getElementById('debug-panel');
+      if(debugPanel) debugPanel.style.display = 'none';
+      return;
+    }
+    console.log("[Debug Sliders] All Slider UI elements found.");
+
+    // --- Initial Values ---
+    try {
+      let initialMinCF = mindarSystem.controller.filterMinCF !== undefined ? mindarSystem.controller.filterMinCF : 0.005;
+      console.log("[Debug Sliders] Initial MindAR filterMinCF from controller:", mindarSystem.controller.filterMinCF, "Using:", initialMinCF);
       minCfSlider.value = initialMinCF;
       minCfValueDisplay.textContent = parseFloat(initialMinCF).toFixed(4);
 
-      // MindAR filterBeta
-      let initialBeta = 0.05; // Fallback to your original value
-      if (mindarSystem.controller.filterBeta !== undefined) {
-          initialBeta = mindarSystem.controller.filterBeta;
-      }
+      let initialBeta = mindarSystem.controller.filterBeta !== undefined ? mindarSystem.controller.filterBeta : 0.05;
+      console.log("[Debug Sliders] Initial MindAR filterBeta from controller:", mindarSystem.controller.filterBeta, "Using:", initialBeta);
       betaSlider.value = initialBeta;
       betaValueDisplay.textContent = parseFloat(initialBeta).toFixed(3);
 
-      // Custom smoothingFactor from enhanced-tracking
       const trackedEntities = document.querySelectorAll('[enhanced-tracking]');
-      let initialSmoothingFactor = 0.8; // Fallback to your original value
-      if (trackedEntities.length > 0 && trackedEntities[0].components['enhanced-tracking']) {
+      let initialSmoothingFactor = 0.8; // Default if no entities or component not ready
+      if (trackedEntities.length > 0 && trackedEntities[0].components && trackedEntities[0].components['enhanced-tracking']) {
         initialSmoothingFactor = trackedEntities[0].components['enhanced-tracking'].smoothingFactor;
+      } else if (trackedEntities.length > 0) {
+        console.warn("[Debug Sliders] Found entities with [enhanced-tracking] but component data not ready for initialSmoothingFactor.");
       }
+      console.log("[Debug Sliders] Using initialSmoothingFactor:", initialSmoothingFactor);
       smoothingFactorSlider.value = initialSmoothingFactor;
       smoothingFactorValueDisplay.textContent = parseFloat(initialSmoothingFactor).toFixed(2);
+    } catch (e) {
+        console.error("[Debug Sliders] Error setting initial slider values:", e);
+    }
 
-      // --- Event Listeners ---
-      minCfSlider.addEventListener('input', (event) => {
-        const value = parseFloat(event.target.value);
+    // --- Event Listeners ---
+    minCfSlider.addEventListener('input', (event) => {
+      const value = parseFloat(event.target.value);
+      // console.log("[Debug Sliders] minCfSlider input. Raw:", event.target.value, "Parsed:", value);
+      if (!isNaN(value)) {
         mindarSystem.controller.setFilterMinCF(value);
         minCfValueDisplay.textContent = value.toFixed(4);
-        // console.log(`Set MindAR filterMinCF to: ${value}`);
-      });
+      } else { console.error("[Debug Sliders] minCfSlider - bad value:", event.target.value); }
+    });
 
-      betaSlider.addEventListener('input', (event) => {
-        const value = parseFloat(event.target.value);
+    betaSlider.addEventListener('input', (event) => {
+      const value = parseFloat(event.target.value);
+      // console.log("[Debug Sliders] betaSlider input. Raw:", event.target.value, "Parsed:", value);
+      if (!isNaN(value)) {
         mindarSystem.controller.setFilterBeta(value);
         betaValueDisplay.textContent = value.toFixed(3);
-        // console.log(`Set MindAR filterBeta to: ${value}`);
-      });
+      } else { console.error("[Debug Sliders] betaSlider - bad value:", event.target.value); }
+    });
 
-      smoothingFactorSlider.addEventListener('input', (event) => {
-        const value = parseFloat(event.target.value);
-        trackedEntities.forEach(entity => {
-          if (entity.components['enhanced-tracking']) {
+    smoothingFactorSlider.addEventListener('input', (event) => {
+      const value = parseFloat(event.target.value);
+      // console.log("[Debug Sliders] smoothingFactorSlider input. Raw:", event.target.value, "Parsed:", value);
+      if (!isNaN(value)) {
+        const entities = document.querySelectorAll('[enhanced-tracking]'); // Re-query in case DOM changes
+        entities.forEach(entity => {
+          if (entity.components && entity.components['enhanced-tracking']) {
             entity.components['enhanced-tracking'].smoothingFactor = value;
           }
         });
         smoothingFactorValueDisplay.textContent = value.toFixed(2);
-        // console.log(`Set enhanced-tracking smoothingFactor to: ${value}`);
-      });
+      } else { console.error("[Debug Sliders] smoothingFactorSlider - bad value:", event.target.value); }
+    });
 
-      console.log('Real-time tracking parameter sliders initialized.');
-    }
-  </script>
+    console.log('[Debug Sliders] Real-time tracking parameter sliders initialized and event listeners attached.');
+  }
+</script>
 </body> </html>
 
 
