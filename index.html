@@ -8,7 +8,7 @@
     .a-enter-vr {
       display: none !important;
     }
-    /* Add a basic fade-out for the loading screen for a smoother transition */F
+    /* Add a basic fade-out for the loading screen for a smoother transition */
     #loading-screen.hidden,
     #welcome-message.hidden,
     #help-modal.hidden { /* Apply hidden class to all overlays */
@@ -224,10 +224,10 @@
 
 
   <a-scene mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 1; filterMinCF: 0.001; filterBeta: 0.05; missTolerance: 10; warmupTolerance: 10"
-            color-space="sRGB"
-            renderer="precision: medium; antialias: false; colorManagement: true; physicallyCorrectLights: true"
-            vr-mode-ui="enabled: false"
-            device-orientation-permission-ui="enabled: false">
+           color-space="sRGB"
+           renderer="precision: medium; antialias: false; colorManagement: true; physicallyCorrectLights: true"
+           vr-mode-ui="enabled: false"
+           device-orientation-permission-ui="enabled: false">
 
     <a-assets>
       <a-asset-item id="mayaModel" src="./maya.glb"></a-asset-item>
@@ -240,8 +240,7 @@
       <a-asset-item id="model7" src="./loys.glb"></a-asset-item>
       <a-asset-item id="model8" src="./base.glb"></a-asset-item>
       <a-asset-item id="model9" src="./maps.glb"></a-asset-item>
-      <a-asset-item id="model10" src="./miss_regret.glb"></a-asset-item>
-      <a-asset-item id="model11" src="./porcelainv3.glb"></a-asset-item>
+      <a-asset-item id="model10" src="./miss_regret.glb"></a-asset-item> <a-asset-item id="model11" src="./porcelainv3.glb"></a-asset-item>
       <a-asset-item id="model12" src="./sdwtbs.glb"></a-asset-item>
       <a-asset-item id="model13" src="./transcending-myself.glb"></a-asset-item>
       <a-asset-item id="model14" src="./twins.glb"></a-asset-item>
@@ -259,90 +258,95 @@
     <a-entity light="type: directional; intensity: 0.5; color: #ffffff" position="-1 1 1"></a-entity>
 
     <a-entity mindar-image-target="targetIndex: 0">
-      <a-gltf-model src="#mayaModel" position="0 0 0" scale="0.2 0.2 0.2" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#mayaModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
 
     <a-entity mindar-image-target="targetIndex: 1">
-      <a-gltf-model src="#regretModel" position="0 0 -0.3" scale="0.2 0.2 0.2" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#regretModel" position="0 0 -0.3" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
 
     <a-entity mindar-image-target="targetIndex: 2">
-      <a-gltf-model src="#seedlessFruitModel" position="0 0 0" scale="0.2 0.2 0.2" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#seedlessFruitModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
 
     <a-entity mindar-image-target="targetIndex: 3">
-      <a-gltf-model src="#mapisModel" position="0 0 0" scale="0.2 0.2 0.2" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#mapisModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
 
     <a-entity mindar-image-target="targetIndex: 4">
-      <a-gltf-model src="#negusAnewModel" position="0 0 0" scale="0.2 0.2 0.2" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#negusAnewModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
 
     <a-entity mindar-image-target="targetIndex: 5">
-      <a-gltf-model src="#ebonyModel" position="0 0 0" scale="0.2 0.2 0.2" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#ebonyModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
 
     <a-entity mindar-image-target="targetIndex: 6">
-      <a-gltf-model src="#model6" position="0 0 0" scale="0.2 0.2 0.2" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#model6" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
 
     <a-entity mindar-image-target="targetIndex: 7">
-      <a-gltf-model src="#model7" position="0 0 0" scale="0.2 0.2 0.2" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#model7" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
 
     <a-entity mindar-image-target="targetIndex: 8">
-      <a-gltf-model src="#model8" position="0 0 0" scale="0.2 0.2 0.2" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#model8" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
 
     <a-entity mindar-image-target="targetIndex: 9">
-      <a-gltf-model src="#model9" position="0 0 0" scale="0.2 0.2 0.2" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#model9" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
 
     <a-entity mindar-image-target="targetIndex: 10">
-      <a-gltf-model src="#model10" position="0 0 0" scale="0.2 0.2 0.2" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#model10" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
 
     <a-entity mindar-image-target="targetIndex: 11">
-      <a-gltf-model src="#model11" position="0 0 0" scale="0.2 0.2 0.2" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#model11" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
 
     <a-entity mindar-image-target="targetIndex: 12">
-      <a-gltf-model src="#model12" position="0 0 0" scale="0.2 0.2 0.2" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#model12" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
 
     <a-entity mindar-image-target="targetIndex: 13">
-      <a-gltf-model src="#model13" position="0 0 0" scale="0.2 0.2 0.2" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#model13" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
 
     <a-entity mindar-image-target="targetIndex: 14">
-     <a-box color="blue" scale="0.1 0.1 0.1" position="0 0 0"></a-box>
-    </a-entity>
+      <a-gltf-model src="#model14" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+    </a-entity>
 
   </a-scene>
 
   <script>
-    // The 'enhanced-tracking' component definition has been removed.
-
     const sceneEl = document.querySelector('a-scene');
     const loadingScreen = document.getElementById('loading-screen');
     const welcomeMessage = document.getElementById('welcome-message');
     const helpButton = document.getElementById('help-button');
     const helpModal = document.getElementById('help-modal');
     const closeHelpButton = document.getElementById('close-help-button');
-    // Get a reference to the audio element - UPDATED ID
     const museumAudioElement = document.getElementById('museum-audio');
 
 
     // Function to hide a given element with fade-out
+    // MODIFIED hideElement function with added logs and checks
     const hideElement = (element) => {
+      console.log(`Attempting to hide element: ${element ? element.id : 'undefined'}`); // ADDED LOG & CHECK
+      if (!element) {
+          console.error(`Element with ID ${element ? element.id : 'undefined'} not found for hideElement.`); // ADDED LOG
+          return;
+      }
       if (element.classList.contains('hidden') || element.style.display === 'none') {
+        console.log(`${element.id} already hidden or display is none.`); // ADDED LOG
         return;
       }
       element.classList.add('hidden');
       element.addEventListener('transitionend', () => {
+        console.log(`Transitionend for ${element.id}, setting display to none.`); // ADDED LOG
         element.style.display = 'none';
       }, { once: true });
-      console.log(`${element.id} hidden.`);
+      console.log(`${element.id} hidden class added (original log was: ${element.id} hidden.)`); // MODIFIED ORIGINAL LOG
     };
 
     // Function to show a given element (for modals)
@@ -356,82 +360,110 @@
     }
 
     // Hide the welcome message after 2.5 seconds (then it takes 4 seconds to fade)
-    setTimeout(() => {
-      hideElement(welcomeMessage);
-    }, 2500); // This is the duration the welcome message is visible before hiding
-
-    // Hide the loading screen when A-Frame scene is loaded
-    const loadingScreenHideTimeout = setTimeout(() => {
-        hideElement(loadingScreen);
-        // Attempt to play audio after loading screen is hidden
-        if (museumAudioElement && museumAudioElement.paused) {
-            museumAudioElement.play().catch(e => console.error("Autoplay failed on loading screen hide:", e));
-        }
-    }, 2000); // Fallback for loading screen: hide after 2 seconds
-
-    sceneEl.addEventListener('loaded', () => {
-      clearTimeout(loadingScreenHideTimeout); // Clear fallback if loaded
-      hideElement(loadingScreen); // Hide the loading screen
-      console.log('A-Frame scene loaded, clearing loading screen timeout.');
-
-      // Attempt to play audio after scene loads (more reliable for some browsers)
-      if (museumAudioElement && museumAudioElement.paused) {
-          museumAudioElement.play().catch(e => console.error("Autoplay failed on scene loaded:", e));
-      }
-    }, { once: true });
-
-    // Event listeners for the help modal
-    helpButton.addEventListener('click', () => {
-        showElement(helpModal);
-        // Optional: Pause audio while help modal is open
-        if (museumAudioElement && !museumAudioElement.paused) {
-            museumAudioElement.pause();
-        }
-    });
-
-    closeHelpButton.addEventListener('click', () => {
-        // Use hideElement with a slight delay to allow transition, then remove 'visible' class
-        helpModal.classList.remove('visible');
-        helpModal.classList.add('hidden');
-        helpModal.addEventListener('transitionend', () => {
-          helpModal.style.display = 'none';
-          helpModal.classList.remove('hidden'); // Clean up hidden class for next show
-        }, { once: true });
-
-        // Resume audio when help modal closes (this is a direct user interaction)
-        if (museumAudioElement && museumAudioElement.paused) {
-            museumAudioElement.play().catch(e => console.error("Autoplay failed on help modal close:", e));
-        }
-    });
-
-    // Stop audio after 7 minutes
-    // Convert 7 minutes to milliseconds (7 * 60 * 1000)
-    const audioDurationMs = 7 * 60 * 1000;
-
-    // We'll set a timeout to stop the audio a bit after it's most likely to have started playing.
-    // A good place is after the 'loaded' event of the scene, as that signifies the AR experience is ready.
-    sceneEl.addEventListener('loaded', () => {
-        // ... (existing code to hide loading screen and try to play audio) ...
-
-        // Set the timeout to stop the audio after 7 minutes
+    if (welcomeMessage) { // ADDED CHECK
         setTimeout(() => {
-            if (museumAudioElement && !museumAudioElement.paused) {
-                museumAudioElement.pause();
-                museumAudioElement.currentTime = 0; // Optional: reset playback to the beginning
-                console.log("Museum audio stopped after 7 minutes.");
-            }
-        }, audioDurationMs); // 7 minutes in milliseconds
-    }, { once: true }); // Ensure this 'loaded' event listener only fires once
-
-    // Renderer settings
-    if (sceneEl.renderer) {
-      sceneEl.renderer.setPixelRatio(window.devicePixelRatio || 1);
-      sceneEl.renderer.sortObjects = false;
+            hideElement(welcomeMessage);
+        }, 2500);
+    } else {
+        console.error("Welcome message element not found."); // ADDED LOG
     }
 
+
+    // Fallback for loading screen: hide after 2 seconds
+    // MODIFIED BLOCK with added logs and checks
+    const loadingScreenHideTimeout = setTimeout(() => {
+        console.log("Fallback timeout triggered for loading screen."); // ADDED LOG
+        if (loadingScreen) {
+            hideElement(loadingScreen);
+        } else {
+            console.error("loadingScreen element not found in fallback timeout."); // ADDED LOG
+        }
+        // Attempt to play audio after loading screen is hidden (fallback)
+        if (museumAudioElement && museumAudioElement.paused) {
+            museumAudioElement.play().catch(e => console.error("Autoplay failed on loading screen hide (fallback):", e));
+        }
+    }, 2000);
+
+
+    // MODIFIED AND CONSOLIDATED 'loaded' event listener
+    if (sceneEl) {
+        sceneEl.addEventListener('loaded', () => {
+            console.log("A-Frame scene 'loaded' event FIRED!"); // ADDED LOG
+
+            // Clear loading screen fallback and hide loading screen
+            if (loadingScreenHideTimeout) {
+                clearTimeout(loadingScreenHideTimeout);
+                console.log("loadingScreenHideTimeout cleared."); // ADDED LOG
+            }
+            if (loadingScreen) {
+                hideElement(loadingScreen);
+            } else {
+                console.error("loadingScreen element not found when scene loaded."); // ADDED LOG
+            }
+            // Original log: console.log('A-Frame scene loaded, clearing loading screen timeout.'); // Kept for reference, new logs are more specific
+
+            // Attempt to play audio after scene loads
+            if (museumAudioElement && museumAudioElement.paused) {
+                museumAudioElement.play().catch(e => console.error("Autoplay failed on scene loaded:", e));
+            }
+
+            // Set the timeout to stop the audio after 7 minutes
+            const audioDurationMs = 7 * 60 * 1000;
+            setTimeout(() => {
+                if (museumAudioElement && !museumAudioElement.paused) {
+                    museumAudioElement.pause();
+                    museumAudioElement.currentTime = 0; // Optional: reset playback
+                    console.log("Museum audio stopped after 7 minutes.");
+                }
+            }, audioDurationMs);
+
+            // Renderer settings - moved inside 'loaded' event
+            if (sceneEl.renderer) {
+                console.log("Setting renderer properties."); // ADDED LOG
+                sceneEl.renderer.setPixelRatio(window.devicePixelRatio || 1);
+                sceneEl.renderer.sortObjects = false;
+            } else {
+                console.error("Renderer not available on sceneEl when 'loaded' event fired."); // ADDED LOG
+            }
+
+        }, { once: true }); // Ensure this 'loaded' event listener only fires once
+    } else {
+        console.error("a-scene element not found for event listener attachment."); // ADDED LOG
+    }
+
+
+    // Event listeners for the help modal
+    if (helpButton && helpModal && closeHelpButton) { // ADDED CHECKS
+        helpButton.addEventListener('click', () => {
+            showElement(helpModal);
+            if (museumAudioElement && !museumAudioElement.paused) {
+                museumAudioElement.pause();
+            }
+        });
+
+        closeHelpButton.addEventListener('click', () => {
+            helpModal.classList.remove('visible');
+            helpModal.classList.add('hidden');
+            helpModal.addEventListener('transitionend', () => {
+                helpModal.style.display = 'none';
+                helpModal.classList.remove('hidden');
+            }, { once: true });
+
+            if (museumAudioElement && museumAudioElement.paused) {
+                museumAudioElement.play().catch(e => console.error("Autoplay failed on help modal close:", e));
+            }
+        });
+    } else {
+        console.error("One or more help modal elements not found."); // ADDED LOG
+    }
+
+
     // Debugging console logs for target events
-    sceneEl.addEventListener('targetFound', e => console.log('✅ Target found:', e.detail.targetIndex));
-    sceneEl.addEventListener('targetLost', e => console.log('❌ Target lost:', e.detail.targetIndex));
+    if (sceneEl) { // ADDED CHECK (though sceneEl should exist if previous block ran)
+        sceneEl.addEventListener('targetFound', e => console.log('✅ Target found:', e.detail.targetIndex, e.detail.name)); // Added name for more info
+        sceneEl.addEventListener('targetLost', e => console.log('❌ Target lost:', e.detail.targetIndex, e.detail.name));  // Added name for more info
+    }
+
   </script>
 </body>
 </html>
