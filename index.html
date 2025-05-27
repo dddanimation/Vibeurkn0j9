@@ -13,7 +13,7 @@
     #welcome-message.hidden,
     #help-modal.hidden { /* Apply hidden class to all overlays */
       opacity: 0;
-      transition: opacity 4s ease-out; /* CORRECTED to 4 seconds for fade */
+      transition: opacity 4s ease-out;
     }
 
     /* Styling for the welcome message content */
@@ -29,30 +29,28 @@
       color: white;
       background: rgba(0, 0, 0, 0.9); /* More opaque for focus */
       z-index: 1000; /* Higher z-index to be on top */
-      /* Removed text-align: center from here */
     }
 
-    #welcome-message h1 { /* Added H1 for the main welcome text */
-        font-size: 2em; /* Adjust as needed */
+    #welcome-message h1 {
+        font-size: 2em;
         margin-bottom: 20px;
-        text-align: center; /* Keep the main welcome text centered */
+        text-align: center;
     }
 
     #welcome-message .instructions,
-    #welcome-message .note { /* Applied left-align to both instruction paragraphs */
+    #welcome-message .note {
       font-size: 16px;
-      margin-top: 10px; /* Adjusted margin slightly */
+      margin-top: 10px;
       line-height: 1.5;
-      max-width: 80%; /* Limit width for better readability on large screens */
-      text-align: left; /* Aligned to the left */
+      max-width: 80%;
+      text-align: left;
     }
 
     #welcome-message .note {
         font-style: italic;
         font-size: 0.9em;
-        margin-top: 20px; /* More space above the note */
+        margin-top: 20px;
     }
-
 
     /* Styling for the help modal */
     #help-modal {
@@ -64,36 +62,35 @@
       flex-direction: column;
       font-family: sans-serif;
       color: white;
-      background: rgba(0, 0, 0, 0.9); /* Opaque background for modal */
-      z-index: 1001; /* Higher than welcome-message and loading-screen */
-      text-align: center; /* This centers the modal content block, but not text within it */
-      /* Start hidden */
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1001;
+      text-align: center;
       opacity: 0;
-      pointer-events: none; /* Allows clicks to pass through when hidden */
+      pointer-events: none;
     }
 
     #help-modal.visible {
         opacity: 1;
-        pointer-events: auto; /* Enable clicks when visible */
+        pointer-events: auto;
         transition: opacity 0.3s ease-in-out;
     }
 
     #help-modal-content {
-        background: rgba(255, 255, 255, 0.1); /* Slightly visible content background */
+        background: rgba(255, 255, 255, 0.1);
         padding: 30px;
         border-radius: 10px;
         max-width: 90%;
         max-height: 90%;
-        overflow-y: auto; /* Enable scrolling for long content */
+        overflow-y: auto;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        text-align: left; /* Explicitly align text within modal content to the left */
+        text-align: left;
     }
 
     #help-modal-content h2 {
         margin-top: 0;
         font-size: 24px;
         color: #fff;
-        text-align: center; /* Keep modal title centered */
+        text-align: center;
     }
 
     #help-modal-content p {
@@ -103,29 +100,29 @@
     }
 
     #help-modal-content ul {
-        list-style-type: none; /* Remove default bullets */
+        list-style-type: none;
         padding: 0;
         margin: 0 0 20px 0;
     }
 
     #help-modal-content ul li {
         margin-bottom: 10px;
-        padding-left: 20px; /* Indent list items */
+        padding-left: 20px;
         position: relative;
     }
 
     #help-modal-content ul li::before {
-        content: '➡️'; /* Custom bullet point */
+        content: '➡️';
         position: absolute;
         left: 0;
-        color: #007bff; /* Highlight color for bullet */
+        color: #007bff;
     }
 
     #close-help-button {
       margin-top: 25px;
       padding: 10px 25px;
       font-size: 16px;
-      background-color: #007bff; /* Blue button */
+      background-color: #007bff;
       color: white;
       border: none;
       border-radius: 8px;
@@ -134,14 +131,13 @@
     }
 
     #close-help-button:hover {
-        background-color: #0056b3; /* Darker blue on hover */
+        background-color: #0056b3;
     }
 
-    /* Style for the help button (icon) */
     #help-button {
         position: absolute;
         top: 20px;
-        right: 120px; /* Adjusted to the left of "Inquiry" button */
+        right: 120px;
         width: 40px;
         height: 40px;
         display: flex;
@@ -152,9 +148,9 @@
         background-color: rgba(0, 0, 0, 0.8);
         color: white;
         border: none;
-        border-radius: 50%; /* Makes it a circle */
+        border-radius: 50%;
         cursor: pointer;
-        z-index: 999; /* Same as other UI buttons */
+        z-index: 999;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         transition: background-color 0.2s ease-in-out;
     }
@@ -187,7 +183,7 @@
     background: rgba(0, 0, 0, 0.6);
     padding: 10px 20px;
     border-radius: 8px;
-    z-index: 999; /* Lower than welcome-message */
+    z-index: 999;
     text-align: center;">
     Loading AR experience...<br>Please be mindful of your surroundings
   </div>
@@ -222,7 +218,6 @@
     </div>
   </div>
 
-
   <a-scene mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 1; filterMinCF: 0.001; filterBeta: 0.05; missTolerance: 10; warmupTolerance: 10"
            color-space="sRGB"
            renderer="precision: medium; antialias: false; colorManagement: true; physicallyCorrectLights: true"
@@ -240,16 +235,12 @@
       <a-asset-item id="model7" src="./loys.glb"></a-asset-item>
       <a-asset-item id="model8" src="./base.glb"></a-asset-item>
       <a-asset-item id="model9" src="./maps.glb"></a-asset-item>
-      <a-asset-item id="model10" src="./miss_regret.glb"></a-asset-item> <a-asset-item id="model11" src="./porcelainv3.glb"></a-asset-item>
+      <a-asset-item id="model10" src="./miss_regret.glb"></a-asset-item>
+      <a-asset-item id="model11" src="./porcelainv3.glb"></a-asset-item>
       <a-asset-item id="model12" src="./sdwtbs.glb"></a-asset-item>
       <a-asset-item id="model13" src="./transcending-myself.glb"></a-asset-item>
       <a-asset-item id="model14" src="./twins.glb"></a-asset-item>
-
-      <audio id="museum-audio" src="./museum_sounds.mp3" preload="auto"></audio>
-    </a-assets>
-
-    <a-entity sound="src: #museum-audio; loop: true; autoplay: true; volume: 0.5"></a-entity>
-
+      </a-assets>
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
@@ -260,59 +251,45 @@
     <a-entity mindar-image-target="targetIndex: 0">
       <a-gltf-model src="#mayaModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
-
     <a-entity mindar-image-target="targetIndex: 1">
       <a-gltf-model src="#regretModel" position="0 0 -0.3" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
-
     <a-entity mindar-image-target="targetIndex: 2">
       <a-gltf-model src="#seedlessFruitModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
-
     <a-entity mindar-image-target="targetIndex: 3">
       <a-gltf-model src="#mapisModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
-
     <a-entity mindar-image-target="targetIndex: 4">
       <a-gltf-model src="#negusAnewModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
-
     <a-entity mindar-image-target="targetIndex: 5">
       <a-gltf-model src="#ebonyModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
-
     <a-entity mindar-image-target="targetIndex: 6">
       <a-gltf-model src="#model6" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
-
     <a-entity mindar-image-target="targetIndex: 7">
       <a-gltf-model src="#model7" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
-
     <a-entity mindar-image-target="targetIndex: 8">
       <a-gltf-model src="#model8" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
-
     <a-entity mindar-image-target="targetIndex: 9">
       <a-gltf-model src="#model9" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
-
     <a-entity mindar-image-target="targetIndex: 10">
       <a-gltf-model src="#model10" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
-
     <a-entity mindar-image-target="targetIndex: 11">
       <a-gltf-model src="#model11" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
-
     <a-entity mindar-image-target="targetIndex: 12">
       <a-gltf-model src="#model12" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
-
     <a-entity mindar-image-target="targetIndex: 13">
       <a-gltf-model src="#model13" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
-
     <a-entity mindar-image-target="targetIndex: 14">
       <a-gltf-model src="#model14" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
     </a-entity>
@@ -326,119 +303,86 @@
     const helpButton = document.getElementById('help-button');
     const helpModal = document.getElementById('help-modal');
     const closeHelpButton = document.getElementById('close-help-button');
-    const museumAudioElement = document.getElementById('museum-audio');
+    // const museumAudioElement = document.getElementById('museum-audio'); // AUDIO ELEMENT REMOVED
 
-
-    // Function to hide a given element with fade-out
-    // MODIFIED hideElement function with added logs and checks
     const hideElement = (element) => {
-      console.log(`Attempting to hide element: ${element ? element.id : 'undefined'}`); // ADDED LOG & CHECK
+      console.log(`Attempting to hide element: ${element ? element.id : 'undefined'}`);
       if (!element) {
-          console.error(`Element with ID ${element ? element.id : 'undefined'} not found for hideElement.`); // ADDED LOG
+          console.error(`Element with ID ${element ? element.id : 'undefined'} not found for hideElement.`);
           return;
       }
       if (element.classList.contains('hidden') || element.style.display === 'none') {
-        console.log(`${element.id} already hidden or display is none.`); // ADDED LOG
+        console.log(`${element.id} already hidden or display is none.`);
         return;
       }
       element.classList.add('hidden');
       element.addEventListener('transitionend', () => {
-        console.log(`Transitionend for ${element.id}, setting display to none.`); // ADDED LOG
+        console.log(`Transitionend for ${element.id}, setting display to none.`);
         element.style.display = 'none';
       }, { once: true });
-      console.log(`${element.id} hidden class added (original log was: ${element.id} hidden.)`); // MODIFIED ORIGINAL LOG
+      console.log(`${element.id} hidden class added (original log was: ${element.id} hidden.)`);
     };
 
-    // Function to show a given element (for modals)
     const showElement = (element) => {
-        element.style.display = 'flex'; // Use flex to center content
-        // Force reflow to ensure display change applies before opacity transition
+        element.style.display = 'flex';
         element.offsetWidth;
         element.classList.remove('hidden');
-        element.classList.add('visible'); // For modal specific visibility class
+        element.classList.add('visible');
         console.log(`${element.id} shown.`);
     }
 
-    // Hide the welcome message after 2.5 seconds (then it takes 4 seconds to fade)
-    if (welcomeMessage) { // ADDED CHECK
+    if (welcomeMessage) {
         setTimeout(() => {
             hideElement(welcomeMessage);
         }, 2500);
     } else {
-        console.error("Welcome message element not found."); // ADDED LOG
+        console.error("Welcome message element not found.");
     }
 
-
-    // Fallback for loading screen: hide after 2 seconds
-    // MODIFIED BLOCK with added logs and checks
     const loadingScreenHideTimeout = setTimeout(() => {
-        console.log("Fallback timeout triggered for loading screen."); // ADDED LOG
+        console.log("Fallback timeout triggered for loading screen.");
         if (loadingScreen) {
             hideElement(loadingScreen);
         } else {
-            console.error("loadingScreen element not found in fallback timeout."); // ADDED LOG
+            console.error("loadingScreen element not found in fallback timeout.");
         }
-        // Attempt to play audio after loading screen is hidden (fallback)
-        if (museumAudioElement && museumAudioElement.paused) {
-            museumAudioElement.play().catch(e => console.error("Autoplay failed on loading screen hide (fallback):", e));
-        }
+        // AUDIO PLAY ATTEMPT REMOVED
     }, 2000);
 
-
-    // MODIFIED AND CONSOLIDATED 'loaded' event listener
     if (sceneEl) {
         sceneEl.addEventListener('loaded', () => {
-            console.log("A-Frame scene 'loaded' event FIRED!"); // ADDED LOG
+            console.log("A-Frame scene 'loaded' event FIRED!");
 
-            // Clear loading screen fallback and hide loading screen
             if (loadingScreenHideTimeout) {
                 clearTimeout(loadingScreenHideTimeout);
-                console.log("loadingScreenHideTimeout cleared."); // ADDED LOG
+                console.log("loadingScreenHideTimeout cleared.");
             }
             if (loadingScreen) {
                 hideElement(loadingScreen);
             } else {
-                console.error("loadingScreen element not found when scene loaded."); // ADDED LOG
-            }
-            // Original log: console.log('A-Frame scene loaded, clearing loading screen timeout.'); // Kept for reference, new logs are more specific
-
-            // Attempt to play audio after scene loads
-            if (museumAudioElement && museumAudioElement.paused) {
-                museumAudioElement.play().catch(e => console.error("Autoplay failed on scene loaded:", e));
+                console.error("loadingScreen element not found when scene loaded.");
             }
 
-            // Set the timeout to stop the audio after 7 minutes
-            const audioDurationMs = 7 * 60 * 1000;
-            setTimeout(() => {
-                if (museumAudioElement && !museumAudioElement.paused) {
-                    museumAudioElement.pause();
-                    museumAudioElement.currentTime = 0; // Optional: reset playback
-                    console.log("Museum audio stopped after 7 minutes.");
-                }
-            }, audioDurationMs);
+            // AUDIO PLAY ATTEMPT REMOVED
+            // AUDIO STOP TIMEOUT REMOVED
 
-            // Renderer settings - moved inside 'loaded' event
             if (sceneEl.renderer) {
-                console.log("Setting renderer properties."); // ADDED LOG
+                console.log("Setting renderer properties.");
                 sceneEl.renderer.setPixelRatio(window.devicePixelRatio || 1);
                 sceneEl.renderer.sortObjects = false;
             } else {
-                console.error("Renderer not available on sceneEl when 'loaded' event fired."); // ADDED LOG
+                console.error("Renderer not available on sceneEl when 'loaded' event fired.");
             }
 
-        }, { once: true }); // Ensure this 'loaded' event listener only fires once
+        }, { once: true });
     } else {
-        console.error("a-scene element not found for event listener attachment."); // ADDED LOG
+        console.error("a-scene element not found for event listener attachment.");
     }
 
-
-    // Event listeners for the help modal
-    if (helpButton && helpModal && closeHelpButton) { // ADDED CHECKS
+    if (helpButton && helpModal && closeHelpButton) {
         helpButton.addEventListener('click', () => {
             showElement(helpModal);
-            if (museumAudioElement && !museumAudioElement.paused) {
-                museumAudioElement.pause();
-            }
+            // AUDIO PAUSE REMOVED
         });
 
         closeHelpButton.addEventListener('click', () => {
@@ -448,22 +392,29 @@
                 helpModal.style.display = 'none';
                 helpModal.classList.remove('hidden');
             }, { once: true });
-
-            if (museumAudioElement && museumAudioElement.paused) {
-                museumAudioElement.play().catch(e => console.error("Autoplay failed on help modal close:", e));
-            }
+            // AUDIO PLAY ATTEMPT REMOVED
         });
     } else {
-        console.error("One or more help modal elements not found."); // ADDED LOG
+        console.error("One or more help modal elements not found.");
     }
 
+    if (sceneEl) {
+        sceneEl.addEventListener('targetFound', e => {
+            if (e.detail) { // Robust check
+                console.log('✅ Target found:', e.detail.targetIndex, e.detail.name);
+            } else {
+                console.log('✅ Target found, but e.detail was null or undefined. Event object:', e);
+            }
+        });
 
-    // Debugging console logs for target events
-    if (sceneEl) { // ADDED CHECK (though sceneEl should exist if previous block ran)
-        sceneEl.addEventListener('targetFound', e => console.log('✅ Target found:', e.detail.targetIndex, e.detail.name)); // Added name for more info
-        sceneEl.addEventListener('targetLost', e => console.log('❌ Target lost:', e.detail.targetIndex, e.detail.name));  // Added name for more info
+        sceneEl.addEventListener('targetLost', e => {
+            if (e.detail) { // Robust check
+                console.log('❌ Target lost:', e.detail.targetIndex, e.detail.name);
+            } else {
+                console.log('❌ Target lost, but e.detail was null or undefined. Event object:', e);
+            }
+        });
     }
-
   </script>
 </body>
 </html>
