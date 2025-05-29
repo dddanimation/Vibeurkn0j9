@@ -157,6 +157,38 @@
     #help-button:hover {
         background-color: rgba(0, 0, 0, 0.9);
     }
+
+    /* Styles for the artwork gallery in help modal */
+    .artwork-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Responsive grid */
+      gap: 15px; /* Space between items */
+      margin-top: 20px;
+      justify-items: center; /* Center items within their grid cells */
+      text-align: center;
+    }
+
+    .artwork-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .artwork-item img {
+      width: 100px; /* Size of individual target images */
+      height: 100px;
+      object-fit: contain; /* Contain to show full image without cropping */
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 5px;
+      margin-bottom: 5px;
+    }
+
+    .artwork-item p {
+      font-size: 0.8em;
+      color: #ccc;
+      margin: 0;
+      line-height: 1.2;
+    }
   </style>
 </head>
 <body style="margin: 0; overflow: hidden;">
@@ -168,7 +200,7 @@
       1. Scan the QR code.<br>
       2. Allow camera access if prompted.<br>
       3. Aim your device at the QR code and background marker.<br>
-      4. Tap the <strong>'i'</strong> button for details.
+      4. Tap the <strong>'i'</strong> button for details and to see all artworks.
     </p>
   </div>
 
@@ -214,11 +246,76 @@
             <li>If the model disappears, simply re-point your camera at the marker.</li>
             <li>For more details or to make an inquiry about the art, tap the 'Inquiry' button.</li>
         </ul>
+
+        <h3>Recognized Artworks:</h3>
+        <div class="artwork-gallery">
+          <div class="artwork-item">
+            <img src="./target-previews/maya_target.png" alt="Maya Artwork" />
+            <p>Maya</p>
+          </div>
+          <div class="artwork-item">
+            <img src="./target-previews/regret_target.png" alt="Miss Regret Artwork" />
+            <p>Miss Regret</p>
+          </div>
+          <div class="artwork-item">
+            <img src="./target-previews/seedless_fruit_target.png" alt="Seedless Fruit Artwork" />
+            <p>Seedless Fruit</p>
+          </div>
+          <div class="artwork-item">
+            <img src="./target-previews/mapis_target.png" alt="Mapis Artwork" />
+            <p>Mapis</p>
+          </div>
+          <div class="artwork-item">
+            <img src="./target-previews/negus_anew_target.png" alt="Negus Anew Artwork" />
+            <p>Negus Anew</p>
+          </div>
+          <div class="artwork-item">
+            <img src="./target-previews/ebony_target.png" alt="Ebony Artwork" />
+            <p>Ebony</p>
+          </div>
+          <div class="artwork-item">
+            <img src="./target-previews/lia_target.png" alt="Living in America Artwork" />
+            <p>Living in America</p>
+          </div>
+          <div class="artwork-item">
+            <img src="./target-previews/loys_target.png" alt="Loys Artwork" />
+            <p>Loys</p>
+          </div>
+          <div class="artwork-item">
+            <img src="./target-previews/base_target.png" alt="Base Artwork" />
+            <p>Base</p>
+          </div>
+          <div class="artwork-item">
+            <img src="./target-previews/maps_target.png" alt="Maps Artwork" />
+            <p>Maps</p>
+          </div>
+          <div class="artwork-item">
+            <img src="./target-previews/miss_regret_target.png" alt="Miss Regret (duplicate) Artwork" />
+            <p>Miss Regret (2)</p>
+          </div>
+          <div class="artwork-item">
+            <img src="./target-previews/porcelainv3_target.png" alt="Porcelain v3 Artwork" />
+            <p>Porcelain v3</p>
+          </div>
+          <div class="artwork-item">
+            <img src="./target-previews/sdwtbs_target.png" alt="SDWTBS Artwork" />
+            <p>SDWTBS</p>
+          </div>
+          <div class="artwork-item">
+            <img src="./target-previews/transcending_myself_target.png" alt="Transcending Myself Artwork" />
+            <p>Transcending Myself</p>
+          </div>
+          <div class="artwork-item">
+            <img src="./target-previews/twins_target.png" alt="Twins Artwork" />
+            <p>Twins</p>
+          </div>
+        </div>
+
         <button id="close-help-button">Got It!</button>
     </div>
   </div>
 
-  <a-scene mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 1; filterMinCF: 0.001; filterBeta: 0.05; missTolerance: 10; warmupTolerance: 10"
+  <a-scene mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 1; filterMinCF: 0.01; filterBeta: 0.07; missTolerance: 20; warmupTolerance: 10"
            color-space="sRGB"
            renderer="precision: medium; antialias: false; colorManagement: true; physicallyCorrectLights: true"
            vr-mode-ui="enabled: false"
@@ -235,12 +332,16 @@
       <a-asset-item id="loys" src="./loys.glb"></a-asset-item>
       <a-asset-item id="base" src="./base.glb"></a-asset-item>
       <a-asset-item id="maps" src="./maps.glb"></a-asset-item>
-      <a-asset-item id="miss_regret" src="./miss_regret.glb"></a-asset-item>
-      <a-asset-item id="porcelainv3" src="./porcelainv3.glb"></a-asset-item>
+      <a-asset-item id="miss_regret_dup" src="./miss_regret.glb"></a-asset-item> <a-asset-item id="porcelainv3" src="./porcelainv3.glb"></a-asset-item>
       <a-asset-item id="sdwtbs" src="./sdwtbs.glb"></a-asset-item>
       <a-asset-item id="transcending-myself" src="./transcending-myself.glb"></a-asset-item>
       <a-asset-item id="twins" src="./twins.glb"></a-asset-item>
-      </a-assets>
+
+      <audio id="museum-audio" src="./museum_sounds.mp3" preload="auto"></audio>
+    </a-assets>
+
+    <a-entity sound="src: #museum-audio; loop: true; autoplay: true; volume: 0.5"></a-entity>
+
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
@@ -248,50 +349,142 @@
     <a-entity light="type: directional; intensity: 0.1; color: #ffffff; castShadow: true" position="1 1 1"></a-entity>
     <a-entity light="type: directional; intensity: 0.5; color: #ffffff" position="-1 1 1"></a-entity>
 
+    <script>
+      AFRAME.registerComponent('enhanced-tracking', {
+        init: function () {
+          this.targetFound = false;
+          this.positionBuffer = [];
+          this.quaternionBuffer = [];
+          this.maxBufferSize = 10; // Increased for more smoothing
+          this.smoothingFactor = 0.5; // Increased for more aggressive smoothing
+          this.lastPosition = null;
+          this.lastQuaternion = null;
+
+          this.el.addEventListener('targetFound', () => {
+            this.targetFound = true;
+            this.positionBuffer = [];
+            this.quaternionBuffer = [];
+            this.lastPosition = this.el.object3D.position.clone();
+            this.lastQuaternion = this.el.object3D.quaternion.clone();
+            console.log('✅ Target found: Initializing smoothing');
+          });
+
+          this.el.addEventListener('targetLost', () => {
+            this.targetFound = false;
+            console.log('❌ Target lost: Stopping smoothing');
+          });
+        },
+        tick: function () {
+          if (!this.targetFound) return;
+
+          const currentPosition = this.el.object3D.position.clone();
+          const currentQuaternion = this.el.object3D.quaternion.clone();
+
+          if (!this.lastPosition || !this.lastQuaternion) {
+              this.lastPosition = currentPosition.clone();
+              this.lastQuaternion = currentQuaternion.clone();
+              return;
+          }
+
+          // Buffer current position and quaternion
+          this.positionBuffer.push(currentPosition);
+          this.quaternionBuffer.push(currentQuaternion); // Also buffer quaternions for slerp smoothing
+
+          if (this.positionBuffer.length > this.maxBufferSize) {
+            this.positionBuffer.shift();
+            this.quaternionBuffer.shift();
+          }
+
+          // Average positions
+          let averagedPosition = new THREE.Vector3();
+          this.positionBuffer.forEach(pos => averagedPosition.add(pos));
+          averagedPosition.divideScalar(this.positionBuffer.length);
+
+          // Slerp quaternions (can be more complex for accurate averaging, but slerp to last is often good enough)
+          // For true average, you'd need a more involved quaternion averaging function.
+          // For now, let's slerp towards the current, which is what A-Frame does by default, but we'll apply our factor.
+          let averagedQuaternion = new THREE.Quaternion();
+          if (this.quaternionBuffer.length > 0) {
+            // A simple approach for averaging quaternions is to slerp from one to the next
+            // or to slerp the current to the last smoothed, which we already do.
+            // For a buffer, a "mean" quaternion is more complex.
+            // For this component, we'll continue to slerp the element's quaternion towards the current camera quaternion,
+            // using the smoothing factor, rather than trying to average all buffered quaternions.
+            // The position buffer helps with positional smoothing.
+             averagedQuaternion.copy(currentQuaternion); // No complex averaging for quaternion buffer for now
+          } else {
+            averagedQuaternion.copy(currentQuaternion);
+          }
+
+
+          this.el.object3D.position.lerp(averagedPosition, this.smoothingFactor);
+          // Apply slerp smoothing to the quaternion as well
+          this.el.object3D.quaternion.slerp(averagedQuaternion, this.smoothingFactor);
+
+          this.lastPosition.copy(this.el.object3D.position);
+          this.lastQuaternion.copy(this.el.object3D.quaternion);
+        }
+      });
+    </script>
+
     <a-entity mindar-image-target="targetIndex: 0">
-      <a-gltf-model src="#mayaModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#mayaModel" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 1">
-      <a-gltf-model src="#regretModel" position="0 0 -0.3" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#regretModel" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 2">
-      <a-gltf-model src="#seedlessFruitModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#seedlessFruitModel" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 3">
-      <a-gltf-model src="#mapisModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#mapisModel" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 4">
-      <a-gltf-model src="#negusAnewModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#negusAnewModel" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 5">
-      <a-gltf-model src="#ebonyModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#ebonyModel" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 6">
-      <a-gltf-model src="#lia" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#lia" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 7">
-      <a-gltf-model src="#loys" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#loys" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 8">
-      <a-gltf-model src="#base" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#base" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 9">
-      <a-gltf-model src="#maps" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#maps" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 10">
-      <a-gltf-model src="#miss_regret" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#miss_regret_dup" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 11">
-      <a-gltf-model src="#porcelainv3" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#porcelainv3" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 12">
-      <a-gltf-model src="#sdwtbs" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#sdwtbs" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 13">
-      <a-gltf-model src="#transcending-myself" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#transcending-myself" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
+
     <a-entity mindar-image-target="targetIndex: 14">
-      <a-gltf-model src="#twins" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+      <a-gltf-model src="#twins" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
     </a-entity>
 
   </a-scene>
@@ -303,7 +496,8 @@
     const helpButton = document.getElementById('help-button');
     const helpModal = document.getElementById('help-modal');
     const closeHelpButton = document.getElementById('close-help-button');
-    // const museumAudioElement = document.getElementById('museum-audio'); // AUDIO ELEMENT REMOVED
+    const museumAudioElement = document.getElementById('museum-audio'); // Re-added audio element reference
+
 
     const hideElement = (element) => {
       console.log(`Attempting to hide element: ${element ? element.id : 'undefined'}`);
@@ -320,17 +514,18 @@
         console.log(`Transitionend for ${element.id}, setting display to none.`);
         element.style.display = 'none';
       }, { once: true });
-      console.log(`${element.id} hidden class added (original log was: ${element.id} hidden.)`);
+      console.log(`${element.id} hidden class added.`);
     };
 
     const showElement = (element) => {
         element.style.display = 'flex';
-        element.offsetWidth;
+        element.offsetWidth; // Force reflow
         element.classList.remove('hidden');
         element.classList.add('visible');
         console.log(`${element.id} shown.`);
     }
 
+    // Hide the welcome message after 2.5 seconds (then it takes 2 seconds to fade)
     if (welcomeMessage) {
         setTimeout(() => {
             hideElement(welcomeMessage);
@@ -339,15 +534,19 @@
         console.error("Welcome message element not found.");
     }
 
+    // Hide the loading screen when A-Frame scene is loaded
     const loadingScreenHideTimeout = setTimeout(() => {
         console.log("Fallback timeout triggered for loading screen.");
         if (loadingScreen) {
             hideElement(loadingScreen);
+            // Attempt to play audio after loading screen is hidden
+            if (museumAudioElement && museumAudioElement.paused) {
+                museumAudioElement.play().catch(e => console.error("Autoplay failed on loading screen hide:", e));
+            }
         } else {
             console.error("loadingScreen element not found in fallback timeout.");
         }
-        // AUDIO PLAY ATTEMPT REMOVED
-    }, 2000);
+    }, 2000); // Fallback: hide after 2 seconds
 
     if (sceneEl) {
         sceneEl.addEventListener('loaded', () => {
@@ -363,8 +562,10 @@
                 console.error("loadingScreen element not found when scene loaded.");
             }
 
-            // AUDIO PLAY ATTEMPT REMOVED
-            // AUDIO STOP TIMEOUT REMOVED
+            // Attempt to play audio after scene loads (more reliable for some browsers)
+            if (museumAudioElement && museumAudioElement.paused) {
+                museumAudioElement.play().catch(e => console.error("Autoplay failed on scene loaded:", e));
+            }
 
             if (sceneEl.renderer) {
                 console.log("Setting renderer properties.");
@@ -373,16 +574,19 @@
             } else {
                 console.error("Renderer not available on sceneEl when 'loaded' event fired.");
             }
-
         }, { once: true });
     } else {
         console.error("a-scene element not found for event listener attachment.");
     }
 
+    // Event listeners for the help modal
     if (helpButton && helpModal && closeHelpButton) {
         helpButton.addEventListener('click', () => {
             showElement(helpModal);
-            // AUDIO PAUSE REMOVED
+            // Optional: Pause audio while help modal is open
+            if (museumAudioElement && !museumAudioElement.paused) {
+                museumAudioElement.pause();
+            }
         });
 
         closeHelpButton.addEventListener('click', () => {
@@ -392,15 +596,34 @@
                 helpModal.style.display = 'none';
                 helpModal.classList.remove('hidden');
             }, { once: true });
-            // AUDIO PLAY ATTEMPT REMOVED
+
+            // Resume audio when help modal closes (this is a direct user interaction)
+            if (museumAudioElement && museumAudioElement.paused) {
+                museumAudioElement.play().catch(e => console.error("Autoplay failed on help modal close:", e));
+            }
         });
     } else {
         console.error("One or more help modal elements not found.");
     }
 
+    // Stop audio after 7 minutes
+    const audioDurationMs = 7 * 60 * 1000;
+    if (sceneEl) {
+      sceneEl.addEventListener('loaded', () => {
+        setTimeout(() => {
+          if (museumAudioElement && !museumAudioElement.paused) {
+            museumAudioElement.pause();
+            museumAudioElement.currentTime = 0; // Optional: reset playback to the beginning
+            console.log("Museum audio stopped after 7 minutes.");
+          }
+        }, audioDurationMs);
+      }, { once: true });
+    }
+
+    // Debugging console logs for target events
     if (sceneEl) {
         sceneEl.addEventListener('targetFound', e => {
-            if (e.detail) { // Robust check
+            if (e.detail) {
                 console.log('✅ Target found:', e.detail.targetIndex, e.detail.name);
             } else {
                 console.log('✅ Target found, but e.detail was null or undefined. Event object:', e);
@@ -408,7 +631,7 @@
         });
 
         sceneEl.addEventListener('targetLost', e => {
-            if (e.detail) { // Robust check
+            if (e.detail) {
                 console.log('❌ Target lost:', e.detail.targetIndex, e.detail.name);
             } else {
                 console.log('❌ Target lost, but e.detail was null or undefined. Event object:', e);
