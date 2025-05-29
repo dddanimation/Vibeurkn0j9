@@ -73,26 +73,38 @@
       box-sizing: border-box;
     }
 
+    /* Styles for each individual preview item (image + optional caption) */
     .target-preview-item {
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
-      width: 100px;
+      width: 200px; /* Image container wider */
     }
 
+    /* Styles for the preview images themselves */
     .preview-image {
-      width: 100%;
-      height: auto;
-      max-height: 120px;
-      object-fit: contain;
+      width: 100%; /* Image takes full width of its parent .target-preview-item */
+      height: auto; /* Maintain aspect ratio */
+      max-height: 200px; /* Image can be taller */
+      object-fit: contain; /* Ensures the entire image is visible, scaled down */
       border: 2px solid #ddd;
       border-radius: 4px;
-      margin-bottom: 5px;
-      background-color: white;
+      margin-bottom: 5px; /* Space between image and optional caption */
+      background-color: white; /* Important if your tracking images have transparency or dark areas */
     }
 
+    /* Optional: Styles for the caption below each preview image */
+    /*
+    .preview-caption {
+      font-size: 12px;
+      color: #eee;
+      margin-top: 0;
+      line-height: 1.2;
+    }
+    */
     /* --- End of Updated Welcome Message Styles --- */
+
 
     /* Styling for the help modal (no changes here) */
     #help-modal {
@@ -415,7 +427,6 @@
             showElement(helpModal);
         });
 
-        // *** CORRECTED LINE BELOW ***
         closeHelpButton.addEventListener('click', () => {
             helpModal.classList.remove('visible');
             helpModal.classList.add('hidden');
