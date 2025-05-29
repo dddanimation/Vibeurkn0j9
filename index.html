@@ -1,643 +1,839 @@
 <!DOCTYPE html>
+
 <html>
+
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-  <style>
-    .a-enter-vr {
-      display: none !important;
-    }
-    /* Add a basic fade-out for the loading screen for a smoother transition */
-    #loading-screen.hidden,
-    #welcome-message.hidden,
-    #help-modal.hidden { /* Apply hidden class to all overlays */
-      opacity: 0;
-      transition: opacity 2s ease-out;
-    }
 
-    /* Styling for the welcome message content */
-    #welcome-message {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      font-size: 24px; /* Larger for a welcome message */
-      font-family: sans-serif;
-      color: white;
-      background: rgba(0, 0, 0, 0.9); /* More opaque for focus */
-      z-index: 1000; /* Higher z-index to be on top */
-    }
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    #welcome-message h1 {
-        font-size: 2em;
-        margin-bottom: 20px;
-        text-align: center;
-    }
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
-    #welcome-message .instructions,
-    #welcome-message .note {
-      font-size: 16px;
-      margin-top: 10px;
-      line-height: 1.5;
-      max-width: 80%;
-      text-align: left;
-    }
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
-    #welcome-message .note {
-        font-style: italic;
-        font-size: 0.9em;
-        margin-top: 20px;
-    }
+  <style>
 
-    /* Styling for the help modal */
-    #help-modal {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      font-family: sans-serif;
-      color: white;
-      background: rgba(0, 0, 0, 0.9);
-      z-index: 1001;
-      text-align: center;
-      opacity: 0;
-      pointer-events: none;
-    }
+    .a-enter-vr {
 
-    #help-modal.visible {
-        opacity: 1;
-        pointer-events: auto;
-        transition: opacity 0.3s ease-in-out;
-    }
+      display: none !important;
 
-    #help-modal-content {
-        background: rgba(255, 255, 255, 0.1);
-        padding: 30px;
-        border-radius: 10px;
-        max-width: 90%;
-        max-height: 90%;
-        overflow-y: auto;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        text-align: left;
-    }
+    }
 
-    #help-modal-content h2 {
-        margin-top: 0;
-        font-size: 24px;
-        color: #fff;
-        text-align: center;
-    }
+    /* Add a basic fade-out for the loading screen for a smoother transition */
 
-    #help-modal-content p {
-        font-size: 16px;
-        line-height: 1.6;
-        margin-bottom: 15px;
-    }
+    #loading-screen.hidden,
 
-    #help-modal-content ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0 0 20px 0;
-    }
+    #welcome-message.hidden,
 
-    #help-modal-content ul li {
-        margin-bottom: 10px;
-        padding-left: 20px;
-        position: relative;
-    }
+    #help-modal.hidden { /* Apply hidden class to all overlays */
 
-    #help-modal-content ul li::before {
-        content: '➡️';
-        position: absolute;
-        left: 0;
-        color: #007bff;
-    }
+      opacity: 0;
 
-    #close-help-button {
-      margin-top: 25px;
-      padding: 10px 25px;
-      font-size: 16px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.2s ease-in-out;
-    }
+      transition: opacity 2s ease-out;
 
-    #close-help-button:hover {
-        background-color: #0056b3;
-    }
+    }
 
-    #help-button {
-        position: absolute;
-        top: 20px;
-        right: 120px;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 20px;
-        font-weight: bold;
-        background-color: rgba(0, 0, 0, 0.8);
-        color: white;
-        border: none;
-        border-radius: 50%;
-        cursor: pointer;
-        z-index: 999;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        transition: background-color 0.2s ease-in-out;
-    }
-    #help-button:hover {
-        background-color: rgba(0, 0, 0, 0.9);
-    }
 
-    /* Styles for the artwork gallery in help modal */
-    .artwork-gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Responsive grid */
-      gap: 15px; /* Space between items */
-      margin-top: 20px;
-      justify-items: center; /* Center items within their grid cells */
-      text-align: center;
-    }
 
-    .artwork-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+    /* Styling for the welcome message content */
 
-    .artwork-item img {
-      width: 100px; /* Size of individual target images */
-      height: 100px;
-      object-fit: contain; /* Contain to show full image without cropping */
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 5px;
-      margin-bottom: 5px;
-    }
+    #welcome-message {
 
-    .artwork-item p {
-      font-size: 0.8em;
-      color: #ccc;
-      margin: 0;
-      line-height: 1.2;
-    }
-  </style>
+      position: absolute;
+
+      top: 0; left: 0; width: 100%; height: 100%;
+
+      display: flex;
+
+      justify-content: center;
+
+      align-items: center;
+
+      flex-direction: column;
+
+      font-size: 24px; /* Larger for a welcome message */
+
+      font-family: sans-serif;
+
+      color: white;
+
+      background: rgba(0, 0, 0, 0.9); /* More opaque for focus */
+
+      z-index: 1000; /* Higher z-index to be on top */
+
+    }
+
+
+
+    #welcome-message h1 {
+
+        font-size: 2em;
+
+        margin-bottom: 20px;
+
+        text-align: center;
+
+    }
+
+
+
+    #welcome-message .instructions,
+
+    #welcome-message .note {
+
+      font-size: 16px;
+
+      margin-top: 10px;
+
+      line-height: 1.5;
+
+      max-width: 80%;
+
+      text-align: left;
+
+    }
+
+
+
+    #welcome-message .note {
+
+        font-style: italic;
+
+        font-size: 0.9em;
+
+        margin-top: 20px;
+
+    }
+
+
+
+    /* Styling for the help modal */
+
+    #help-modal {
+
+      position: absolute;
+
+      top: 0; left: 0; width: 100%; height: 100%;
+
+      display: flex;
+
+      justify-content: center;
+
+      align-items: center;
+
+      flex-direction: column;
+
+      font-family: sans-serif;
+
+      color: white;
+
+      background: rgba(0, 0, 0, 0.9);
+
+      z-index: 1001;
+
+      text-align: center;
+
+      opacity: 0;
+
+      pointer-events: none;
+
+    }
+
+
+
+    #help-modal.visible {
+
+        opacity: 1;
+
+        pointer-events: auto;
+
+        transition: opacity 0.3s ease-in-out;
+
+    }
+
+
+
+    #help-modal-content {
+
+        background: rgba(255, 255, 255, 0.1);
+
+        padding: 30px;
+
+        border-radius: 10px;
+
+        max-width: 90%;
+
+        max-height: 90%;
+
+        overflow-y: auto;
+
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
+        text-align: left;
+
+    }
+
+
+
+    #help-modal-content h2 {
+
+        margin-top: 0;
+
+        font-size: 24px;
+
+        color: #fff;
+
+        text-align: center;
+
+    }
+
+
+
+    #help-modal-content p {
+
+        font-size: 16px;
+
+        line-height: 1.6;
+
+        margin-bottom: 15px;
+
+    }
+
+
+
+    #help-modal-content ul {
+
+        list-style-type: none;
+
+        padding: 0;
+
+        margin: 0 0 20px 0;
+
+    }
+
+
+
+    #help-modal-content ul li {
+
+        margin-bottom: 10px;
+
+        padding-left: 20px;
+
+        position: relative;
+
+    }
+
+
+
+    #help-modal-content ul li::before {
+
+        content: '➡️';
+
+        position: absolute;
+
+        left: 0;
+
+        color: #007bff;
+
+    }
+
+
+
+    #close-help-button {
+
+      margin-top: 25px;
+
+      padding: 10px 25px;
+
+      font-size: 16px;
+
+      background-color: #007bff;
+
+      color: white;
+
+      border: none;
+
+      border-radius: 8px;
+
+      cursor: pointer;
+
+      transition: background-color 0.2s ease-in-out;
+
+    }
+
+
+
+    #close-help-button:hover {
+
+        background-color: #0056b3;
+
+    }
+
+
+
+    #help-button {
+
+        position: absolute;
+
+        top: 20px;
+
+        right: 120px;
+
+        width: 40px;
+
+        height: 40px;
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+
+        font-size: 20px;
+
+        font-weight: bold;
+
+        background-color: rgba(0, 0, 0, 0.8);
+
+        color: white;
+
+        border: none;
+
+        border-radius: 50%;
+
+        cursor: pointer;
+
+        z-index: 999;
+
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+
+        transition: background-color 0.2s ease-in-out;
+
+    }
+
+    #help-button:hover {
+
+        background-color: rgba(0, 0, 0, 0.9);
+
+    }
+
+  </style>
+
 </head>
+
 <body style="margin: 0; overflow: hidden;">
 
-  <div id="welcome-message">
-    <h1>Qrcky's AR Exhibition</h1>
-    <p class="instructions">
-      <strong>Quick Start</strong><br>
-      1. Scan the QR code.<br>
-      2. Allow camera access if prompted.<br>
-      3. Aim your device at the QR code and background marker.<br>
-      4. Tap the <strong>'i'</strong> button for details and to see all artworks.
-    </p>
-  </div>
-
-  <div id="loading-screen" style="
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 18px;
-    font-family: sans-serif;
-    color: white;
-    background: rgba(0, 0, 0, 0.6);
-    padding: 10px 20px;
-    border-radius: 8px;
-    z-index: 999;
-    text-align: center;">
-    Loading AR experience...<br>Please be mindful of your surroundings
-  </div>
-
-  <div style="position: absolute; top: 20px; left: 20px; z-index: 999;">
-    <a href="https://www.instagram.com/qrcky/" target="_blank">
-      <img src="./insta.png" alt="Instagram" style="height: 28px; opacity: 0.8; cursor: pointer;" />
-    </a>
-  </div>
-
-  <button id="help-button">i</button>
-
-  <button onclick="window.open('https://www.qrcky.net/originals-paintings-black-and-white-art', '_blank')"
-    style="position: absolute; top: 20px; right: 20px; padding: 6px 14px; font-size: 14px; background-color: rgba(0, 0, 0, 0.8); color: white; border: none; border-radius: 6px; cursor: pointer; z-index: 999; height: 40px;">
-    Inquiry
-  </button>
-
-  <div id="help-modal">
-    <div id="help-modal-content">
-        <h2>How to Use This AR Experience</h2>
-        <p>Follow these simple steps to explore the exhibition:</p>
-        <ul>
-            <li>Point your device's camera at one of the designated artwork markers.</li>
-            <li>Once detected, the art will come to life as a 3D model!</li>
-            <li>Move your device around the marker to view the model from different angles.</li>
-            <li>Walk closer or further away to zoom in or out.</li>
-            <li>Ensure good lighting and avoid reflections on the markers for best tracking.</li>
-            <li>If the model disappears, simply re-point your camera at the marker.</li>
-            <li>For more details or to make an inquiry about the art, tap the 'Inquiry' button.</li>
-        </ul>
-
-        <h3>Recognized Artworks:</h3>
-        <div class="artwork-gallery">
-          <div class="artwork-item">
-            <img src="./target-previews/maya_target.png" alt="Maya Artwork" />
-            <p>Maya</p>
-          </div>
-          <div class="artwork-item">
-            <img src="./target-previews/regret_target.png" alt="Miss Regret Artwork" />
-            <p>Miss Regret</p>
-          </div>
-          <div class="artwork-item">
-            <img src="./target-previews/seedless_fruit_target.png" alt="Seedless Fruit Artwork" />
-            <p>Seedless Fruit</p>
-          </div>
-          <div class="artwork-item">
-            <img src="./target-previews/mapis_target.png" alt="Mapis Artwork" />
-            <p>Mapis</p>
-          </div>
-          <div class="artwork-item">
-            <img src="./target-previews/negus_anew_target.png" alt="Negus Anew Artwork" />
-            <p>Negus Anew</p>
-          </div>
-          <div class="artwork-item">
-            <img src="./target-previews/ebony_target.png" alt="Ebony Artwork" />
-            <p>Ebony</p>
-          </div>
-          <div class="artwork-item">
-            <img src="./target-previews/lia_target.png" alt="Living in America Artwork" />
-            <p>Living in America</p>
-          </div>
-          <div class="artwork-item">
-            <img src="./target-previews/loys_target.png" alt="Loys Artwork" />
-            <p>Loys</p>
-          </div>
-          <div class="artwork-item">
-            <img src="./target-previews/base_target.png" alt="Base Artwork" />
-            <p>Base</p>
-          </div>
-          <div class="artwork-item">
-            <img src="./target-previews/maps_target.png" alt="Maps Artwork" />
-            <p>Maps</p>
-          </div>
-          <div class="artwork-item">
-            <img src="./target-previews/miss_regret_target.png" alt="Miss Regret (duplicate) Artwork" />
-            <p>Miss Regret (2)</p>
-          </div>
-          <div class="artwork-item">
-            <img src="./target-previews/porcelainv3_target.png" alt="Porcelain v3 Artwork" />
-            <p>Porcelain v3</p>
-          </div>
-          <div class="artwork-item">
-            <img src="./target-previews/sdwtbs_target.png" alt="SDWTBS Artwork" />
-            <p>SDWTBS</p>
-          </div>
-          <div class="artwork-item">
-            <img src="./target-previews/transcending_myself_target.png" alt="Transcending Myself Artwork" />
-            <p>Transcending Myself</p>
-          </div>
-          <div class="artwork-item">
-            <img src="./target-previews/twins_target.png" alt="Twins Artwork" />
-            <p>Twins</p>
-          </div>
-        </div>
-
-        <button id="close-help-button">Got It!</button>
-    </div>
-  </div>
-
-  <a-scene mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 1; filterMinCF: 0.01; filterBeta: 0.07; missTolerance: 20; warmupTolerance: 10"
-           color-space="sRGB"
-           renderer="precision: medium; antialias: false; colorManagement: true; physicallyCorrectLights: true"
-           vr-mode-ui="enabled: false"
-           device-orientation-permission-ui="enabled: false">
-
-    <a-assets>
-      <a-asset-item id="mayaModel" src="./maya.glb"></a-asset-item>
-      <a-asset-item id="regretModel" src="./miss_regret.glb"></a-asset-item>
-      <a-asset-item id="seedlessFruitModel" src="./seedless-fruit.glb"></a-asset-item>
-      <a-asset-item id="mapisModel" src="./mapis.glb"></a-asset-item>
-      <a-asset-item id="negusAnewModel" src="./negus-anew.glb"></a-asset-item>
-      <a-asset-item id="ebonyModel" src="./ebony.glb"></a-asset-item>
-      <a-asset-item id="lia" src="./living-in-america.glb"></a-asset-item>
-      <a-asset-item id="loys" src="./loys.glb"></a-asset-item>
-      <a-asset-item id="base" src="./base.glb"></a-asset-item>
-      <a-asset-item id="maps" src="./maps.glb"></a-asset-item>
-      <a-asset-item id="miss_regret_dup" src="./miss_regret.glb"></a-asset-item> <a-asset-item id="porcelainv3" src="./porcelainv3.glb"></a-asset-item>
-      <a-asset-item id="sdwtbs" src="./sdwtbs.glb"></a-asset-item>
-      <a-asset-item id="transcending-myself" src="./transcending-myself.glb"></a-asset-item>
-      <a-asset-item id="twins" src="./twins.glb"></a-asset-item>
-
-      <audio id="museum-audio" src="./museum_sounds.mp3" preload="auto"></audio>
-    </a-assets>
-
-    <a-entity sound="src: #museum-audio; loop: true; autoplay: true; volume: 0.5"></a-entity>
 
 
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+  <div id="welcome-message">
 
-    <a-entity light="type: ambient; intensity: 2.0; color: #ffffff"></a-entity>
-    <a-entity light="type: directional; intensity: 0.1; color: #ffffff; castShadow: true" position="1 1 1"></a-entity>
-    <a-entity light="type: directional; intensity: 0.5; color: #ffffff" position="-1 1 1"></a-entity>
+    <h1>Qrcky's AR Exhibition</h1>
 
-    <script>
-      AFRAME.registerComponent('enhanced-tracking', {
-        init: function () {
-          this.targetFound = false;
-          this.positionBuffer = [];
-          this.quaternionBuffer = [];
-          this.maxBufferSize = 10; // Increased for more smoothing
-          this.smoothingFactor = 0.5; // Increased for more aggressive smoothing
-          this.lastPosition = null;
-          this.lastQuaternion = null;
+    <p class="instructions">
 
-          this.el.addEventListener('targetFound', () => {
-            this.targetFound = true;
-            this.positionBuffer = [];
-            this.quaternionBuffer = [];
-            this.lastPosition = this.el.object3D.position.clone();
-            this.lastQuaternion = this.el.object3D.quaternion.clone();
-            console.log('✅ Target found: Initializing smoothing');
-          });
+      <strong>Quick Start</strong><br>
 
-          this.el.addEventListener('targetLost', () => {
-            this.targetFound = false;
-            console.log('❌ Target lost: Stopping smoothing');
-          });
-        },
-        tick: function () {
-          if (!this.targetFound) return;
+      1. Scan the QR code.<br>
 
-          const currentPosition = this.el.object3D.position.clone();
-          const currentQuaternion = this.el.object3D.quaternion.clone();
+      2. Allow camera access if prompted.<br>
 
-          if (!this.lastPosition || !this.lastQuaternion) {
-              this.lastPosition = currentPosition.clone();
-              this.lastQuaternion = currentQuaternion.clone();
-              return;
-          }
+      3. Aim your device at the QR code and background marker.<br>
 
-          // Buffer current position and quaternion
-          this.positionBuffer.push(currentPosition);
-          this.quaternionBuffer.push(currentQuaternion); // Also buffer quaternions for slerp smoothing
+      4. Tap the <strong>'i'</strong> button for details.
 
-          if (this.positionBuffer.length > this.maxBufferSize) {
-            this.positionBuffer.shift();
-            this.quaternionBuffer.shift();
-          }
+    </p>
 
-          // Average positions
-          let averagedPosition = new THREE.Vector3();
-          this.positionBuffer.forEach(pos => averagedPosition.add(pos));
-          averagedPosition.divideScalar(this.positionBuffer.length);
-
-          // Slerp quaternions (can be more complex for accurate averaging, but slerp to last is often good enough)
-          // For true average, you'd need a more involved quaternion averaging function.
-          // For now, let's slerp towards the current, which is what A-Frame does by default, but we'll apply our factor.
-          let averagedQuaternion = new THREE.Quaternion();
-          if (this.quaternionBuffer.length > 0) {
-            // A simple approach for averaging quaternions is to slerp from one to the next
-            // or to slerp the current to the last smoothed, which we already do.
-            // For a buffer, a "mean" quaternion is more complex.
-            // For this component, we'll continue to slerp the element's quaternion towards the current camera quaternion,
-            // using the smoothing factor, rather than trying to average all buffered quaternions.
-            // The position buffer helps with positional smoothing.
-             averagedQuaternion.copy(currentQuaternion); // No complex averaging for quaternion buffer for now
-          } else {
-            averagedQuaternion.copy(currentQuaternion);
-          }
+  </div>
 
 
-          this.el.object3D.position.lerp(averagedPosition, this.smoothingFactor);
-          // Apply slerp smoothing to the quaternion as well
-          this.el.object3D.quaternion.slerp(averagedQuaternion, this.smoothingFactor);
 
-          this.lastPosition.copy(this.el.object3D.position);
-          this.lastQuaternion.copy(this.el.object3D.quaternion);
-        }
-      });
-    </script>
+  <div id="loading-screen" style="
 
-    <a-entity mindar-image-target="targetIndex: 0">
-      <a-gltf-model src="#mayaModel" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
-    </a-entity>
+    position: absolute;
 
-    <a-entity mindar-image-target="targetIndex: 1">
-      <a-gltf-model src="#regretModel" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
-    </a-entity>
+    top: 50%;
 
-    <a-entity mindar-image-target="targetIndex: 2">
-      <a-gltf-model src="#seedlessFruitModel" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
-    </a-entity>
+    left: 50%;
 
-    <a-entity mindar-image-target="targetIndex: 3">
-      <a-gltf-model src="#mapisModel" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
-    </a-entity>
+    transform: translate(-50%, -50%);
 
-    <a-entity mindar-image-target="targetIndex: 4">
-      <a-gltf-model src="#negusAnewModel" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
-    </a-entity>
+    font-size: 18px;
 
-    <a-entity mindar-image-target="targetIndex: 5">
-      <a-gltf-model src="#ebonyModel" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
-    </a-entity>
+    font-family: sans-serif;
 
-    <a-entity mindar-image-target="targetIndex: 6">
-      <a-gltf-model src="#lia" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
-    </a-entity>
+    color: white;
 
-    <a-entity mindar-image-target="targetIndex: 7">
-      <a-gltf-model src="#loys" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
-    </a-entity>
+    background: rgba(0, 0, 0, 0.6);
 
-    <a-entity mindar-image-target="targetIndex: 8">
-      <a-gltf-model src="#base" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
-    </a-entity>
+    padding: 10px 20px;
 
-    <a-entity mindar-image-target="targetIndex: 9">
-      <a-gltf-model src="#maps" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
-    </a-entity>
+    border-radius: 8px;
 
-    <a-entity mindar-image-target="targetIndex: 10">
-      <a-gltf-model src="#miss_regret_dup" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
-    </a-entity>
+    z-index: 999;
 
-    <a-entity mindar-image-target="targetIndex: 11">
-      <a-gltf-model src="#porcelainv3" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
-    </a-entity>
+    text-align: center;">
 
-    <a-entity mindar-image-target="targetIndex: 12">
-      <a-gltf-model src="#sdwtbs" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
-    </a-entity>
+    Loading AR experience...<br>Please be mindful of your surroundings
 
-    <a-entity mindar-image-target="targetIndex: 13">
-      <a-gltf-model src="#transcending-myself" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
-    </a-entity>
-
-    <a-entity mindar-image-target="targetIndex: 14">
-      <a-gltf-model src="#twins" position="0 0 0" scale="0.0254 0.0254 0.0254" animation-mixer enhanced-tracking></a-gltf-model>
-    </a-entity>
-
-  </a-scene>
-
-  <script>
-    const sceneEl = document.querySelector('a-scene');
-    const loadingScreen = document.getElementById('loading-screen');
-    const welcomeMessage = document.getElementById('welcome-message');
-    const helpButton = document.getElementById('help-button');
-    const helpModal = document.getElementById('help-modal');
-    const closeHelpButton = document.getElementById('close-help-button');
-    const museumAudioElement = document.getElementById('museum-audio'); // Re-added audio element reference
+  </div>
 
 
-    const hideElement = (element) => {
-      console.log(`Attempting to hide element: ${element ? element.id : 'undefined'}`);
-      if (!element) {
-          console.error(`Element with ID ${element ? element.id : 'undefined'} not found for hideElement.`);
-          return;
-      }
-      if (element.classList.contains('hidden') || element.style.display === 'none') {
-        console.log(`${element.id} already hidden or display is none.`);
-        return;
-      }
-      element.classList.add('hidden');
-      element.addEventListener('transitionend', () => {
-        console.log(`Transitionend for ${element.id}, setting display to none.`);
-        element.style.display = 'none';
-      }, { once: true });
-      console.log(`${element.id} hidden class added.`);
-    };
 
-    const showElement = (element) => {
-        element.style.display = 'flex';
-        element.offsetWidth; // Force reflow
-        element.classList.remove('hidden');
-        element.classList.add('visible');
-        console.log(`${element.id} shown.`);
-    }
+  <div style="position: absolute; top: 20px; left: 20px; z-index: 999;">
 
-    // Hide the welcome message after 2.5 seconds (then it takes 2 seconds to fade)
-    if (welcomeMessage) {
-        setTimeout(() => {
-            hideElement(welcomeMessage);
-        }, 2500);
-    } else {
-        console.error("Welcome message element not found.");
-    }
+    <a href="https://www.instagram.com/qrcky/" target="_blank">
 
-    // Hide the loading screen when A-Frame scene is loaded
-    const loadingScreenHideTimeout = setTimeout(() => {
-        console.log("Fallback timeout triggered for loading screen.");
-        if (loadingScreen) {
-            hideElement(loadingScreen);
-            // Attempt to play audio after loading screen is hidden
-            if (museumAudioElement && museumAudioElement.paused) {
-                museumAudioElement.play().catch(e => console.error("Autoplay failed on loading screen hide:", e));
-            }
-        } else {
-            console.error("loadingScreen element not found in fallback timeout.");
-        }
-    }, 2000); // Fallback: hide after 2 seconds
+      <img src="./insta.png" alt="Instagram" style="height: 28px; opacity: 0.8; cursor: pointer;" />
 
-    if (sceneEl) {
-        sceneEl.addEventListener('loaded', () => {
-            console.log("A-Frame scene 'loaded' event FIRED!");
+    </a>
 
-            if (loadingScreenHideTimeout) {
-                clearTimeout(loadingScreenHideTimeout);
-                console.log("loadingScreenHideTimeout cleared.");
-            }
-            if (loadingScreen) {
-                hideElement(loadingScreen);
-            } else {
-                console.error("loadingScreen element not found when scene loaded.");
-            }
+  </div>
 
-            // Attempt to play audio after scene loads (more reliable for some browsers)
-            if (museumAudioElement && museumAudioElement.paused) {
-                museumAudioElement.play().catch(e => console.error("Autoplay failed on scene loaded:", e));
-            }
 
-            if (sceneEl.renderer) {
-                console.log("Setting renderer properties.");
-                sceneEl.renderer.setPixelRatio(window.devicePixelRatio || 1);
-                sceneEl.renderer.sortObjects = false;
-            } else {
-                console.error("Renderer not available on sceneEl when 'loaded' event fired.");
-            }
-        }, { once: true });
-    } else {
-        console.error("a-scene element not found for event listener attachment.");
-    }
 
-    // Event listeners for the help modal
-    if (helpButton && helpModal && closeHelpButton) {
-        helpButton.addEventListener('click', () => {
-            showElement(helpModal);
-            // Optional: Pause audio while help modal is open
-            if (museumAudioElement && !museumAudioElement.paused) {
-                museumAudioElement.pause();
-            }
-        });
+  <button id="help-button">i</button>
 
-        closeHelpButton.addEventListener('click', () => {
-            helpModal.classList.remove('visible');
-            helpModal.classList.add('hidden');
-            helpModal.addEventListener('transitionend', () => {
-                helpModal.style.display = 'none';
-                helpModal.classList.remove('hidden');
-            }, { once: true });
 
-            // Resume audio when help modal closes (this is a direct user interaction)
-            if (museumAudioElement && museumAudioElement.paused) {
-                museumAudioElement.play().catch(e => console.error("Autoplay failed on help modal close:", e));
-            }
-        });
-    } else {
-        console.error("One or more help modal elements not found.");
-    }
 
-    // Stop audio after 7 minutes
-    const audioDurationMs = 7 * 60 * 1000;
-    if (sceneEl) {
-      sceneEl.addEventListener('loaded', () => {
-        setTimeout(() => {
-          if (museumAudioElement && !museumAudioElement.paused) {
-            museumAudioElement.pause();
-            museumAudioElement.currentTime = 0; // Optional: reset playback to the beginning
-            console.log("Museum audio stopped after 7 minutes.");
-          }
-        }, audioDurationMs);
-      }, { once: true });
-    }
+  <button onclick="window.open('https://www.qrcky.net/originals-paintings-black-and-white-art', '_blank')"
 
-    // Debugging console logs for target events
-    if (sceneEl) {
-        sceneEl.addEventListener('targetFound', e => {
-            if (e.detail) {
-                console.log('✅ Target found:', e.detail.targetIndex, e.detail.name);
-            } else {
-                console.log('✅ Target found, but e.detail was null or undefined. Event object:', e);
-            }
-        });
+    style="position: absolute; top: 20px; right: 20px; padding: 6px 14px; font-size: 14px; background-color: rgba(0, 0, 0, 0.8); color: white; border: none; border-radius: 6px; cursor: pointer; z-index: 999; height: 40px;">
 
-        sceneEl.addEventListener('targetLost', e => {
-            if (e.detail) {
-                console.log('❌ Target lost:', e.detail.targetIndex, e.detail.name);
-            } else {
-                console.log('❌ Target lost, but e.detail was null or undefined. Event object:', e);
-            }
-        });
-    }
-  </script>
+    Inquiry
+
+  </button>
+
+
+
+  <div id="help-modal">
+
+    <div id="help-modal-content">
+
+        <h2>How to Use This AR Experience</h2>
+
+        <p>Follow these simple steps to explore the exhibition:</p>
+
+        <ul>
+
+            <li>Point your device's camera at one of the designated artwork markers.</li>
+
+            <li>Once detected, the art will come to life as a 3D model!</li>
+
+            <li>Move your device around the marker to view the model from different angles.</li>
+
+            <li>Walk closer or further away to zoom in or out.</li>
+
+            <li>Ensure good lighting and avoid reflections on the markers for best tracking.</li>
+
+            <li>If the model disappears, simply re-point your camera at the marker.</li>
+
+            <li>For more details or to make an inquiry about the art, tap the 'Inquiry' button.</li>
+
+        </ul>
+
+        <button id="close-help-button">Got It!</button>
+
+    </div>
+
+  </div>
+
+
+
+  <a-scene mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 1; filterMinCF: 0.001; filterBeta: 0.05; missTolerance: 10; warmupTolerance: 10"
+
+           color-space="sRGB"
+
+           renderer="precision: medium; antialias: false; colorManagement: true; physicallyCorrectLights: true"
+
+           vr-mode-ui="enabled: false"
+
+           device-orientation-permission-ui="enabled: false">
+
+
+
+    <a-assets>
+
+      <a-asset-item id="mayaModel" src="./maya.glb"></a-asset-item>
+
+      <a-asset-item id="regretModel" src="./miss_regret.glb"></a-asset-item>
+
+      <a-asset-item id="seedlessFruitModel" src="./seedless-fruit.glb"></a-asset-item>
+
+      <a-asset-item id="mapisModel" src="./mapis.glb"></a-asset-item>
+
+      <a-asset-item id="negusAnewModel" src="./negus-anew.glb"></a-asset-item>
+
+      <a-asset-item id="ebonyModel" src="./ebony.glb"></a-asset-item>
+
+      <a-asset-item id="lia" src="./living-in-america.glb"></a-asset-item>
+
+      <a-asset-item id="loys" src="./loys.glb"></a-asset-item>
+
+      <a-asset-item id="base" src="./base.glb"></a-asset-item>
+
+      <a-asset-item id="maps" src="./maps.glb"></a-asset-item>
+
+      <a-asset-item id="miss_regret" src="./miss_regret.glb"></a-asset-item>
+
+      <a-asset-item id="porcelainv3" src="./porcelainv3.glb"></a-asset-item>
+
+      <a-asset-item id="sdwtbs" src="./sdwtbs.glb"></a-asset-item>
+
+      <a-asset-item id="transcending-myself" src="./transcending-myself.glb"></a-asset-item>
+
+      <a-asset-item id="twins" src="./twins.glb"></a-asset-item>
+
+      </a-assets>
+
+
+
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+
+
+    <a-entity light="type: ambient; intensity: 2.0; color: #ffffff"></a-entity>
+
+    <a-entity light="type: directional; intensity: 0.1; color: #ffffff; castShadow: true" position="1 1 1"></a-entity>
+
+    <a-entity light="type: directional; intensity: 0.5; color: #ffffff" position="-1 1 1"></a-entity>
+
+
+
+    <a-entity mindar-image-target="targetIndex: 0">
+
+      <a-gltf-model src="#mayaModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+
+    </a-entity>
+
+    <a-entity mindar-image-target="targetIndex: 1">
+
+      <a-gltf-model src="#regretModel" position="0 0 -0.3" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+
+    </a-entity>
+
+    <a-entity mindar-image-target="targetIndex: 2">
+
+      <a-gltf-model src="#seedlessFruitModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+
+    </a-entity>
+
+    <a-entity mindar-image-target="targetIndex: 3">
+
+      <a-gltf-model src="#mapisModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+
+    </a-entity>
+
+    <a-entity mindar-image-target="targetIndex: 4">
+
+      <a-gltf-model src="#negusAnewModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+
+    </a-entity>
+
+    <a-entity mindar-image-target="targetIndex: 5">
+
+      <a-gltf-model src="#ebonyModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+
+    </a-entity>
+
+    <a-entity mindar-image-target="targetIndex: 6">
+
+      <a-gltf-model src="#lia" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+
+    </a-entity>
+
+    <a-entity mindar-image-target="targetIndex: 7">
+
+      <a-gltf-model src="#loys" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+
+    </a-entity>
+
+    <a-entity mindar-image-target="targetIndex: 8">
+
+      <a-gltf-model src="#base" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+
+    </a-entity>
+
+    <a-entity mindar-image-target="targetIndex: 9">
+
+      <a-gltf-model src="#maps" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+
+    </a-entity>
+
+    <a-entity mindar-image-target="targetIndex: 10">
+
+      <a-gltf-model src="#miss_regret" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+
+    </a-entity>
+
+    <a-entity mindar-image-target="targetIndex: 11">
+
+      <a-gltf-model src="#porcelainv3" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+
+    </a-entity>
+
+    <a-entity mindar-image-target="targetIndex: 12">
+
+      <a-gltf-model src="#sdwtbs" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+
+    </a-entity>
+
+    <a-entity mindar-image-target="targetIndex: 13">
+
+      <a-gltf-model src="#transcending-myself" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+
+    </a-entity>
+
+    <a-entity mindar-image-target="targetIndex: 14">
+
+      <a-gltf-model src="#twins" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
+
+    </a-entity>
+
+
+
+  </a-scene>
+
+
+
+  <script>
+
+    const sceneEl = document.querySelector('a-scene');
+
+    const loadingScreen = document.getElementById('loading-screen');
+
+    const welcomeMessage = document.getElementById('welcome-message');
+
+    const helpButton = document.getElementById('help-button');
+
+    const helpModal = document.getElementById('help-modal');
+
+    const closeHelpButton = document.getElementById('close-help-button');
+
+    // const museumAudioElement = document.getElementById('museum-audio'); // AUDIO ELEMENT REMOVED
+
+
+
+    const hideElement = (element) => {
+
+      console.log(`Attempting to hide element: ${element ? element.id : 'undefined'}`);
+
+      if (!element) {
+
+          console.error(`Element with ID ${element ? element.id : 'undefined'} not found for hideElement.`);
+
+          return;
+
+      }
+
+      if (element.classList.contains('hidden') || element.style.display === 'none') {
+
+        console.log(`${element.id} already hidden or display is none.`);
+
+        return;
+
+      }
+
+      element.classList.add('hidden');
+
+      element.addEventListener('transitionend', () => {
+
+        console.log(`Transitionend for ${element.id}, setting display to none.`);
+
+        element.style.display = 'none';
+
+      }, { once: true });
+
+      console.log(`${element.id} hidden class added (original log was: ${element.id} hidden.)`);
+
+    };
+
+
+
+    const showElement = (element) => {
+
+        element.style.display = 'flex';
+
+        element.offsetWidth;
+
+        element.classList.remove('hidden');
+
+        element.classList.add('visible');
+
+        console.log(`${element.id} shown.`);
+
+    }
+
+
+
+    if (welcomeMessage) {
+
+        setTimeout(() => {
+
+            hideElement(welcomeMessage);
+
+        }, 2500);
+
+    } else {
+
+        console.error("Welcome message element not found.");
+
+    }
+
+
+
+    const loadingScreenHideTimeout = setTimeout(() => {
+
+        console.log("Fallback timeout triggered for loading screen.");
+
+        if (loadingScreen) {
+
+            hideElement(loadingScreen);
+
+        } else {
+
+            console.error("loadingScreen element not found in fallback timeout.");
+
+        }
+
+        // AUDIO PLAY ATTEMPT REMOVED
+
+    }, 2000);
+
+
+
+    if (sceneEl) {
+
+        sceneEl.addEventListener('loaded', () => {
+
+            console.log("A-Frame scene 'loaded' event FIRED!");
+
+
+
+            if (loadingScreenHideTimeout) {
+
+                clearTimeout(loadingScreenHideTimeout);
+
+                console.log("loadingScreenHideTimeout cleared.");
+
+            }
+
+            if (loadingScreen) {
+
+                hideElement(loadingScreen);
+
+            } else {
+
+                console.error("loadingScreen element not found when scene loaded.");
+
+            }
+
+
+
+            // AUDIO PLAY ATTEMPT REMOVED
+
+            // AUDIO STOP TIMEOUT REMOVED
+
+
+
+            if (sceneEl.renderer) {
+
+                console.log("Setting renderer properties.");
+
+                sceneEl.renderer.setPixelRatio(window.devicePixelRatio || 1);
+
+                sceneEl.renderer.sortObjects = false;
+
+            } else {
+
+                console.error("Renderer not available on sceneEl when 'loaded' event fired.");
+
+            }
+
+
+
+        }, { once: true });
+
+    } else {
+
+        console.error("a-scene element not found for event listener attachment.");
+
+    }
+
+
+
+    if (helpButton && helpModal && closeHelpButton) {
+
+        helpButton.addEventListener('click', () => {
+
+            showElement(helpModal);
+
+            // AUDIO PAUSE REMOVED
+
+        });
+
+
+
+        closeHelpButton.addEventListener('click', () => {
+
+            helpModal.classList.remove('visible');
+
+            helpModal.classList.add('hidden');
+
+            helpModal.addEventListener('transitionend', () => {
+
+                helpModal.style.display = 'none';
+
+                helpModal.classList.remove('hidden');
+
+            }, { once: true });
+
+            // AUDIO PLAY ATTEMPT REMOVED
+
+        });
+
+    } else {
+
+        console.error("One or more help modal elements not found.");
+
+    }
+
+
+
+    if (sceneEl) {
+
+        sceneEl.addEventListener('targetFound', e => {
+
+            if (e.detail) { // Robust check
+
+                console.log('✅ Target found:', e.detail.targetIndex, e.detail.name);
+
+            } else {
+
+                console.log('✅ Target found, but e.detail was null or undefined. Event object:', e);
+
+            }
+
+        });
+
+
+
+        sceneEl.addEventListener('targetLost', e => {
+
+            if (e.detail) { // Robust check
+
+                console.log('❌ Target lost:', e.detail.targetIndex, e.detail.name);
+
+            } else {
+
+                console.log('❌ Target lost, but e.detail was null or undefined. Event object:', e);
+
+            }
+
+        });
+
+    }
+
+  </script>
+
 </body>
+
 </html>
