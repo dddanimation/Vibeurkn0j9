@@ -81,6 +81,7 @@
       align-items: center;
       text-align: center;
       width: 100px; /* Adjust width of each preview item (controls image width too) */
+                   /* If you have only one image, you might want to make this wider, e.g., 150px or 200px */
     }
 
     /* Styles for the preview images themselves */
@@ -88,6 +89,7 @@
       width: 100%; /* Image takes full width of its parent .target-preview-item */
       height: auto; /* Maintain aspect ratio */
       max-height: 120px; /* Prevent images from becoming too tall, adjust as needed */
+                          /* If only one image, you could increase this, e.g., 150px or 200px */
       object-fit: contain; /* Ensures the entire image is visible, scaled down */
       border: 2px solid #ddd;
       border-radius: 4px;
@@ -217,20 +219,12 @@
 <body> <div id="welcome-message">
     <h1>Qrcky's AR Exhibition</h1>
     <p class="instructions">
-      Welcome! To experience the AR, please allow camera access if prompted, then point your device firmly at one of the artwork markers shown below:
+      Welcome! To experience the AR, please allow camera access if prompted, then point your device firmly at the artwork marker shown below:
     </p>
 
     <div id="target-image-previews">
       <div class="target-preview-item">
-        <img src="./tracking_images/01_PLACEHOLDER_IMAGE.jpg" alt="Preview of Artwork Marker 1" class="preview-image">
-        </div>
-
-      <div class="target-preview-item">
-        <img src="./tracking_images/02_PLACEHOLDER_IMAGE.jpg" alt="Preview of Artwork Marker 2" class="preview-image">
-        </div>
-
-      <div class="target-preview-item">
-        <img src="./tracking_images/03_PLACEHOLDER_IMAGE.jpg" alt="Preview of Artwork Marker 3" class="preview-image">
+        <img src="./05_ebony.jpg" alt="Preview of Ebony artwork marker" class="preview-image">
         </div>
       </div>
 
@@ -296,8 +290,7 @@
       <a-asset-item id="seedlessFruitModel" src="./seedless-fruit.glb"></a-asset-item>
       <a-asset-item id="mapisModel" src="./mapis.glb"></a-asset-item>
       <a-asset-item id="negusAnewModel" src="./negus-anew.glb"></a-asset-item>
-      <a-asset-item id="ebonyModel" src="./ebony.glb"></a-asset-item>
-      <a-asset-item id="lia" src="./living-in-america.glb"></a-asset-item>
+      <a-asset-item id="ebonyModel" src="./ebony.glb"></a-asset-item> <a-asset-item id="lia" src="./living-in-america.glb"></a-asset-item>
       <a-asset-item id="loys" src="./loys.glb"></a-asset-item>
       <a-asset-item id="base" src="./base.glb"></a-asset-item>
       <a-asset-item id="maps" src="./maps.glb"></a-asset-item>
