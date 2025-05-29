@@ -14,10 +14,10 @@
     }
     /* Add a basic fade-out for the loading screen for a smoother transition */
     #loading-screen.hidden,
-    #welcome-message.hidden, /* This will apply to the updated welcome message too */
-    #help-modal.hidden { /* Apply hidden class to all overlays */
+    #welcome-message.hidden,
+    #help-modal.hidden {
       opacity: 0;
-      transition: opacity 2s ease-out;
+      transition: opacity 2s ease-out; /* This is a 2-second transition */
     }
 
     /* --- Updated Welcome Message Styles --- */
@@ -25,32 +25,32 @@
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
       display: flex;
-      justify-content: center; /* Vertically center content if not overflowing */
+      justify-content: center;
       align-items: center;
       flex-direction: column;
-      font-size: 20px; /* Base font size for welcome, can be adjusted */
+      font-size: 20px;
       font-family: sans-serif;
       color: white;
-      background: rgba(0, 0, 0, 0.92); /* Slightly more opaque for better readability */
+      background: rgba(0, 0, 0, 0.92);
       z-index: 1000;
-      overflow-y: auto; /* Allow scrolling if content exceeds screen height */
-      padding: 20px 10px; /* Add some padding */
-      box-sizing: border-box; /* Include padding in width/height calculation */
+      overflow-y: auto;
+      padding: 20px 10px;
+      box-sizing: border-box;
     }
 
     #welcome-message h1 {
-      font-size: 1.8em; /* Adjust as needed */
+      font-size: 1.8em;
       margin-bottom: 15px;
       text-align: center;
     }
 
     #welcome-message .instructions,
     #welcome-message .note {
-      font-size: 1em; /* Relative to #welcome-message font-size */
+      font-size: 1em;
       margin-top: 15px;
       line-height: 1.6;
-      max-width: 95%; /* Allow text to be a bit wider */
-      text-align: center; /* Center align the instruction/note text */
+      max-width: 95%;
+      text-align: center;
     }
 
     #welcome-message .note {
@@ -59,57 +59,42 @@
       margin-top: 20px;
     }
 
-    /* New styles for the container of target image previews */
     #target-image-previews {
       display: flex;
-      flex-wrap: wrap;       /* Allow items to wrap to the next line */
-      justify-content: center; /* Center items horizontally */
-      align-items: flex-start; /* Align items to the top of their row */
-      gap: 15px 10px;        /* Row and column gap: (vertical gap) (horizontal gap) */
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 15px 10px;
       margin-top: 20px;
       margin-bottom: 20px;
       padding: 10px;
       width: 100%;
-      max-width: 700px;      /* Constrain max width of the preview area */
+      max-width: 700px;
       box-sizing: border-box;
     }
 
-    /* Styles for each individual preview item (image + optional caption) */
     .target-preview-item {
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
-      width: 100px; /* Adjust width of each preview item (controls image width too) */
-                   /* If you have only one image, you might want to make this wider, e.g., 150px or 200px */
+      width: 100px;
     }
 
-    /* Styles for the preview images themselves */
     .preview-image {
-      width: 100%; /* Image takes full width of its parent .target-preview-item */
-      height: auto; /* Maintain aspect ratio */
-      max-height: 120px; /* Prevent images from becoming too tall, adjust as needed */
-                          /* If only one image, you could increase this, e.g., 150px or 200px */
-      object-fit: contain; /* Ensures the entire image is visible, scaled down */
+      width: 100%;
+      height: auto;
+      max-height: 120px;
+      object-fit: contain;
       border: 2px solid #ddd;
       border-radius: 4px;
-      margin-bottom: 5px; /* Space between image and optional caption */
-      background-color: white; /* Important if your tracking images have transparency or dark areas */
+      margin-bottom: 5px;
+      background-color: white;
     }
 
-    /* Optional: Styles for the caption below each preview image */
-    /*
-    .preview-caption {
-      font-size: 12px;
-      color: #eee;
-      margin-top: 0;
-      line-height: 1.2;
-    }
-    */
     /* --- End of Updated Welcome Message Styles --- */
 
-
-    /* Styling for the help modal */
+    /* Styling for the help modal (no changes here) */
     #help-modal {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -194,7 +179,7 @@
     #help-button {
         position: absolute;
         top: 20px;
-        right: 120px; /* Adjusted to make space for Inquiry button */
+        right: 120px;
         width: 40px;
         height: 40px;
         display: flex;
@@ -216,22 +201,23 @@
     }
   </style>
 </head>
-<body> <div id="welcome-message">
+<body>
+
+  <div id="welcome-message">
     <h1>Qrcky's AR Exhibition</h1>
     <p class="instructions">
       Welcome! To experience the AR, please allow camera access if prompted, then point your device firmly at the artwork marker shown below:
     </p>
-
     <div id="target-image-previews">
       <div class="target-preview-item">
         <img src="./05_ebony.jpg" alt="Preview of Ebony artwork marker" class="preview-image">
-        </div>
       </div>
-
+    </div>
     <p class="note">
       The 3D model will appear on your screen! For detailed help later, tap the <strong>'i'</strong> button at the top right.
     </p>
   </div>
+
   <div id="loading-screen" style="
     position: absolute;
     top: 50%;
@@ -251,7 +237,7 @@
   <div style="position: absolute; top: 20px; left: 20px; z-index: 999;">
     <a href="https://www.instagram.com/qrcky/" target="_blank">
       <img src="./insta.png" alt="Instagram" style="height: 28px; opacity: 0.8; cursor: pointer;" />
-      </a>
+    </a>
   </div>
 
   <button id="help-button">i</button>
@@ -290,15 +276,17 @@
       <a-asset-item id="seedlessFruitModel" src="./seedless-fruit.glb"></a-asset-item>
       <a-asset-item id="mapisModel" src="./mapis.glb"></a-asset-item>
       <a-asset-item id="negusAnewModel" src="./negus-anew.glb"></a-asset-item>
-      <a-asset-item id="ebonyModel" src="./ebony.glb"></a-asset-item> <a-asset-item id="lia" src="./living-in-america.glb"></a-asset-item>
+      <a-asset-item id="ebonyModel" src="./ebony.glb"></a-asset-item>
+      <a-asset-item id="lia" src="./living-in-america.glb"></a-asset-item>
       <a-asset-item id="loys" src="./loys.glb"></a-asset-item>
       <a-asset-item id="base" src="./base.glb"></a-asset-item>
       <a-asset-item id="maps" src="./maps.glb"></a-asset-item>
-      <a-asset-item id="miss_regret" src="./miss_regret.glb"></a-asset-item> <a-asset-item id="porcelainv3" src="./porcelainv3.glb"></a-asset-item>
+      <a-asset-item id="miss_regret" src="./miss_regret.glb"></a-asset-item>
+      <a-asset-item id="porcelainv3" src="./porcelainv3.glb"></a-asset-item>
       <a-asset-item id="sdwtbs" src="./sdwtbs.glb"></a-asset-item>
       <a-asset-item id="transcending-myself" src="./transcending-myself.glb"></a-asset-item>
       <a-asset-item id="twins" src="./twins.glb"></a-asset-item>
-      </a-assets>
+    </a-assets>
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
@@ -306,51 +294,21 @@
     <a-entity light="type: directional; intensity: 0.1; color: #ffffff; castShadow: true" position="1 1 1"></a-entity>
     <a-entity light="type: directional; intensity: 0.5; color: #ffffff" position="-1 1 1"></a-entity>
 
-    <a-entity mindar-image-target="targetIndex: 0">
-      <a-gltf-model src="#mayaModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
-    </a-entity>
-    <a-entity mindar-image-target="targetIndex: 1">
-      <a-gltf-model src="#regretModel" position="0 0 -0.3" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
-    </a-entity>
-    <a-entity mindar-image-target="targetIndex: 2">
-      <a-gltf-model src="#seedlessFruitModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
-    </a-entity>
-    <a-entity mindar-image-target="targetIndex: 3">
-      <a-gltf-model src="#mapisModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
-    </a-entity>
-    <a-entity mindar-image-target="targetIndex: 4">
-      <a-gltf-model src="#negusAnewModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
-    </a-entity>
-    <a-entity mindar-image-target="targetIndex: 5">
-      <a-gltf-model src="#ebonyModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
-    </a-entity>
-    <a-entity mindar-image-target="targetIndex: 6">
-      <a-gltf-model src="#lia" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
-    </a-entity>
-    <a-entity mindar-image-target="targetIndex: 7">
-      <a-gltf-model src="#loys" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
-    </a-entity>
-    <a-entity mindar-image-target="targetIndex: 8">
-      <a-gltf-model src="#base" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
-    </a-entity>
-    <a-entity mindar-image-target="targetIndex: 9">
-      <a-gltf-model src="#maps" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
-    </a-entity>
-    <a-entity mindar-image-target="targetIndex: 10">
-      <a-gltf-model src="#miss_regret" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
-    </a-entity>
-    <a-entity mindar-image-target="targetIndex: 11">
-      <a-gltf-model src="#porcelainv3" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
-    </a-entity>
-    <a-entity mindar-image-target="targetIndex: 12">
-      <a-gltf-model src="#sdwtbs" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
-    </a-entity>
-    <a-entity mindar-image-target="targetIndex: 13">
-      <a-gltf-model src="#transcending-myself" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
-    </a-entity>
-    <a-entity mindar-image-target="targetIndex: 14">
-      <a-gltf-model src="#twins" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model>
-    </a-entity>
+    <a-entity mindar-image-target="targetIndex: 0"><a-gltf-model src="#mayaModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model></a-entity>
+    <a-entity mindar-image-target="targetIndex: 1"><a-gltf-model src="#regretModel" position="0 0 -0.3" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model></a-entity>
+    <a-entity mindar-image-target="targetIndex: 2"><a-gltf-model src="#seedlessFruitModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model></a-entity>
+    <a-entity mindar-image-target="targetIndex: 3"><a-gltf-model src="#mapisModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model></a-entity>
+    <a-entity mindar-image-target="targetIndex: 4"><a-gltf-model src="#negusAnewModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model></a-entity>
+    <a-entity mindar-image-target="targetIndex: 5"><a-gltf-model src="#ebonyModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model></a-entity>
+    <a-entity mindar-image-target="targetIndex: 6"><a-gltf-model src="#lia" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model></a-entity>
+    <a-entity mindar-image-target="targetIndex: 7"><a-gltf-model src="#loys" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model></a-entity>
+    <a-entity mindar-image-target="targetIndex: 8"><a-gltf-model src="#base" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model></a-entity>
+    <a-entity mindar-image-target="targetIndex: 9"><a-gltf-model src="#maps" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model></a-entity>
+    <a-entity mindar-image-target="targetIndex: 10"><a-gltf-model src="#miss_regret" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model></a-entity>
+    <a-entity mindar-image-target="targetIndex: 11"><a-gltf-model src="#porcelainv3" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model></a-entity>
+    <a-entity mindar-image-target="targetIndex: 12"><a-gltf-model src="#sdwtbs" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model></a-entity>
+    <a-entity mindar-image-target="targetIndex: 13"><a-gltf-model src="#transcending-myself" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model></a-entity>
+    <a-entity mindar-image-target="targetIndex: 14"><a-gltf-model src="#twins" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model></a-entity>
 
   </a-scene>
 
@@ -362,43 +320,71 @@
     const helpModal = document.getElementById('help-modal');
     const closeHelpButton = document.getElementById('close-help-button');
 
+    // --- Updated hideElement function ---
     const hideElement = (element) => {
       console.log(`Attempting to hide element: ${element ? element.id : 'undefined'}`);
       if (!element) {
         console.error(`Element with ID ${element ? element.id : 'undefined'} not found for hideElement.`);
         return;
       }
-      if (element.classList.contains('hidden') || element.style.display === 'none') {
-        console.log(`${element.id} already hidden or display is none.`);
+      // If already display is none, do nothing
+      if (element.style.display === 'none') {
+        console.log(`${element.id} already display is none.`);
         return;
       }
-      element.classList.add('hidden');
-      element.addEventListener('transitionend', () => {
-        console.log(`Transitionend for ${element.id}, setting display to none.`);
-        element.style.display = 'none';
+      // If it already has hidden class (meaning transition started or finished)
+      if (element.classList.contains('hidden')) {
+         console.log(`${element.id} already has hidden class.`);
+         // Ensure display none is set if it was somehow missed by transitionend
+         if (element.style.display !== 'none') {
+            console.log(`Forcing display:none for ${element.id} as hidden class was present but display was not none.`);
+            element.style.display = 'none';
+         }
+         return;
+      }
+
+      element.classList.add('hidden'); // This starts the opacity CSS transition (2 seconds)
+
+      // Fallback timeout: Set display to none after transition duration + small buffer
+      // This ensures it gets hidden even if transitionend event doesn't fire.
+      const transitionDuration = 2000; // Must match CSS transition duration
+      setTimeout(() => {
+        if (element.classList.contains('hidden')) { // Check if it's still supposed to be hidden
+          console.log(`Transition fallback for ${element.id}, setting display to none.`);
+          element.style.display = 'none';
+        }
+      }, transitionDuration + 100); // Add a small buffer of 100ms
+
+      // Primary mechanism: Use transitionend event
+      element.addEventListener('transitionend', function handler(event) {
+        // Ensure we're reacting to the opacity transition specifically if multiple transitions exist
+        if (event.propertyName === 'opacity' && element.classList.contains('hidden')) {
+          console.log(`Transitionend for ${element.id} (opacity), setting display to none.`);
+          element.style.display = 'none';
+        }
       }, { once: true });
-      console.log(`${element.id} hidden class added.`);
+      console.log(`${element.id} hidden class added, transition started.`);
     };
+    // --- End of updated hideElement function ---
+
 
     const showElement = (element) => {
-        element.style.display = 'flex'; // Or 'block' or appropriate display type
-        // Force reflow/repaint to ensure transition applies
-        element.offsetWidth;
-        element.classList.remove('hidden'); // In case it was added
-        element.classList.add('visible'); // For help modal's specific show transition
+        element.style.display = 'flex';
+        element.offsetWidth; // Force reflow
+        element.classList.remove('hidden');
+        element.classList.add('visible');
         console.log(`${element.id} shown.`);
     }
 
     if (welcomeMessage) {
-        // Hide welcome message after a delay (e.g., 5 seconds for users to see images)
+        // Hide welcome message after a shorter delay
         setTimeout(() => {
             hideElement(welcomeMessage);
-        }, 5000); // Increased timeout to 5 seconds
+        }, 3500); // Welcome message hides after 3.5 seconds
     } else {
         console.error("Welcome message element not found.");
     }
 
-    // Fallback to hide loading screen if 'loaded' event doesn't fire
     const loadingScreenHideTimeout = setTimeout(() => {
         console.log("Fallback timeout triggered for loading screen.");
         if (loadingScreen) {
@@ -406,7 +392,7 @@
         } else {
             console.error("loadingScreen element not found in fallback timeout.");
         }
-    }, 4000); // Adjusted fallback, should be less than welcome message if welcome shows first
+    }, 4000); // Loading screen fallback hide after 4 seconds
 
     if (sceneEl) {
         sceneEl.addEventListener('loaded', () => {
@@ -417,8 +403,6 @@
                 console.log("loadingScreenHideTimeout cleared.");
             }
             if (loadingScreen) {
-                // Hide loading screen slightly before welcome message (if welcome is still shown)
-                // or immediately if welcome message is already configured to hide later.
                 hideElement(loadingScreen);
             } else {
                 console.error("loadingScreen element not found when scene loaded.");
@@ -441,12 +425,14 @@
             showElement(helpModal);
         });
 
-        closeHelpButton.addEventListener('click', () => {
+        closeHelpButton.addEventListener('click', (). => {
             helpModal.classList.remove('visible');
-            helpModal.classList.add('hidden'); // Start fade out
-            helpModal.addEventListener('transitionend', () => {
-                helpModal.style.display = 'none'; // Actually hide
-                helpModal.classList.remove('hidden'); // Reset for next show
+            helpModal.classList.add('hidden');
+            helpModal.addEventListener('transitionend', function handler(event) {
+                if (event.propertyName === 'opacity' && !helpModal.classList.contains('visible')) { // ensure it's meant to be hidden
+                    helpModal.style.display = 'none';
+                    helpModal.classList.remove('hidden'); // Reset for next time
+                }
             }, { once: true });
         });
     } else {
@@ -470,6 +456,5 @@
             }
         });
     }
-  </script>
-</body>
+  </script></body>
 </html>
