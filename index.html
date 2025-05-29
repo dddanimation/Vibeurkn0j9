@@ -5,52 +5,107 @@
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
   <style>
+    body {
+      margin: 0;
+      overflow: hidden; /* Keep this to prevent scrollbars on the body itself */
+    }
     .a-enter-vr {
       display: none !important;
     }
     /* Add a basic fade-out for the loading screen for a smoother transition */
     #loading-screen.hidden,
-    #welcome-message.hidden,
+    #welcome-message.hidden, /* This will apply to the updated welcome message too */
     #help-modal.hidden { /* Apply hidden class to all overlays */
       opacity: 0;
       transition: opacity 2s ease-out;
     }
 
-    /* Styling for the welcome message content */
+    /* --- Updated Welcome Message Styles --- */
     #welcome-message {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
       display: flex;
-      justify-content: center;
+      justify-content: center; /* Vertically center content if not overflowing */
       align-items: center;
       flex-direction: column;
-      font-size: 24px; /* Larger for a welcome message */
+      font-size: 20px; /* Base font size for welcome, can be adjusted */
       font-family: sans-serif;
       color: white;
-      background: rgba(0, 0, 0, 0.9); /* More opaque for focus */
-      z-index: 1000; /* Higher z-index to be on top */
+      background: rgba(0, 0, 0, 0.92); /* Slightly more opaque for better readability */
+      z-index: 1000;
+      overflow-y: auto; /* Allow scrolling if content exceeds screen height */
+      padding: 20px 10px; /* Add some padding */
+      box-sizing: border-box; /* Include padding in width/height calculation */
     }
 
     #welcome-message h1 {
-        font-size: 2em;
-        margin-bottom: 20px;
-        text-align: center;
+      font-size: 1.8em; /* Adjust as needed */
+      margin-bottom: 15px;
+      text-align: center;
     }
 
     #welcome-message .instructions,
     #welcome-message .note {
-      font-size: 16px;
-      margin-top: 10px;
-      line-height: 1.5;
-      max-width: 80%;
-      text-align: left;
+      font-size: 1em; /* Relative to #welcome-message font-size */
+      margin-top: 15px;
+      line-height: 1.6;
+      max-width: 95%; /* Allow text to be a bit wider */
+      text-align: center; /* Center align the instruction/note text */
     }
 
     #welcome-message .note {
-        font-style: italic;
-        font-size: 0.9em;
-        margin-top: 20px;
+      font-style: italic;
+      font-size: 0.85em;
+      margin-top: 20px;
     }
+
+    /* New styles for the container of target image previews */
+    #target-image-previews {
+      display: flex;
+      flex-wrap: wrap;       /* Allow items to wrap to the next line */
+      justify-content: center; /* Center items horizontally */
+      align-items: flex-start; /* Align items to the top of their row */
+      gap: 15px 10px;        /* Row and column gap: (vertical gap) (horizontal gap) */
+      margin-top: 20px;
+      margin-bottom: 20px;
+      padding: 10px;
+      width: 100%;
+      max-width: 700px;      /* Constrain max width of the preview area */
+      box-sizing: border-box;
+    }
+
+    /* Styles for each individual preview item (image + optional caption) */
+    .target-preview-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      width: 100px; /* Adjust width of each preview item (controls image width too) */
+    }
+
+    /* Styles for the preview images themselves */
+    .preview-image {
+      width: 100%; /* Image takes full width of its parent .target-preview-item */
+      height: auto; /* Maintain aspect ratio */
+      max-height: 120px; /* Prevent images from becoming too tall, adjust as needed */
+      object-fit: contain; /* Ensures the entire image is visible, scaled down */
+      border: 2px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 5px; /* Space between image and optional caption */
+      background-color: white; /* Important if your tracking images have transparency or dark areas */
+    }
+
+    /* Optional: Styles for the caption below each preview image */
+    /*
+    .preview-caption {
+      font-size: 12px;
+      color: #eee;
+      margin-top: 0;
+      line-height: 1.2;
+    }
+    */
+    /* --- End of Updated Welcome Message Styles --- */
+
 
     /* Styling for the help modal */
     #help-modal {
@@ -137,7 +192,7 @@
     #help-button {
         position: absolute;
         top: 20px;
-        right: 120px;
+        right: 120px; /* Adjusted to make space for Inquiry button */
         width: 40px;
         height: 40px;
         display: flex;
@@ -159,19 +214,30 @@
     }
   </style>
 </head>
-<body style="margin: 0; overflow: hidden;">
-
-  <div id="welcome-message">
+<body> <div id="welcome-message">
     <h1>Qrcky's AR Exhibition</h1>
     <p class="instructions">
-      <strong>Quick Start</strong><br>
-      1. Scan the QR code.<br>
-      2. Allow camera access if prompted.<br>
-      3. Aim your device at the QR code and background marker.<br>
-      4. Tap the <strong>'i'</strong> button for details.
+      Welcome! To experience the AR, please allow camera access if prompted, then point your device firmly at one of the artwork markers shown below:
+    </p>
+
+    <div id="target-image-previews">
+      <div class="target-preview-item">
+        <img src="./tracking_images/01_PLACEHOLDER_IMAGE.jpg" alt="Preview of Artwork Marker 1" class="preview-image">
+        </div>
+
+      <div class="target-preview-item">
+        <img src="./tracking_images/02_PLACEHOLDER_IMAGE.jpg" alt="Preview of Artwork Marker 2" class="preview-image">
+        </div>
+
+      <div class="target-preview-item">
+        <img src="./tracking_images/03_PLACEHOLDER_IMAGE.jpg" alt="Preview of Artwork Marker 3" class="preview-image">
+        </div>
+      </div>
+
+    <p class="note">
+      The 3D model will appear on your screen! For detailed help later, tap the <strong>'i'</strong> button at the top right.
     </p>
   </div>
-
   <div id="loading-screen" style="
     position: absolute;
     top: 50%;
@@ -191,7 +257,7 @@
   <div style="position: absolute; top: 20px; left: 20px; z-index: 999;">
     <a href="https://www.instagram.com/qrcky/" target="_blank">
       <img src="./insta.png" alt="Instagram" style="height: 28px; opacity: 0.8; cursor: pointer;" />
-    </a>
+      </a>
   </div>
 
   <button id="help-button">i</button>
@@ -235,8 +301,7 @@
       <a-asset-item id="loys" src="./loys.glb"></a-asset-item>
       <a-asset-item id="base" src="./base.glb"></a-asset-item>
       <a-asset-item id="maps" src="./maps.glb"></a-asset-item>
-      <a-asset-item id="miss_regret" src="./miss_regret.glb"></a-asset-item>
-      <a-asset-item id="porcelainv3" src="./porcelainv3.glb"></a-asset-item>
+      <a-asset-item id="miss_regret" src="./miss_regret.glb"></a-asset-item> <a-asset-item id="porcelainv3" src="./porcelainv3.glb"></a-asset-item>
       <a-asset-item id="sdwtbs" src="./sdwtbs.glb"></a-asset-item>
       <a-asset-item id="transcending-myself" src="./transcending-myself.glb"></a-asset-item>
       <a-asset-item id="twins" src="./twins.glb"></a-asset-item>
@@ -303,13 +368,12 @@
     const helpButton = document.getElementById('help-button');
     const helpModal = document.getElementById('help-modal');
     const closeHelpButton = document.getElementById('close-help-button');
-    // const museumAudioElement = document.getElementById('museum-audio'); // AUDIO ELEMENT REMOVED
 
     const hideElement = (element) => {
       console.log(`Attempting to hide element: ${element ? element.id : 'undefined'}`);
       if (!element) {
-          console.error(`Element with ID ${element ? element.id : 'undefined'} not found for hideElement.`);
-          return;
+        console.error(`Element with ID ${element ? element.id : 'undefined'} not found for hideElement.`);
+        return;
       }
       if (element.classList.contains('hidden') || element.style.display === 'none') {
         console.log(`${element.id} already hidden or display is none.`);
@@ -320,25 +384,28 @@
         console.log(`Transitionend for ${element.id}, setting display to none.`);
         element.style.display = 'none';
       }, { once: true });
-      console.log(`${element.id} hidden class added (original log was: ${element.id} hidden.)`);
+      console.log(`${element.id} hidden class added.`);
     };
 
     const showElement = (element) => {
-        element.style.display = 'flex';
+        element.style.display = 'flex'; // Or 'block' or appropriate display type
+        // Force reflow/repaint to ensure transition applies
         element.offsetWidth;
-        element.classList.remove('hidden');
-        element.classList.add('visible');
+        element.classList.remove('hidden'); // In case it was added
+        element.classList.add('visible'); // For help modal's specific show transition
         console.log(`${element.id} shown.`);
     }
 
     if (welcomeMessage) {
+        // Hide welcome message after a delay (e.g., 5 seconds for users to see images)
         setTimeout(() => {
             hideElement(welcomeMessage);
-        }, 2500);
+        }, 5000); // Increased timeout to 5 seconds
     } else {
         console.error("Welcome message element not found.");
     }
 
+    // Fallback to hide loading screen if 'loaded' event doesn't fire
     const loadingScreenHideTimeout = setTimeout(() => {
         console.log("Fallback timeout triggered for loading screen.");
         if (loadingScreen) {
@@ -346,8 +413,7 @@
         } else {
             console.error("loadingScreen element not found in fallback timeout.");
         }
-        // AUDIO PLAY ATTEMPT REMOVED
-    }, 2000);
+    }, 4000); // Adjusted fallback, should be less than welcome message if welcome shows first
 
     if (sceneEl) {
         sceneEl.addEventListener('loaded', () => {
@@ -358,13 +424,12 @@
                 console.log("loadingScreenHideTimeout cleared.");
             }
             if (loadingScreen) {
+                // Hide loading screen slightly before welcome message (if welcome is still shown)
+                // or immediately if welcome message is already configured to hide later.
                 hideElement(loadingScreen);
             } else {
                 console.error("loadingScreen element not found when scene loaded.");
             }
-
-            // AUDIO PLAY ATTEMPT REMOVED
-            // AUDIO STOP TIMEOUT REMOVED
 
             if (sceneEl.renderer) {
                 console.log("Setting renderer properties.");
@@ -373,7 +438,6 @@
             } else {
                 console.error("Renderer not available on sceneEl when 'loaded' event fired.");
             }
-
         }, { once: true });
     } else {
         console.error("a-scene element not found for event listener attachment.");
@@ -382,17 +446,15 @@
     if (helpButton && helpModal && closeHelpButton) {
         helpButton.addEventListener('click', () => {
             showElement(helpModal);
-            // AUDIO PAUSE REMOVED
         });
 
         closeHelpButton.addEventListener('click', () => {
             helpModal.classList.remove('visible');
-            helpModal.classList.add('hidden');
+            helpModal.classList.add('hidden'); // Start fade out
             helpModal.addEventListener('transitionend', () => {
-                helpModal.style.display = 'none';
-                helpModal.classList.remove('hidden');
+                helpModal.style.display = 'none'; // Actually hide
+                helpModal.classList.remove('hidden'); // Reset for next show
             }, { once: true });
-            // AUDIO PLAY ATTEMPT REMOVED
         });
     } else {
         console.error("One or more help modal elements not found.");
@@ -400,7 +462,7 @@
 
     if (sceneEl) {
         sceneEl.addEventListener('targetFound', e => {
-            if (e.detail) { // Robust check
+            if (e.detail) {
                 console.log('✅ Target found:', e.detail.targetIndex, e.detail.name);
             } else {
                 console.log('✅ Target found, but e.detail was null or undefined. Event object:', e);
@@ -408,7 +470,7 @@
         });
 
         sceneEl.addEventListener('targetLost', e => {
-            if (e.detail) { // Robust check
+            if (e.detail) {
                 console.log('❌ Target lost:', e.detail.targetIndex, e.detail.name);
             } else {
                 console.log('❌ Target lost, but e.detail was null or undefined. Event object:', e);
