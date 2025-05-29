@@ -320,22 +320,18 @@
     const helpModal = document.getElementById('help-modal');
     const closeHelpButton = document.getElementById('close-help-button');
 
-    // --- Updated hideElement function ---
     const hideElement = (element) => {
       console.log(`Attempting to hide element: ${element ? element.id : 'undefined'}`);
       if (!element) {
         console.error(`Element with ID ${element ? element.id : 'undefined'} not found for hideElement.`);
         return;
       }
-      // If already display is none, do nothing
       if (element.style.display === 'none') {
         console.log(`${element.id} already display is none.`);
         return;
       }
-      // If it already has hidden class (meaning transition started or finished)
       if (element.classList.contains('hidden')) {
          console.log(`${element.id} already has hidden class.`);
-         // Ensure display none is set if it was somehow missed by transitionend
          if (element.style.display !== 'none') {
             console.log(`Forcing display:none for ${element.id} as hidden class was present but display was not none.`);
             element.style.display = 'none';
@@ -343,21 +339,17 @@
          return;
       }
 
-      element.classList.add('hidden'); // This starts the opacity CSS transition (2 seconds)
+      element.classList.add('hidden');
 
-      // Fallback timeout: Set display to none after transition duration + small buffer
-      // This ensures it gets hidden even if transitionend event doesn't fire.
-      const transitionDuration = 2000; // Must match CSS transition duration
+      const transitionDuration = 2000;
       setTimeout(() => {
-        if (element.classList.contains('hidden')) { // Check if it's still supposed to be hidden
+        if (element.classList.contains('hidden')) {
           console.log(`Transition fallback for ${element.id}, setting display to none.`);
           element.style.display = 'none';
         }
-      }, transitionDuration + 100); // Add a small buffer of 100ms
+      }, transitionDuration + 100);
 
-      // Primary mechanism: Use transitionend event
       element.addEventListener('transitionend', function handler(event) {
-        // Ensure we're reacting to the opacity transition specifically if multiple transitions exist
         if (event.propertyName === 'opacity' && element.classList.contains('hidden')) {
           console.log(`Transitionend for ${element.id} (opacity), setting display to none.`);
           element.style.display = 'none';
@@ -365,22 +357,20 @@
       }, { once: true });
       console.log(`${element.id} hidden class added, transition started.`);
     };
-    // --- End of updated hideElement function ---
 
 
     const showElement = (element) => {
         element.style.display = 'flex';
-        element.offsetWidth; // Force reflow
+        element.offsetWidth; 
         element.classList.remove('hidden');
         element.classList.add('visible');
         console.log(`${element.id} shown.`);
     }
 
     if (welcomeMessage) {
-        // Hide welcome message after a shorter delay
         setTimeout(() => {
             hideElement(welcomeMessage);
-        }, 3500); // Welcome message hides after 3.5 seconds
+        }, 3500);
     } else {
         console.error("Welcome message element not found.");
     }
@@ -392,7 +382,7 @@
         } else {
             console.error("loadingScreen element not found in fallback timeout.");
         }
-    }, 4000); // Loading screen fallback hide after 4 seconds
+    }, 4000); 
 
     if (sceneEl) {
         sceneEl.addEventListener('loaded', () => {
@@ -425,13 +415,14 @@
             showElement(helpModal);
         });
 
-        closeHelpButton.addEventListener('click', (). => {
+        // *** CORRECTED LINE BELOW ***
+        closeHelpButton.addEventListener('click', () => {
             helpModal.classList.remove('visible');
             helpModal.classList.add('hidden');
             helpModal.addEventListener('transitionend', function handler(event) {
-                if (event.propertyName === 'opacity' && !helpModal.classList.contains('visible')) { // ensure it's meant to be hidden
+                if (event.propertyName === 'opacity' && !helpModal.classList.contains('visible')) {
                     helpModal.style.display = 'none';
-                    helpModal.classList.remove('hidden'); // Reset for next time
+                    helpModal.classList.remove('hidden'); 
                 }
             }, { once: true });
         });
