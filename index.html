@@ -277,18 +277,17 @@
   </div>
 
 <a-scene mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 1; filterMinCF: 0.001; filterBeta: 0.03; missTolerance: 20; warmupTolerance: 15"
-         color-space="sRGB"
-         renderer="precision: medium; antialias: false; colorManagement: true; physicallyCorrectLights: true"
-         vr-mode-ui="enabled: false"
-         device-orientation-permission-ui="enabled: false">
+       color-space="sRGB"
+       renderer="precision: medium; antialias: false; colorManagement: true; physicallyCorrectLights: true"
+       vr-mode-ui="enabled: false"
+       device-orientation-permission-ui="enabled: false">
 
     <a-assets>
       <a-asset-item id="mayaModel" src="./maya.glb"></a-asset-item>
       <a-asset-item id="regretModel" src="./miss_regret.glb"></a-asset-item>
       <a-asset-item id="seedlessFruitModel" src="./seedless-fruit.glb"></a-asset-item>
       <a-asset-item id="mapisModel" src="./mapis.glb"></a-asset-item>
-      <a-asset-item id="negusAnewModel" src="./negus-anew.glb"></a-asset-item>
-      <a-asset-item id="ebonyModel" src="./ebony.glb"></a-asset-item>
+      <a-asset-item id="negusAnewModel" src="./negus-anew.glb"></a-asset-item> <a-asset-item id="ebonyModel" src="./ebony.glb"></a-asset-item>
       <a-asset-item id="lia" src="./living-in-america.glb"></a-asset-item>
       <a-asset-item id="loys" src="./loys.glb"></a-asset-item>
       <a-asset-item id="base" src="./base.glb"></a-asset-item>
@@ -310,7 +309,10 @@
     <a-entity mindar-image-target="targetIndex: 1"><a-gltf-model src="#regretModel" position="0 0 -0.3" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model></a-entity>
     <a-entity mindar-image-target="targetIndex: 2"><a-gltf-model src="#seedlessFruitModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model></a-entity>
     <a-entity mindar-image-target="targetIndex: 3"><a-gltf-model src="#mapisModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model></a-entity>
-    <a-entity mindar-image-target="targetIndex: 4"><a-gltf-model src="#negusAnewModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model></a-entity>
+    
+    <a-entity mindar-image-target="targetIndex: 4">
+        <a-box color="red" position="0 0.25 0" scale="0.5 0.5 0.5"></a-box>
+    </a-entity>
     <a-entity mindar-image-target="targetIndex: 5"><a-gltf-model src="#ebonyModel" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model></a-entity>
     <a-entity mindar-image-target="targetIndex: 6"><a-gltf-model src="#lia" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model></a-entity>
     <a-entity mindar-image-target="targetIndex: 7"><a-gltf-model src="#loys" position="0 0 0" scale="0.3 0.3 0.3" animation-mixer></a-gltf-model></a-entity>
@@ -443,7 +445,7 @@
 
     if (sceneEl) {
         sceneEl.addEventListener('targetFound', e => {
-            if (e.detail) {
+            if (e.detail) { // Robust check
                 console.log('✅ Target found:', e.detail.targetIndex, e.detail.name);
             } else {
                 console.log('✅ Target found, but e.detail was null or undefined. Event object:', e);
@@ -451,7 +453,7 @@
         });
 
         sceneEl.addEventListener('targetLost', e => {
-            if (e.detail) {
+            if (e.detail) { // Robust check
                 console.log('❌ Target lost:', e.detail.targetIndex, e.detail.name);
             } else {
                 console.log('❌ Target lost, but e.detail was null or undefined. Event object:', e);
