@@ -276,7 +276,7 @@
     </div>
   </div>
 
-mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 1; filterMinCF: 0.001; filterBeta: 0.05; missTolerance: 20; warmupTolerance: 15"
+<a-scene mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 1; filterMinCF: 0.001; filterBeta: 0.05; missTolerance: 20; warmupTolerance: 15" 
        color-space="sRGB"
        renderer="precision: medium; antialias: false; colorManagement: true; physicallyCorrectLights: true"
        vr-mode-ui="enabled: false"
@@ -445,7 +445,7 @@ mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 1; filterMinCF: 0.001; f
 
     if (sceneEl) {
         sceneEl.addEventListener('targetFound', e => {
-            if (e.detail) { // Robust check
+            if (e.detail) { 
                 console.log('✅ Target found:', e.detail.targetIndex, e.detail.name);
             } else {
                 console.log('✅ Target found, but e.detail was null or undefined. Event object:', e);
@@ -453,7 +453,7 @@ mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 1; filterMinCF: 0.001; f
         });
 
         sceneEl.addEventListener('targetLost', e => {
-            if (e.detail) { // Robust check
+            if (e.detail) { 
                 console.log('❌ Target lost:', e.detail.targetIndex, e.detail.name);
             } else {
                 console.log('❌ Target lost, but e.detail was null or undefined. Event object:', e);
