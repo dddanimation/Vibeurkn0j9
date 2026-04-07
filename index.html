@@ -1,43 +1,56 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    #debug-ui {
+      position: absolute; top: 10px; left: 10px; z-index: 999;
+      background: rgba(0,0,0,0.8); color: white; padding: 15px;
+      font-family: monospace; border-radius: 8px; font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="debug-ui">Scanning for Foundations Plaque...</div>
+
+  <a-scene 
+    mindar-image="imageTargetSrc: https://raw.githubusercontent.com/dddanimation/Vibeurkn0j9/main/targets.mind; uiScanning: yes;" 
+    color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights: true" vr-mode-ui="enabled: false">
     
-    <style>
-      body { margin: 0; overflow: hidden; }
-      /* Hide the default VR button for a cleaner AR look */
-      .a-enter-vr { display: none !important; }
-    </style>
-  </head>
-  <body>
-    <a-scene 
-      mindar-image="imageTargetSrc: https://raw.githubusercontent.com/dddanimation/Vibeurkn0j9/main/targets.mind; maxTrack: 1; uiScanning: yes;" 
-      color-space="sRGB" 
-      renderer="colorManagement: true, physicallyCorrectLights: true" 
-      vr-mode-ui="enabled: false" 
-      device-orientation-permission-ui="enabled: false">
+    <a-assets>
+      <a-asset-item id="sculpture" src="https://raw.githubusercontent.com/dddanimation/Vibeurkn0j9/main/enslaved.glb"></a-asset-item>
+    </a-assets>
+
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+    <a-entity mindar-image-target="targetIndex: 0">
+      <a-sphere position="0 0 0" radius="0.15" color="yellow" opacity="0.7"></a-sphere>
       
-      <a-assets>
-        <a-asset-item id="sculpture" src="https://raw.githubusercontent.com/dddanimation/Vibeurkn0j9/main/enslaved.glb"></a-asset-item>
-      </a-assets>
+      <a-gltf-model 
+        src="#sculpture" 
+        position="0 0 0.1" 
+        scale="0.1 0.1 0.1">
+      </a-gltf-model>
+    </a-entity>
+  </a-scene>
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+  <script>
+    const ui = document.getElementById('debug-ui');
+    const sceneEl = document.querySelector('a-scene');
 
-      <a-light type="ambient" intensity="1.2"></a-light>
-      <a-light type="directional" position="1 2 1" intensity="0.8"></a-light>
+    sceneEl.addEventListener('targetFound', () => {
+      ui.innerText = "🎯 TARGET FOUND";
+      ui.style.background = "rgba(0, 200, 0, 0.9)";
+    });
 
-      <a-entity mindar-image-target="targetIndex: 0">
-        <a-gltf-model 
-          src="#sculpture"
-          rotation="0 0 0" 
-          position="0 0 0.1" 
-          scale="0.25 0.25 0.25"
-          animation-mixer>
-        </a-gltf-model>
-      </a-entity>
-    </a-scene>
-  </body>
+    sceneEl.addEventListener('targetLost', () => {
+      ui.innerText = "❌ Target Lost - Keep Scanning";
+      ui.style.background = "rgba(200, 0, 0, 0.9)";
+    });
+  </script>
+</body>
 </html>
