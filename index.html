@@ -4,22 +4,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+  
   <style>
-    body { margin: 0; overflow: hidden; }
-    #debug-ui {
-      position: absolute; top: 10px; left: 10px; z-index: 999;
-      background: rgba(0,0,0,0.8); color: white; padding: 15px;
-      font-family: monospace; border-radius: 8px; font-size: 14px;
+    body { margin: 0; overflow: hidden; background-color: #000; }
+    
+    /* This button forces the browser to grant camera access */
+    #start-button {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      padding: 20px 40px; font-size: 20px; background: #fff; color: #000;
+      border: none; border-radius: 10px; font-weight: bold; z-index: 9999;
+      cursor: pointer; box-shadow: 0 0 20px rgba(255,255,255,0.5);
+    }
+    
+    #loading-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8); color: white; display: none;
+      justify-content: center; align-items: center; z-index: 9998;
+      font-family: sans-serif;
     }
   </style>
 </head>
 <body>
 
-  <div id="debug-ui">Scanning for Foundations Plaque...</div>
+  <button id="start-button">START AR EXPERIENCE</button>
+  <div id="loading-overlay">Loading Foundations AR...</div>
 
   <a-scene 
-    mindar-image="imageTargetSrc: https://raw.githubusercontent.com/dddanimation/Vibeurkn0j9/main/targets.mind; uiScanning: yes;" 
-    color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights: true" vr-mode-ui="enabled: false">
+    mindar-image="imageTargetSrc: https://raw.githubusercontent.com/dddanimation/Vibeurkn0j9/main/targets.mind; autoStart: false; uiScanning: yes;" 
+    color-space="sRGB" 
+    renderer="colorManagement: true, physicallyCorrectLights" 
+    vr-mode-ui="enabled: false" 
+    device-orientation-permission-ui="enabled: false">
     
     <a-assets>
       <a-asset-item id="sculpture" src="https://raw.githubusercontent.com/dddanimation/Vibeurkn0j9/main/enslaved.glb"></a-asset-item>
@@ -28,28 +43,38 @@
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
     <a-entity mindar-image-target="targetIndex: 0">
-      <a-sphere position="0 0 0" radius="0.15" color="yellow" opacity="0.7"></a-sphere>
-      
-      <a-gltf-model 
-        src="#sculpture" 
-        position="0 0 0.1" 
-        scale="0.1 0.1 0.1">
-      </a-gltf-model>
+        <a-box position="0 0 0" scale="0.1 0.1 0.1" material="color: yellow; opacity: 0.8"></a-box>
+        
+        <a-gltf-model 
+            src="#sculpture" 
+            position="0 0 0.1" 
+            scale="0.1 0.1 0.1">
+        </a-gltf-model>
     </a-entity>
   </a-scene>
 
   <script>
-    const ui = document.getElementById('debug-ui');
+    const startButton = document.getElementById('start-button');
+    const loading = document.getElementById('loading-overlay');
     const sceneEl = document.querySelector('a-scene');
 
-    sceneEl.addEventListener('targetFound', () => {
-      ui.innerText = "🎯 TARGET FOUND";
-      ui.style.background = "rgba(0, 200, 0, 0.9)";
+    startButton.addEventListener('click', () => {
+      startButton.style.display = 'none';
+      loading.style.display = 'flex';
+      
+      // Manually start the AR engine
+      const arSystem = sceneEl.systems["mindar-image-system"];
+      arSystem.start(); 
     });
 
-    sceneEl.addEventListener('targetLost', () => {
-      ui.innerText = "❌ Target Lost - Keep Scanning";
-      ui.style.background = "rgba(200, 0, 0, 0.9)";
+    sceneEl.addEventListener("arReady", (event) => {
+      loading.style.display = 'none';
+      console.log("MindAR is ready");
+    });
+
+    sceneEl.addEventListener("arError", (event) => {
+      loading.innerText = "Error: Check camera permissions and HTTPS";
+      console.error("MindAR Error", event);
     });
   </script>
 </body>
